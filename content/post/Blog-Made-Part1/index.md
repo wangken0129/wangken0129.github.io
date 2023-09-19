@@ -230,7 +230,7 @@ ftp-basic: https://www.npmjs.com/package/basic-ftp
              });
    ```
 
-4. 以上配置完成，不用重開機直接進入Typora修改檔案上傳的
+4. 以上配置完成，不用重開機直接進入Typora修改圖片上傳的設定
 
 
 

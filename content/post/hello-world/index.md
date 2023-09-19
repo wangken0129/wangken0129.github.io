@@ -2,7 +2,7 @@
 title: Hello World
 description: Welcome to Ken's blog
 slug: hello-world
-date: "2023-09-19T05:10:00+08:00"
+date: 2023-09-19T05:10:00+08:00
 categories:
     - Lab Category
 tags:
