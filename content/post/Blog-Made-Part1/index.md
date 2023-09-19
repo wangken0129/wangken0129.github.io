@@ -101,14 +101,19 @@ Part2 是透過Hugo + Github Page來做靜態網站，以存放Typora的筆記�
 ## Picgo
 
 配置文件
+
 參考原文: https://zhuanlan.zhihu.com/p/382702959
+
 Picgo: https://picgo.github.io/PicGo-Core-Doc/zh/guide/config.html
+
 ftp-uploader: https://github.com/imba97/picgo-plugin-ftp-uploader/tree/master
+
 ftp-basic: https://www.npmjs.com/package/basic-ftp
 
 ### Install Picgo
 
 1. 首先要先安裝Node.js，下載安裝或是用brew install node
+
    https://nodejs.org/en/download
 
 2. 安裝好後確認版本
@@ -206,8 +211,10 @@ ftp-basic: https://www.npmjs.com/package/basic-ftp
    }
    ```
 
-3. cd 進入  ~/.picgo/node_modules/picgo-plugin-ftp-uploader/dist
+3. 修改  ~/.picgo/node_modules/picgo-plugin-ftp-uploader/dist/index.js
+
    在await client.access的地方新增 **secure: config.secure**
+
    詳細配置可以Google "ftp-basic" 就會有文件可以參考了
 
    ```
@@ -233,9 +240,11 @@ ftp-basic: https://www.npmjs.com/package/basic-ftp
    ![image-20230919141634956](https://kenkenny.synology.me:5543/images/2023/09/image-20230919141634956.png)
 
 2. 接著新增一個md檔案，複製一張圖片進去即可看到圖片上傳成功
+
    Typora: 點擊圖片即可看到上傳後的路徑
 
    ![image-20230919142209291](https://kenkenny.synology.me:5543/images/2023/09/image-20230919142209291.png)
+
    NAS: 點選連結或是進入NAS的File Station確認圖片
    ![image-20230919142323495](https://kenkenny.synology.me:5543/images/2023/09/image-20230919142323495.png)
 
