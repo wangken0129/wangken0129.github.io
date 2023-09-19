@@ -2,7 +2,7 @@
 title: 製作Blog Part1
 description: Typora+NAS＋Picgo
 slug: blog-part1
-date: 2023-09-19T07:10:00+08:00
+date: 2023-09-19
 categories:
     - Knowledge Base Category
 tags:
