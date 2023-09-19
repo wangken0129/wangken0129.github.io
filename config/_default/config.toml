@@ -17,4 +17,4 @@ disqusShortname = "hugo-theme-stack"
 
 # Date Format 
 [params]
-    dateFormat = "2006-01-02 03:04:05 PM Z0700"
+    dateFormat = "Jan 02, 2006"
