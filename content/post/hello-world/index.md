@@ -2,7 +2,7 @@
 title: Hello World
 description: Welcome to Ken's blog
 slug: hello-world
-date: 2023-09-19 03:20:00+0800
+date: Sep 19, 2023 11:45 CST
 categories:
     - Lab Category
 tags:
@@ -34,7 +34,7 @@ Happy engineering.
 
 這是Ken的部落格，用來放我的Lab跟知識庫。
 
-希望當個快樂的工程師。
+當個快樂的工程師。
 
 ![The Dangers of Hacking and What a Hacker Can Do to Your Computer? | by  Sravan Cynixit | Quick Code | Medium](https://kenkenny.synology.me:5543/images/2023/09/0*ngAthWxOvKZHvsw9.jpeg)
 
