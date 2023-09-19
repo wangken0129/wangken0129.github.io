@@ -15,6 +15,3 @@ hasCJKLanguage = false
 # Change it to your Disqus shortname before using
 disqusShortname = "hugo-theme-stack"
 
-# Date Format 
-[params]
-    dateFormat = "2006-01-02 15:04:05 UTC+8"
