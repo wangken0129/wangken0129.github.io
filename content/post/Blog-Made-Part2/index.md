@@ -160,7 +160,7 @@ Hexo主題: https://hexo.io/themes/index.html
 
 5. 終端機輸入Control+C 結束hugo網站，到此hugo的安裝就完成了，
 
-   後續我會直接套用Stack主題的模板，如要其他模板可以在參考其他文章來建立。
+   後續我會直接套用Stack主題的模板，如要其他模板可以參考其他文章來建立。
 
    
 
@@ -194,7 +194,9 @@ Hexo主題: https://hexo.io/themes/index.html
 
    ![image-20230920122343907](https://kenkenny.synology.me:5543/images/2023/09/image-20230920122343907.png)
 
-4. 匯入完成後會看到有兩個branch，**master**跟**gh-pages**，其他兩個是如果上一步驟有勾選 Include all branches就會複製過來
+4. 匯入完成後會看到有兩個branch，**master**跟**gh-pages**，
+
+   其他兩個是如果上一步驟有勾選 Include all branches就會複製過來
 
    ![image-20230920145122008](https://kenkenny.synology.me:5543/images/2023/09/image-20230920145122008.png)
 
@@ -202,13 +204,15 @@ Hexo主題: https://hexo.io/themes/index.html
 
    但因為後續管理文件方便，所以我選擇回到筆電終端機上建立一個資料夾來當作工作目錄。
 
-6. 這邊可以先將設定好 github page 所用的branch，最點選右邊的Settings --> Pages
+6. 這邊可以設定好 github page 所用的branch，最點選右邊的Settings --> Pages
 
    根據下圖的設定，Branch那邊要選擇 **gh-pages**
 
    ![image-20230920150015698](https://kenkenny.synology.me:5543/images/2023/09/image-20230920150015698.png)
 
-7. 接下來可以在github上先新增一個token，用來在筆電上跟github做溝通，點選右上角的圓圈--> Settings
+7. 接下來可以在github上先新增一個token，用來在筆電上跟github做溝通，
+
+   點選右上角的圓圈--> Settings
 
    ![image-20230920150444875](https://kenkenny.synology.me:5543/images/2023/09/image-20230920150444875.png)
 
@@ -216,9 +220,9 @@ Hexo主題: https://hexo.io/themes/index.html
 
    ![image-20230920150654570](https://kenkenny.synology.me:5543/images/2023/09/image-20230920150654570.png)
 
-9. Personal access tokens --> Tokens (classic) 新增一組Token，這組Token請小心保存，而且只會出現一次
+9. Personal access tokens --> Tokens (classic) 新增一組Token，
 
-   可以根據需求設定到期時間、名稱等
+   這組Token請小心保存，而且只會出現一次，可以根據需求設定到期時間、名稱等
 
    ![image-20230920150749028](https://kenkenny.synology.me:5543/images/2023/09/image-20230920150749028.png)
 
@@ -240,6 +244,7 @@ Hexo主題: https://hexo.io/themes/index.html
 
    ```shell
    wangken@wangken-MAC workspace % gh auth login
+   
    ? What account do you want to log into? GitHub.com
    ? You're already logged into github.com. Do you want to re-authenticate? Yes
    ? What is your preferred protocol for Git operations? HTTPS
@@ -395,9 +400,11 @@ Hexo主題: https://hexo.io/themes/index.html
 
 ## 後記
 
-完成部落格的設定後，再來就要把之前做的筆記套用Front Matter放上部落格以及之後的撰寫了，
+完成部落格的設定後，再來就要把之前做的筆記套用Front Matter放上來跟之後的撰寫了，
 
-針對Hugo的一些配置檔的調整，我會使用Visual Studio Code來做編輯跟調整，因為針對.toml檔案的編輯還是比較友善，
+針對Hugo的一些配置檔的調整，我會使用Visual Studio Code來做編輯跟調整，
+
+因為針對.toml檔案的編輯還是比較友善，
 
 像下方的params.toml，我有去修改[sidebar]下方的值，
 
@@ -411,7 +418,9 @@ Hexo主題: https://hexo.io/themes/index.html
 
 ![image-20230920163841527](https://kenkenny.synology.me:5543/images/2023/09/image-20230920163841527.png)
 
-最後因為會頻繁地做git push的動作，所以我也參考網路的Script來自動化，希望最後是能寫成全部都自動化。
+最後因為會頻繁地做git push的動作，所以我也參考網路的Script來自動化的push，
+
+希望最後是能變成全部都自動化，有的話再寫上來分享。
 
 ```
 #!/bin/sh
@@ -424,7 +433,7 @@ printf "\033[0;32mDeploying updates to GitHub...\033[0m\n"
 # Build the project.
 # hugo # if using a theme, replace with `hugo -t <YOURTHEME>`
 
-# Go To Public folder
+# Go To workspace folder
 cd hugo-blog
 
 # Add changes to git.
@@ -440,7 +449,7 @@ git commit -m "$msg"
 # Push source and build repos.
 git push origin master
 
-# come back zero
+# come back
 cd ..
 ```
 
