@@ -87,6 +87,7 @@ Hexo主題: https://hexo.io/themes/index.html
 
    ```
    wangken@wangken-MAC ~ % hugo new site test-hugo
+   
    Congratulations! Your new Hugo site was created in /Users/wangken/test-hugo.
    
    Just a few more steps...
@@ -106,6 +107,7 @@ Hexo主題: https://hexo.io/themes/index.html
 
    ```
    wangken@wangken-MAC ~ % cd test-hugo 
+   
    wangken@wangken-MAC test-hugo % ls -l
    total 8
    drwxr-xr-x  3 wangken  staff  96  9 20 12:05 archetypes
@@ -123,6 +125,7 @@ Hexo主題: https://hexo.io/themes/index.html
 
    ```
    wangken@wangken-MAC test-hugo % hugo serve
+   
    Watching for changes in /Users/wangken/test-hugo/{archetypes,assets,content,data,i18n,layouts,static}
    Watching for config changes in /Users/wangken/test-hugo/hugo.toml
    Start building sites … 
@@ -200,11 +203,11 @@ Hexo主題: https://hexo.io/themes/index.html
 
    ![image-20230920145122008](https://kenkenny.synology.me:5543/images/2023/09/image-20230920145122008.png)
 
-5. 複製過來後原文件說明是可以直接在綠色 Code地方新增一個codespace，這是可以直接在github上面直接去編輯文件
+5. 複製過來後原文件說明是可以直接在綠色 Code地方新增一個codespace，這是可以直接在github上面直接去編輯配置文件
 
-   但因為後續管理文件方便，所以我選擇回到筆電終端機上建立一個資料夾來當作工作目錄。
+   但為了後續管理文件方便，我選擇回到筆電終端機上建立一個資料夾來當作工作目錄。
 
-6. 這邊可以設定好 github page 所用的branch，最點選右邊的Settings --> Pages
+6. 再來要設定好 github page 所用的branch，最點選右邊的Settings --> Pages
 
    根據下圖的設定，Branch那邊要選擇 **gh-pages**
 
@@ -236,6 +239,7 @@ Hexo主題: https://hexo.io/themes/index.html
 
    ```shell
    wangken@wangken-MAC ~ % mkdir workspace
+   
    wangken@wangken-MAC ~ % cd workspace 
    wangken@wangken-MAC workspace % 
    ```
@@ -256,17 +260,18 @@ Hexo主題: https://hexo.io/themes/index.html
 
    
 
-4. 用git初始化工作目錄並設定branch為master，複製
+4. 用git初始化工作目錄，並用 -b 指定branch為master
 
    ```shell
    wangken@wangken-MAC workspace % git init -b master
    已初始化空的 Git 版本庫於 /Users/wangken/workspace/.git/
    ```
 
-5. git 新增遠端來源並確認
+5. git 新增遠端Github的Repository，並用 git remote -v 確認
 
    ```shell
    wangken@wangken-MAC workspace % git remote add origin git@github.com:wangken0129/wangken0129.github.io.git
+   
    wangken@wangken-MAC workspace % git remote -v
    origin	git@github.com:wangken0129/wangken0129.github.io.git (fetch)
    origin	git@github.com:wangken0129/wangken0129.github.io.git (push)
@@ -275,10 +280,11 @@ Hexo主題: https://hexo.io/themes/index.html
 
    
 
-6. 將來源的branch 拉下來，此時就會看到github上有的資料夾以及檔案
+6. 將遠端的branch 拉下來，此時就會看到github上有的資料夾以及檔案
 
    ```shell
    wangken@wangken-MAC workspace % git pull git@github.com:wangken0129/wangken0129.github.io.git 
+   
    remote: Enumerating objects: 247, done.
    remote: Counting objects: 100% (247/247), done.
    remote: Compressing objects: 100% (128/128), done.
@@ -339,7 +345,7 @@ Hexo主題: https://hexo.io/themes/index.html
 
 8. 基本設定這些就可以建立網站了，後續的一些設定可以參考官方文件，幾乎都可以在config/_default 目錄底下去設定
 
-   官方文件：https://stack.jimmycai.com/
+   Stack主題的官方文件：https://stack.jimmycai.com/
 
 9. 後續如果有文章想新增的話，根據此主題的架構要新增目錄在content/post裡面
 
@@ -390,7 +396,11 @@ Hexo主題: https://hexo.io/themes/index.html
 
 11. 成功push後可以點進Github 上的Repository --> Actions
 
-    這邊就是套用此模板的好處之一，已經自動幫你建立好workflows，讓你不用去做其他設定就可以把網站做好
+    套用此模板的好處之一，就是已經自動幫你建立好workflows，
+
+    只要在電腦編輯好後再push上去，有任何更動都會幫你套用到網站
+
+    同時也會自動更新主題的一些Bug
 
     ![image-20230920154906316](https://kenkenny.synology.me:5543/images/2023/09/image-20230920154906316.png)
 
@@ -420,21 +430,20 @@ Hexo主題: https://hexo.io/themes/index.html
 
 最後因為會頻繁地做git push的動作，所以我也參考網路的Script來自動化的push，
 
-希望最後是能變成全部都自動化，有的話再寫上來分享。
+希望最後是能變成從寫完後就全部都自動化，有的話再寫上來分享。
 
 ```
 #!/bin/sh
+
+#Put this script outside the workspace folder
 
 # If a command fails then the deploy stops
 set -e
 
 printf "\033[0;32mDeploying updates to GitHub...\033[0m\n"
 
-# Build the project.
-# hugo # if using a theme, replace with `hugo -t <YOURTHEME>`
-
 # Go To workspace folder
-cd hugo-blog
+cd workspace
 
 # Add changes to git.
 git add .

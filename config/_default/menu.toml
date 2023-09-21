@@ -16,9 +16,9 @@ url = "https://github.com/wangken0129/wangken0129.github.io"
 icon = "brand-github"
 
 [[social]]
-identifier = "twitter"
-name = "Twitter"
-url = "https://twitter.com"
+identifier = "linkedin"
+name = "LinkedIn"
+url = "https://www.linkedin.com/in/ken-wang-88924b181/"
 
 [social.params]
-icon = "brand-twitter"
+icon = "brand-linkedin"
