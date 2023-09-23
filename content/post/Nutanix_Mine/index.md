@@ -2,7 +2,7 @@
 title: Nutanix_Mine
 description: Nutanix_Mine
 slug: Nutanix_Mine
-date: 2023-09-23T02:58:21+08:00
+date: 2023-09-23T03:11:15+08:00
 categories:
     - Lab Category
 tags:
@@ -143,7 +143,7 @@ Nutanix Mine 是Nutanix整合備份軟體讓Nutanix Cluster成為備份專用的
 
 # Mine 安裝實作
 
-## 架構
+## Lab架構
 
 ![image-20230221112445015](https://kenkenny.synology.me:5543/images/2023/09/Mine.png)
 
@@ -158,21 +158,21 @@ Nutanix Mine 是Nutanix整合備份軟體讓Nutanix Cluster成為備份專用的
 | NodeC-AHV3                    | ZM137S025585        | 00:25:90:d3:c8:20 | 10.0.90.4       | 172.16.90.63 | 172.16.90.53       |
 | NodeD-AHV4                    | ZM137S025604        | 00:25:90:d3:c7:f4 | 10.0.90.5       | 172.16.90.64 | 172.16.90.54       |
 | **SSD、HDD per node**         | **Memory per node** | **IPMI Account**  | **IPMI Passwd** | **Account**  | **CVM,AHV Passwd** |
-| 400GB SSD *2 <br />1TB HDD *4 | 128GB(16GB *8)      | ADMIN             | P@ssw0rdNETFOS  | nutanix      | P@ssw0rdNETFOS     |
+| 400GB SSD *2 <br />1TB HDD *4 | 128GB(16GB *8)      | ADMIN             |                 | nutanix      |                    |
 
 2. Veeam Cluster
 
-   | 項目             | IP                 | Account       | Password       | vCPU | Memory |
-   | ---------------- | ------------------ | ------------- | -------------- | ---- | ------ |
-   | Foundation-Mine  | 172.16.90.206:8743 | veeam         | Nutanix/Lab123 | 4    | 4      |
-   | Veeam-Win-Node1  | 172.16.90.207      | administrator | Nutanix/Lab123 | 8    | 16     |
-   | Veeam-Win-Node2  | 172.16.90.208      | administrator | Nutanix/Lab123 | 8    | 16     |
-   | Veeam-Win-Node3  | 172.16.90.209      | administrator | Nutanix/Lab123 | 8    | 16     |
-   | Veeam-Lin-Node1  | 172.16.90.210      |               |                | 8    | 128    |
-   | Veeam-Lin-Node2  | 172.16.90.211      |               |                | 8    | 128    |
-   | Veeam-Lin-Node3  | 172.16.90.212      |               |                | 8    | 128    |
-   | Helper Appliance | 172.16.90.215      |               |                |      |        |
-   | Backup Proxy     | 172.16.90.216      | veeam         | Nutanix/Lab123 | 4    | 4      |
+   | 項目             | IP                 | Account       | vCPU | Memory |
+   | ---------------- | ------------------ | ------------- | ---- | ------ |
+   | Foundation-Mine  | 172.16.90.206:8743 | veeam         | 4    | 4      |
+   | Veeam-Win-Node1  | 172.16.90.207      | administrator | 8    | 16     |
+   | Veeam-Win-Node2  | 172.16.90.208      | administrator | 8    | 16     |
+   | Veeam-Win-Node3  | 172.16.90.209      | administrator | 8    | 16     |
+   | Veeam-Lin-Node1  | 172.16.90.210      |               | 8    | 128    |
+   | Veeam-Lin-Node2  | 172.16.90.211      |               | 8    | 128    |
+   | Veeam-Lin-Node3  | 172.16.90.212      |               | 8    | 128    |
+   | Helper Appliance | 172.16.90.215      |               |      |        |
+   | Backup Proxy     | 172.16.90.216      | veeam         | 4    | 4      |
 
    ![image-20230214181548005](https://kenkenny.synology.me:5543/images/2023/09/image-20230214181548005.png)
 
