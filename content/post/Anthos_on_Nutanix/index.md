@@ -2,11 +2,12 @@
 title: Anthos_on_Nutanix
 description: Anthos_on_Nutanix
 slug: Anthos_on_Nutanix
-date: 2023-09-21T10:03:33+08:00
+date: 2023-09-23T02:40:52+08:00
 categories:
     - Lab Category
 tags:
     - Nutanix
+    - Anthos
 weight: 1       # You can add weight to some posts to override the default sorting (date descending)
 ---
 
@@ -116,7 +117,7 @@ Calm
 
 Anthos Cluster
 
-<img src="assets/Anthos-clusters-on-AHV-Architecture-1024x733.png" alt="img"  />
+<img src="https://kenkenny.synology.me:5543/images/2023/09/Anthos-clusters-on-AHV-Architecture-1024x733.png" alt="img"  />
 
 Calm 與 Jenkins整合的流程，日後可做為參考
 
