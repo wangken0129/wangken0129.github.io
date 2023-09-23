@@ -1,5 +1,5 @@
 ---
-title: Karbon&Files
+title: Nutanix Karbon&Files
 description: Nutanix Karbon & Files
 slug: Karbon&Files
 date: 2023-09-23T02:46:09+08:00
