@@ -2,12 +2,12 @@
 title: Guide_RKE2&Rancher_install
 description: Guide_RKE2&Rancher_install
 slug: Guide_RKE2&Rancher_install
-date: 2023-09-23T06:57:16+08:00
+date: 2023-09-23T07:39:03+08:00
 categories:
     - Knowledge Base Category
 tags:
-    - SUSE
     - Rancher
+    - SUSE
     - Kubernetes
 weight: 1       # You can add weight to some posts to override the default sorting (date descending)
 ---
