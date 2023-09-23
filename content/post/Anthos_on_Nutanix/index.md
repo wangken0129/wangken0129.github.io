@@ -1,6 +1,6 @@
 ---
 title: Anthos_on_Nutanix
-description: Anthos_on_Nutanix
+description: Deploy Anthos on Nutanix
 slug: Anthos_on_Nutanix
 date: 2023-09-23T02:40:52+08:00
 categories:
@@ -8,6 +8,7 @@ categories:
 tags:
     - Nutanix
     - Anthos
+    - Kubernetes
 weight: 1       # You can add weight to some posts to override the default sorting (date descending)
 ---
 

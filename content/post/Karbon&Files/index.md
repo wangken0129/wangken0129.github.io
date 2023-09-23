@@ -1,6 +1,6 @@
 ---
 title: Karbon&Files
-description: Karbon&Files
+description: Nutanix Karbon & Files
 slug: Karbon&Files
 date: 2023-09-23T02:46:09+08:00
 categories:
@@ -8,6 +8,7 @@ categories:
 tags:
     - Nutanix
     - Karbon
+    - Kubernetes
 weight: 1       # You can add weight to some posts to override the default sorting (date descending)
 ---
 # Karbon、Files
