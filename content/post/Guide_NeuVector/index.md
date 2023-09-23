@@ -2,12 +2,12 @@
 title: Guide_NeuVector
 description: Guide_NeuVector
 slug: Guide_NeuVector
-date: 2023-09-23T06:56:46+08:00
+date: 2023-09-23T07:11:16+08:00
 categories:
     - Knowledge Base Category
 tags:
-    - NeuVector
     - SUSE
+    - NeuVector
     - Kubernetes
 weight: 1       # You can add weight to some posts to override the default sorting (date descending)
 ---
