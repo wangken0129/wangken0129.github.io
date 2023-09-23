@@ -2,7 +2,7 @@
 title: Guide_rke2_offline_install
 description: Guide_rke2_offline_install
 slug: Guide_rke2_offline_install
-date: 2023-09-23T06:46:03+08:00
+date: 2023-09-23T07:02:38+08:00
 categories:
     - Knowledge Base Category
 tags:
