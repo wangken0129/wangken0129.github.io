@@ -1,13 +1,14 @@
 ---
-title: Nutanix Notes
-description: Nutanix Notes
-slug: Nutanix
-date: 2023-09-23T03:33:18+08:00
+title: Nutanix-Notes
+description: Nutanix-Notes
+slug: Nutanix-Notes
+date: 2023-09-23T08:25:49+08:00
 categories:
     - Knowledge Base Category
 tags:
     - Nutanix
     - KB
+    - 
 weight: 1       # You can add weight to some posts to override the default sorting (date descending)
 ---
 # 筆記區
