@@ -1,5 +1,5 @@
 ---
-title: NVIDIA_on_Nutanix
+title: Nvdia_on_Nutanix
 description: Nvidia vGPU on Nutanix AHV
 slug: Nvidia_on_Nutanix
 date: 2023-09-23T03:16:38+08:00
