@@ -1,6 +1,6 @@
 ---
 title: Nutanix_Mine
-description: Nutanix_Mine
+description: Nutanix Mine With Veeam
 slug: Nutanix_Mine
 date: 2023-09-23T03:11:15+08:00
 categories:
@@ -8,6 +8,7 @@ categories:
 tags:
     - Nutanix
     - Veeam
+    - Backup
 weight: 1       # You can add weight to some posts to override the default sorting (date descending)
 ---
 # Mine™ with Veeam Guide 3.0
