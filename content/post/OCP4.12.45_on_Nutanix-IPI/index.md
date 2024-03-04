@@ -2,7 +2,7 @@
 title: OCP4.12.45_on_Nutanix-IPI
 description: OCP4.12.45_on_Nutanix-IPI
 slug: OCP4.12.45_on_Nutanix-IPI
-date: 2024-03-01T09:30:36+08:00
+date: 2024-03-04T07:50:14+08:00
 categories:
     - Lab Category
 tags:
