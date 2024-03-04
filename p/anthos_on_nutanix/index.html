@@ -1,0 +1,568 @@
+<!doctype html><html lang=en-us dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content='Deploy Anthos on Nutanix'><title>Anthos_on_Nutanix</title>
+<link rel=canonical href=https://wangken0129.github.io/p/anthos_on_nutanix/><link rel=stylesheet href=/scss/style.min.abbd69b2908fdfcd5179898beaafd374514a86538d81639ddd2c58c06ae54e40.css><meta property='og:title' content='Anthos_on_Nutanix'><meta property='og:description' content='Deploy Anthos on Nutanix'><meta property='og:url' content='https://wangken0129.github.io/p/anthos_on_nutanix/'><meta property='og:site_name' content="Ken's blog"><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='Nutanix'><meta property='article:tag' content='Anthos'><meta property='article:tag' content='Kubernetes'><meta property='article:published_time' content='2023-09-23T02:40:52+08:00'><meta property='article:modified_time' content='2023-09-23T02:40:52+08:00'><meta name=twitter:title content="Anthos_on_Nutanix"><meta name=twitter:description content="Deploy Anthos on Nutanix"><link rel="shortcut icon" href=/favicon.png></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切換選單>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar_hu190e528798e90195d3cefef01f0a2d44_410_300x0_resize_box_3.png width=300 height=300 class=site-logo loading=lazy alt=Avatar>
+</a><span class=emoji>🇹🇼</span></figure><div class=site-meta><h1 class=site-name><a href=/>Ken's blog</a></h1><h2 class=site-description>紀錄與分享，當個快樂的工程師</h2></div></header><ol class=social-menu><li><a href=https://github.com/wangken0129/wangken0129.github.io target=_blank title=GitHub rel=me><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li><li><a href=https://www.linkedin.com/in/ken-wang-88924b181/ target=_blank title=LinkedIn rel=me><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-linkedin" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4m0 2a2 2 0 012-2h12a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2z"/><path d="M8 11v5"/><path d="M8 8v.01"/><path d="M12 16v-5"/><path d="M16 16v-3a2 2 0 00-4 0"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>Home</span></a></li><li><a href=/archives/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>Archives</span></a></li><li><a href=/search/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>Search</span></a></li><li><a href=/links/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 14a3.5 3.5.0 005 0l4-4a3.5 3.5.0 00-5-5l-.5.5"/><path d="M14 10a3.5 3.5.0 00-5 0l-4 4a3.5 3.5.0 005 5l.5-.5"/></svg>
+<span>Links</span></a></li><div class=menu-bottom-section><li id=i18n-switch><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 5h7"/><path d="M9 3v2c0 4.418-2.239 8-5 8"/><path d="M5 9c-.003 2.144 2.952 3.908 6.7 4"/><path d="M12 20l4-9 4 9"/><path d="M19.1 18h-6.2"/></svg>
+<select name=language onchange="window.location.href=this.selectedOptions[0].value"><option value=https://wangken0129.github.io/ selected></option></select></li><li id=dark-mode-toggle><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>夜晚模式</span></li></div></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目錄</h2><div class=widget--toc><nav id=TableOfContents><ol><li><a href=#目標->目標 :</a></li><li><a href=#環境準備->環境準備 :</a></li><li><a href=#版本資訊->版本資訊 :</a></li><li><a href=#參考資料>參考資料</a></li><li><a href=#架構圖->架構圖 :</a></li><li><a href=#calm-dsl執行步驟->Calm DSL執行步驟 :</a><ol><li><a href=#google-cloud-console->Google Cloud Console :</a></li><li><a href=#nutanix-cluster->Nutanix Cluster :</a></li><li><a href=#anthos-cluster>Anthos-Cluster：</a></li></ol></li><li><a href=#terraform-執行步驟>Terraform 執行步驟：</a><ol><li><a href=#google-cloud-console>Google Cloud Console：</a></li><li><a href=#nutanix-cluster>Nutanix Cluster：</a></li><li><a href=#terraform>Terraform：</a></li><li><a href=#anthos-cluster-1>Anthos-Cluster：</a></li></ol></li><li><a href=#google與calm-bp完整步驟>Google與Calm bp完整步驟</a><ol><li><a href=#anthos>Anthos</a><ol><li><a href=#create-service-accounts>Create Service Accounts</a></li><li><a href=#enable-anthos>Enable Anthos</a></li></ol></li><li><a href=#prism-central--calm>Prism Central & Calm</a></li></ol></li></ol></nav></div></section></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><header class=article-category><a href=/categories/lab-category/ style=background-color:#2a9d8f;color:#fff>Lab Category</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/p/anthos_on_nutanix/>Anthos_on_Nutanix</a></h2><h3 class=article-subtitle>Deploy Anthos on Nutanix</h3></div><footer class=article-time><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published>Sep 23, 2023</time></div><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>閱讀時間: 8 分鐘</time></div></footer></div></header><section class=article-content><h1 id=nutanix上快速部署-anthos>Nutanix上快速部署 Anthos</h1><h2 id=目標->目標 :</h2><p>透過 Nutanix 的 Calm 快速部署 Google Anthos Cluster並註冊到雲端，過程約一個小時，
+並在Google Cloud Console 上來管理地端Anthos Cluster，達到混合雲的架構。</p><p>除了Nutanix Calm外，同樣也可以使用Terraform來達到相同目的。</p><h2 id=環境準備->環境準備 :</h2><ol><li><p>一座 Nutanix Cluster 含至少192GB 可用記憶體、768GB 硬碟可用空間、
+6個 IPAM 給Anthos Cluster VM、3個Kubernetes用的IP</p></li><li><p>Prism Central 啟用Calm服務</p></li><li><p>一台 Calm DSL VM (啟動Calm DSL Container )</p></li><li><p>一組 ssh key 給Anthos 部署的VM 使用</p></li></ol><p>其他準備：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>Prerequisites
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Before using any of the automation methods, make sure to meet the following requirements:
+</span></span><span class=line><span class=cl>Automation	
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    Calm:
+</span></span><span class=line><span class=cl>        3.0.0.2 or later
+</span></span><span class=line><span class=cl>        A project with AHV account
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    ~ or ~
+</span></span><span class=line><span class=cl>    Terraform:
+</span></span><span class=line><span class=cl>        0.13.x or later
+</span></span><span class=line><span class=cl>        Nutanix provider 1.2.x or later
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Credentials	
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    (Calm only) SSH key. It must start with —BEGIN RSA PRIVATE KEY—
+</span></span><span class=line><span class=cl>    Prism Element account with User Admin role
+</span></span><span class=line><span class=cl>    Prism Central account with CRUD VM permissions
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Networking	
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    Internet connectivity
+</span></span><span class=line><span class=cl>    AHV IPAM pool with minimum 6 IP addresses
+</span></span><span class=line><span class=cl>    Kubernetes:
+</span></span><span class=line><span class=cl>        Control plane VIP
+</span></span><span class=line><span class=cl>        Ingress VIP
+</span></span><span class=line><span class=cl>        Load balancing pool
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Nutanix	
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    Prism Element cluster:
+</span></span><span class=line><span class=cl>        AHV: 20201105.1045 or later
+</span></span><span class=line><span class=cl>        AOS: 5.19.1 or later
+</span></span><span class=line><span class=cl>        iSCSI data service IP configured
+</span></span><span class=line><span class=cl>        VLAN network with AHV IPAM configured
+</span></span><span class=line><span class=cl>    Prism Central: 2020.11.0.1 or later
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Google Cloud	
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    A project with Owner role
+</span></span><span class=line><span class=cl>    Project must have monitoring enabled (console)
+</span></span><span class=line><span class=cl>    A service account (how-to)
+</span></span><span class=line><span class=cl>        Role: Project Owner
+</span></span><span class=line><span class=cl>        A private key: JSON format
+</span></span></code></pre></td></tr></table></div></div><h2 id=版本資訊->版本資訊 :</h2><ul><li>AOS Version: 6.5.2</li><li>Prism Central Version: 2023.1.01</li><li>Calm Version: 3.6.2</li><li>Calm DSL Version: 3.6.1.2023.03.15.commit.e753678</li><li>Anthos Version: 1.15.0 (v1.26.2-gke.1001)</li><li>CentOS Version: 8.2.2004-20200611.2</li></ul><h2 id=參考資料>參考資料</h2><p>Anthos on AHV
+<a class=link href=https://www.nutanix.dev/2021/04/26/anthos-clusters-on-ahv-getting-started/#calm-anthos-ahv target=_blank rel=noopener>https://www.nutanix.dev/2021/04/26/anthos-clusters-on-ahv-getting-started/#calm-anthos-ahv</a></p><p>Calm Blueprint
+<a class=link href=https://github.com/nutanixdev/anthos-on-ahv/tree/main/calm target=_blank rel=noopener>https://github.com/nutanixdev/anthos-on-ahv/tree/main/calm</a></p><p>Service Account
+<a class=link href=https://cloud.google.com/anthos/run/docs/securing/service-accounts target=_blank rel=noopener>https://cloud.google.com/anthos/run/docs/securing/service-accounts</a></p><h2 id=架構圖->架構圖 :</h2><p>Calm</p><p><img src=https://kenkenny.synology.me:5543/images/2023/09/nutanix-kubernetes-7zv4o.max-700x700.png loading=lazy alt="Going Hybrid with Kubernetes on Google Cloud Platform and Nutanix | Google  Cloud Blog"></p><p>Anthos Cluster</p><img src=https://kenkenny.synology.me:5543/images/2023/09/Anthos-clusters-on-AHV-Architecture-1024x733.png alt=img><p>Calm 與 Jenkins整合的流程，日後可做為參考</p><p><img src=https://kenkenny.synology.me:5543/images/2023/09/image-20230711125654636.png loading=lazy alt=image-20230711125654636></p><p>Lab01 Info</p><div class=table-wrapper><table><thead><tr><th>名稱</th><th>IP</th></tr></thead><tbody><tr><td>Prism Central</td><td>172.16.90.72</td></tr><tr><td>Prism Element</td><td>172.16.90.71</td></tr><tr><td>Prism iSCSI Data IP</td><td>172.16.90.73</td></tr><tr><td>Calm DSL VM</td><td>172.16.90.210</td></tr><tr><td>anthos-lab01-admin-vm</td><td>172.16.90.211-216</td></tr><tr><td>anthos-lab01-master1</td><td>172.16.90.211-216</td></tr><tr><td>anthos-lab01-master2</td><td>172.16.90.211-216</td></tr><tr><td>anthos-lab01-master3</td><td>172.16.90.211-216</td></tr><tr><td>anthos-lab01-worker1</td><td>172.16.90.211-216</td></tr><tr><td>anthos-lab01-worker2</td><td>172.16.90.211-216</td></tr><tr><td>Anthos cluster01 VIP</td><td>172.16.90.207</td></tr><tr><td>Ingress VIP</td><td>172.16.90.205</td></tr><tr><td>Loadbalncer IP</td><td>172.16.90.205-206</td></tr></tbody></table></div><p>Lab02</p><div class=table-wrapper><table><thead><tr><th>名稱</th><th>IP</th></tr></thead><tbody><tr><td>anthos-lab02-admin-vm</td><td>172.16.90.211-216</td></tr><tr><td>anthos-lab02-master0</td><td>172.16.90.217-223</td></tr><tr><td>anthos-lab02-master1</td><td>172.16.90.217-223</td></tr><tr><td>anthos-lab02-master2</td><td>172.16.90.217-223</td></tr><tr><td>anthos-lab02-worker0</td><td>172.16.90.217-223</td></tr><tr><td>anthos-lab02-worker1</td><td>172.16.90.217-223</td></tr><tr><td>anthos-lab02-worker2</td><td>172.16.90.217-223</td></tr><tr><td>Anthos cluster02 VIP</td><td>172.16.90.224</td></tr><tr><td>Ingress VIP</td><td>172.16.90.208</td></tr><tr><td>Loadbalncer IP</td><td>172.16.90.208-209</td></tr></tbody></table></div><h2 id=calm-dsl執行步驟->Calm DSL執行步驟 :</h2><h3 id=google-cloud-console->Google Cloud Console :</h3><ol><li>登入 Google console</li></ol><p><a class=link href=https://console.cloud.google.com target=_blank rel=noopener>https://console.cloud.google.com</a></p><ol start=2><li>建立 Project & Enable Anthos</li><li>建立 Service Account &私密金鑰並上傳</li></ol><h3 id=nutanix-cluster->Nutanix Cluster :</h3><ol><li><p>登入 Prism Central</p></li><li><p>建立 Nutanix Project 並設定使用者、基礎環境</p></li><li><p>取得blueprint、設定環境變數 (Calm DSL VM)</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>$ <span class=nb>cd</span> ~/nutanix
+</span></span><span class=line><span class=cl>$ git clone https://github.com/mat0606/anthos-on-ahv 
+</span></span><span class=line><span class=cl>$ <span class=nb>cd</span> anthos-on-ahv/calm/
+</span></span><span class=line><span class=cl>$ vim blueprint.py
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Create Variables
+</span></span><span class=line><span class=cl>$ mkdir -p .local/secrets
+</span></span><span class=line><span class=cl>$ ls -l .local/secrets
+</span></span><span class=line><span class=cl>-rw-rw-r--. <span class=m>1</span> nutanix nutanix    <span class=m>1</span>  6月 <span class=m>14</span> 07:03 gcloud_account
+</span></span><span class=line><span class=cl>-rw-r--r--. <span class=m>1</span> nutanix nutanix    <span class=m>1</span>  6月 <span class=m>14</span> 07:04 gcloud_key
+</span></span><span class=line><span class=cl>-rw-rw-r--. <span class=m>1</span> nutanix nutanix   <span class=m>11</span>  6月  <span class=m>6</span> 07:39 os2_key
+</span></span><span class=line><span class=cl>-rw-rw-r--. <span class=m>1</span> nutanix nutanix    <span class=m>8</span>  6月  <span class=m>6</span> 07:39 os2_username
+</span></span><span class=line><span class=cl>-rw-------. <span class=m>1</span> nutanix nutanix <span class=m>2455</span>  6月  <span class=m>9</span> 04:19 os_key
+</span></span><span class=line><span class=cl>-rw-rw-r--. <span class=m>1</span> nutanix nutanix    <span class=m>8</span>  6月  <span class=m>6</span> 06:57 os_username
+</span></span><span class=line><span class=cl>-rw-rw-r--. <span class=m>1</span> nutanix nutanix   <span class=m>15</span>  6月  <span class=m>6</span> 06:57 pc_password
+</span></span><span class=line><span class=cl>-rw-rw-r--. <span class=m>1</span> nutanix nutanix    <span class=m>6</span>  6月  <span class=m>9</span> 04:03 pc_username
+</span></span><span class=line><span class=cl>-rw-rw-r--. <span class=m>1</span> nutanix nutanix   <span class=m>15</span>  6月  <span class=m>6</span> 06:57 pe_password
+</span></span><span class=line><span class=cl>-rw-rw-r--. <span class=m>1</span> nutanix nutanix    <span class=m>6</span>  6月  <span class=m>6</span> 06:58 pe_username
+</span></span></code></pre></td></tr></table></div></div></li><li><p>啟動Calm DSL Container</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>$ sudo docker run -v /home/nutanix/anthos-on-ahv:/home/centos/anthos-on-ahv:z -it ntnx/calm-dsl /bin/bash
+</span></span></code></pre></td></tr></table></div></div></li><li><p>Calm DSL連線到Prism Central及該Project (Calm DSL Container)</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>$ ls -l /home/centos/anthos-on-ahv
+</span></span><span class=line><span class=cl>$ calm init dsl
+</span></span><span class=line><span class=cl>$ calm show config
+</span></span></code></pre></td></tr></table></div></div></li><li><p>Calm DSL 建立blueprint到Prism Central</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>$ calm compile bp --name esun-bp --file /home/centos/anthos-on-ahv/calm/blueprint.py
+</span></span><span class=line><span class=cl>$ calm create bp --name esun-bp --file /home/centos/anthos-on-ahv/calm/blueprint.py
+</span></span></code></pre></td></tr></table></div></div></li><li><p>在Prism Central 的blueprint貼上ssh key</p></li><li><p>Calm DSL 利用blueprint啟動Application</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>$ calm launch bp <span class=s2>&#34;Anthos-AHV-DSL&#34;</span> --app_name anthos
+</span></span></code></pre></td></tr></table></div></div></li><li><p>等待約30~45分鐘即可看到Cluster建立完成</p></li></ol><h3 id=anthos-cluster>Anthos-Cluster：</h3><ol><li><p>登入admin-VM取得kubeconfig確認Cluster</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>$ <span class=nv>SECRET_NAME</span><span class=o>=</span><span class=k>$(</span>kubectl get serviceaccount google-cloud-console -o <span class=nv>jsonpath</span><span class=o>=</span><span class=s1>&#39;{$.secrets[0].name}&#39;</span><span class=k>)</span>
+</span></span><span class=line><span class=cl>$ kubectl get secret <span class=si>${</span><span class=nv>SECRET_NAME</span><span class=si>}</span> -o <span class=nv>jsonpath</span><span class=o>=</span><span class=s1>&#39;{$.data.token}&#39;</span> <span class=p>|</span> base64 --decode
+</span></span></code></pre></td></tr></table></div></div></li><li><p>驗證workload</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>$ sudo yum -y install git
+</span></span><span class=line><span class=cl>$ git clone https://github.com/mat0606/K8S.git
+</span></span><span class=line><span class=cl>$ kubectl create ns wordpress
+</span></span><span class=line><span class=cl>$ kubectl -n wordpress create secret generic mysql-pass --from-literal<span class=o>=</span><span class=nv>password</span><span class=o>=</span><span class=s1>&#39;Nutanix/4u&#39;</span>
+</span></span><span class=line><span class=cl>$ kubectl -n wordpress apply -f mysql-deployment.yaml
+</span></span><span class=line><span class=cl>$ kubectl -n wordpress get pvc
+</span></span></code></pre></td></tr></table></div></div></li><li><p>Google Console 確認Cluster已有註冊</p></li></ol><h2 id=terraform-執行步驟>Terraform 執行步驟：</h2><h3 id=google-cloud-console>Google Cloud Console：</h3><p>與Calm 執行步驟相同</p><ol><li>登入 Google console</li></ol><p><a class=link href=https://console.cloud.google.com target=_blank rel=noopener>https://console.cloud.google.com</a></p><ol start=2><li>建立 Project & Enable Anthos</li><li>建立 Service Account &私密金鑰並上傳</li></ol><h3 id=nutanix-cluster>Nutanix Cluster：</h3><p>只需準備IPAM的可用IP即可</p><h3 id=terraform>Terraform：</h3><ol><li><p>建立terraform.tfvars</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl><span class=nb>echo</span> <span class=s1>&#39;subnet_name = &#34;&lt;subnet_name&gt;&#34;
+</span></span></span><span class=line><span class=cl><span class=s1>anthos_version = &#34;&lt;anthos_version&gt;&#34;
+</span></span></span><span class=line><span class=cl><span class=s1>anthos_controlplane_vip = &#34;&lt;anthos_controlplane_vip&gt;&#34;
+</span></span></span><span class=line><span class=cl><span class=s1>anthos_ingress_vip = &#34;&lt;anthos_ingress_vip&gt;&#34;
+</span></span></span><span class=line><span class=cl><span class=s1>anthos_lb_addresspool = &#34;&lt;anthos_lb_addresspool&gt;&#34;
+</span></span></span><span class=line><span class=cl><span class=s1>anthos_cluster_name = &#34;&lt;anthos_cluster_name&gt;&#34;
+</span></span></span><span class=line><span class=cl><span class=s1>google_application_credentials_path = &#34;&lt;google_application_credentials_path&gt;&#34;
+</span></span></span><span class=line><span class=cl><span class=s1>amount_of_anthos_worker_vms = &#34;&lt;amount_of_anthos_worker_vms&gt;&#34;
+</span></span></span><span class=line><span class=cl><span class=s1>ntnx_pc_username = &#34;&lt;ntnx_pc_username&gt;&#34;
+</span></span></span><span class=line><span class=cl><span class=s1>ntnx_pc_password = &#34;&lt;ntnx_pc_password&gt;&#34;
+</span></span></span><span class=line><span class=cl><span class=s1>ntnx_pc_ip = &#34;&lt;ntnx_pc_ip&gt;&#34;
+</span></span></span><span class=line><span class=cl><span class=s1>ntnx_pe_storage_container = &#34;&lt;ntnx_pe_storage_container&gt;&#34;
+</span></span></span><span class=line><span class=cl><span class=s1>ntnx_pe_username = &#34;&lt;ntnx_pe_username&gt;&#34;
+</span></span></span><span class=line><span class=cl><span class=s1>ntnx_pe_password = &#34;&lt;ntnx_pe_password&gt;&#34;
+</span></span></span><span class=line><span class=cl><span class=s1>ntnx_pe_ip = &#34;&lt;ntnx_pe_ip&gt;&#34;
+</span></span></span><span class=line><span class=cl><span class=s1>ntnx_pe_dataservice_ip = &#34;&lt;ntnx_pe_dataservice_ip&gt;&#34;&#39;</span> &gt; terraform.tfvars
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>$ chmod <span class=m>0600</span> terraform.tfvars
+</span></span></code></pre></td></tr></table></div></div></li><li><p>執行terraform初始化並產生plan</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>$ terraform init
+</span></span><span class=line><span class=cl>$ terraform plan
+</span></span></code></pre></td></tr></table></div></div></li><li><p>部署anthos cluster</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>$ terraform apply
+</span></span></code></pre></td></tr></table></div></div></li></ol><h3 id=anthos-cluster-1>Anthos-Cluster：</h3><ol><li><p>部署完成後登入admin-vm確認Cluster</p></li><li><p>取得kubeconfig以登入Google Cloud Console</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>$ <span class=nv>SECRET_NAME</span><span class=o>=</span><span class=k>$(</span>kubectl get serviceaccount google-cloud-console -o <span class=nv>jsonpath</span><span class=o>=</span><span class=s1>&#39;{$.secrets[0].name}&#39;</span><span class=k>)</span>
+</span></span><span class=line><span class=cl>$ kubectl get secret <span class=si>${</span><span class=nv>SECRET_NAME</span><span class=si>}</span> -o <span class=nv>jsonpath</span><span class=o>=</span><span class=s1>&#39;{$.data.token}&#39;</span> <span class=p>|</span> base64 --decode
+</span></span></code></pre></td></tr></table></div></div></li><li><p>Google Console 確認Cluster已有註冊</p></li><li><p>Scale out 測試，修改terraform.tfvars的worker數量</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>$ terraform apply
+</span></span></code></pre></td></tr></table></div></div></li><li><p>登入admin-vm 確認Scale out 完成</p></li></ol><h2 id=google與calm-bp完整步驟>Google與Calm bp完整步驟</h2><h3 id=anthos>Anthos</h3><h4 id=create-service-accounts>Create Service Accounts</h4><ol><li><p>進入IAM與管理,點選project (Anthos-Test-202303)
+<img src=https://kenkenny.synology.me:5543/images/2023/09/anthos-sa01.png loading=lazy alt=image-20230314115438141></p></li><li><p>點選建立服務帳戶
+<img src=https://kenkenny.synology.me:5543/images/2023/09/anthos-sa02.png loading=lazy alt=image-20230314115626110></p></li><li><p>給擁有者的權限</p><p><img src=https://kenkenny.synology.me:5543/images/2023/09/anthos-sa03.png loading=lazy alt=image-20230314115729988></p></li><li><p>郵件地址複製
+<a class=link href=mailto:netfos@anthos-test-202303.iam.gserviceaccount.com>netfos@anthos-test-202303.iam.gserviceaccount.com</a></p></li><li><p>點選該服務帳戶,新增金鑰
+<img src=https://kenkenny.synology.me:5543/images/2023/09/anthos-sa04.png loading=lazy alt=image-20230314115902286></p></li><li><p>儲存金鑰
+<img src=https://kenkenny.synology.me:5543/images/2023/09/anthos-sa05.png loading=lazy alt=image-20230314120003591>
+<img src=https://kenkenny.synology.me:5543/images/2023/09/anthos-sa06.png loading=lazy alt=image-20230314120124523></p></li></ol><h4 id=enable-anthos>Enable Anthos</h4><p><img src=https://kenkenny.synology.me:5543/images/2023/09/anthos-active01.png loading=lazy alt=image-20230314110332738></p><h3 id=prism-central--calm>Prism Central & Calm</h3><ol><li><p>IPAM設定IP Pool</p><p><img src=https://kenkenny.synology.me:5543/images/2023/09/anthos-IPAM.png loading=lazy alt=image-20230314111246357></p></li><li><p>Calm建立Project
+<img src=https://kenkenny.synology.me:5543/images/2023/09/anthos-project01.png loading=lazy alt=image-20230314113139889></p><p><img src=https://kenkenny.synology.me:5543/images/2023/09/anthos-project02.png loading=lazy alt=image-20230314113258956></p><p><img src=https://kenkenny.synology.me:5543/images/2023/09/anthos-project03.png loading=lazy alt=image-20230314155154308></p></li><li><p>上傳github 上的 blueprint
+<img src=https://kenkenny.synology.me:5543/images/2023/09/anthos-blueprint.png loading=lazy alt=image-20230314113458998></p><p>點開Blueprint</p><p><img src=https://kenkenny.synology.me:5543/images/2023/09/anthos-blueprint02.png loading=lazy alt=image-20230314113547773></p></li><li><p>調整參數可以安裝時再輸入即可 (有藍色的人代表安裝時可以輸入)</p></li><li><p>VM網卡要先設定好
+<img src=https://kenkenny.synology.me:5543/images/2023/09/anthos-bp-network.png loading=lazy alt=image-20230314160312365></p></li><li><p>Credential 要先輸入
+<img src=https://kenkenny.synology.me:5543/images/2023/09/anthos-cred.png loading=lazy alt=image-20230314152343047></p></li><li><p>CRED_OS ssh-keygen</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>ssh-keygen -t rsa -f ~/.ssh/KEY_FILENAME -C USERNAME -b <span class=m>2048</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>wangken@wangken-MAC ~ % ssh-keygen -t rsa -f ~/.ssh/anthos_key -C nutanix -b <span class=m>2048</span>
+</span></span><span class=line><span class=cl>Generating public/private rsa key pair.
+</span></span><span class=line><span class=cl>Enter passphrase <span class=o>(</span>empty <span class=k>for</span> no passphrase<span class=o>)</span>: 
+</span></span><span class=line><span class=cl>Enter same passphrase again: 
+</span></span><span class=line><span class=cl>Your identification has been saved in /Users/wangken/.ssh/anthos_key
+</span></span><span class=line><span class=cl>Your public key has been saved in /Users/wangken/.ssh/anthos_key.pub
+</span></span><span class=line><span class=cl>The key fingerprint is:
+</span></span><span class=line><span class=cl>SHA256:vBzHezjT7zfmG5ZWQX+eS78TLDHmfNj7g1Rki4PxV5Q nutanix
+</span></span><span class=line><span class=cl>The key<span class=err>&#39;</span>s randomart image is:
+</span></span><span class=line><span class=cl>+---<span class=o>[</span>RSA 2048<span class=o>]</span>----+
+</span></span><span class=line><span class=cl><span class=p>|</span>               oo<span class=p>|</span>
+</span></span><span class=line><span class=cl><span class=p>|</span>           .  .Eo<span class=p>|</span>
+</span></span><span class=line><span class=cl><span class=p>|</span>            + +.<span class=o>=</span><span class=p>|</span>
+</span></span><span class=line><span class=cl><span class=p>|</span>       . . . <span class=nv>B</span> <span class=o>=</span>+<span class=p>|</span>
+</span></span><span class=line><span class=cl><span class=p>|</span>        S o + Xoo<span class=p>|</span>
+</span></span><span class=line><span class=cl><span class=p>|</span>       . + + *.<span class=o>==</span><span class=p>|</span>
+</span></span><span class=line><span class=cl><span class=p>|</span>        <span class=nv>o</span> <span class=o>=</span> + +*+<span class=p>|</span>
+</span></span><span class=line><span class=cl><span class=p>|</span>           + oo*+<span class=p>|</span>
+</span></span><span class=line><span class=cl><span class=p>|</span>             .<span class=o>==</span>B<span class=p>|</span>
+</span></span><span class=line><span class=cl>+----<span class=o>[</span>SHA256<span class=o>]</span>-----+
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>wangken@wangken-MAC .ssh % ls <span class=p>|</span>grep anthos 
+</span></span><span class=line><span class=cl>anthos_key.pub 
+</span></span><span class=line><span class=cl>anthos_key
+</span></span></code></pre></td></tr></table></div></div></li><li><p>anthos sa private key</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>wangken@wangken-MAC notes % cat anthos-test-202303-privatekey.json 
+</span></span><span class=line><span class=cl><span class=o>{</span>
+</span></span><span class=line><span class=cl>  <span class=s2>&#34;type&#34;</span>: <span class=s2>&#34;service_account&#34;</span>,
+</span></span><span class=line><span class=cl>  <span class=s2>&#34;project_id&#34;</span>: <span class=s2>&#34;anthos-test-202303&#34;</span>,
+</span></span><span class=line><span class=cl>  <span class=s2>&#34;private_key_id&#34;</span>: <span class=s2>&#34;b76e04e16af19f535e185f2f36bae2be8038c363&#34;</span>,
+</span></span><span class=line><span class=cl>  <span class=s2>&#34;private_key&#34;</span>: <span class=s2>&#34;-----BEGIN PRIVATE KEY-----
+</span></span></span><span class=line><span class=cl><span class=s2>  XXXX\n-----END PRIVATE KEY-----\n&#34;</span>,
+</span></span><span class=line><span class=cl>  <span class=s2>&#34;client_email&#34;</span>: <span class=s2>&#34;netfos@anthos-test-202303.iam.gserviceaccount.com&#34;</span>,
+</span></span><span class=line><span class=cl>  <span class=s2>&#34;client_id&#34;</span>: <span class=s2>&#34;110466507071833816563&#34;</span>,
+</span></span><span class=line><span class=cl>  <span class=s2>&#34;auth_uri&#34;</span>: <span class=s2>&#34;https://accounts.google.com/o/oauth2/auth&#34;</span>,
+</span></span><span class=line><span class=cl>  <span class=s2>&#34;token_uri&#34;</span>: <span class=s2>&#34;https://oauth2.googleapis.com/token&#34;</span>,
+</span></span><span class=line><span class=cl>  <span class=s2>&#34;auth_provider_x509_cert_url&#34;</span>: <span class=s2>&#34;https://www.googleapis.com/oauth2/v1/certs&#34;</span>,
+</span></span><span class=line><span class=cl>  <span class=s2>&#34;client_x509_cert_url&#34;</span>: <span class=s2>&#34;https://www.googleapis.com/robot/v1/metadata/x509/netfos%40anthos-test-202303.iam.gserviceaccount.com&#34;</span>
+</span></span><span class=line><span class=cl><span class=o>}</span>
+</span></span></code></pre></td></tr></table></div></div></li><li><p>輸入完後按save , 執行
+<img src=https://kenkenny.synology.me:5543/images/2023/09/anthos-launch.png loading=lazy alt=image-20230314153857881></p></li><li><p>填入資訊
+<img src=https://kenkenny.synology.me:5543/images/2023/09/anthos-lauch01.png loading=lazy alt=image-20230314154058030></p></li><li><p>IP 資訊
+<img src=https://kenkenny.synology.me:5543/images/2023/09/anthos-lauch02.png loading=lazy alt=image-20230314154540212></p></li><li><p>IP 資訊 Ingress VIP 要在load balancing pool 內
+<img src=https://kenkenny.synology.me:5543/images/2023/09/anthos-lauch03.png loading=lazy alt=image-20230314154644473></p></li><li><p>Deploy
+<img src=https://kenkenny.synology.me:5543/images/2023/09/anthos-deploy.png loading=lazy alt=image-20230314160527582></p></li><li><p>自動化部屬
+<img src=https://kenkenny.synology.me:5543/images/2023/09/anthos-deploy05.png loading=lazy alt=image-20230314160559318></p></li><li><p>Manage可以查看目前的部署狀態
+<img src=https://kenkenny.synology.me:5543/images/2023/09/anthos-deploy06.png loading=lazy alt=image-20230314160801127></p></li><li><p>部署完成
+<img src=https://kenkenny.synology.me:5543/images/2023/09/anthos-vm.png loading=lazy alt=image-20230314173530825></p></li><li><p>登入Admin VM 取得Secret並在Anthos Console登入</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>wangken@wangken-MAC ~ % ssh -i .ssh/anthos_key nutanix@172.16.90.206
+</span></span><span class=line><span class=cl>Activate the web console with: systemctl <span class=nb>enable</span> --now cockpit.socket
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Last login: Tue Mar <span class=m>14</span> 09:21:38 <span class=m>2023</span> from 172.16.90.72
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=o>[</span>nutanix@anthos-netfos1-anthos-adminVm-0 ~<span class=o>]</span>$ kubectl get nodes
+</span></span><span class=line><span class=cl>NAME                                STATUS   ROLES                  AGE   VERSION
+</span></span><span class=line><span class=cl>anthos-netfos1-anthos-controlvm-0   Ready    control-plane,master   57m   v1.21.5-gke.1200
+</span></span><span class=line><span class=cl>anthos-netfos1-anthos-controlvm-1   Ready    control-plane,master   53m   v1.21.5-gke.1200
+</span></span><span class=line><span class=cl>anthos-netfos1-anthos-controlvm-2   Ready    control-plane,master   53m   v1.21.5-gke.1200
+</span></span><span class=line><span class=cl>anthos-netfos1-anthos-workervm-0    Ready    &lt;none&gt;                 50m   v1.21.5-gke.1200
+</span></span><span class=line><span class=cl>anthos-netfos1-anthos-workervm-1    Ready    &lt;none&gt;                 50m   v1.21.5-gke.1200
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl><span class=o>[</span>nutanix@anthos-netfos1-anthos-adminVm-0 anthos-netfos1<span class=o>]</span>$ <span class=nb>pwd</span>
+</span></span><span class=line><span class=cl>/home/nutanix/baremetal/bmctl-workspace/anthos-netfos1
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=o>[</span>nutanix@anthos-netfos1-anthos-adminVm-0 anthos-netfos1<span class=o>]</span>$ cat anthos-netfos1-kubeconfig 
+</span></span><span class=line><span class=cl>apiVersion: v1
+</span></span><span class=line><span class=cl>clusters:
+</span></span><span class=line><span class=cl>- cluster:
+</span></span><span class=line><span class=cl>    certificate-authority-data: 
+</span></span><span class=line><span class=cl>XXXX
+</span></span><span class=line><span class=cl>    server: https://172.16.90.212:443
+</span></span><span class=line><span class=cl>  name: anthos-netfos1
+</span></span><span class=line><span class=cl>contexts:
+</span></span><span class=line><span class=cl>- context:
+</span></span><span class=line><span class=cl>    cluster: anthos-netfos1
+</span></span><span class=line><span class=cl>    user: anthos-netfos1-admin
+</span></span><span class=line><span class=cl>  name: anthos-netfos1-admin@anthos-netfos1
+</span></span><span class=line><span class=cl>current-context: anthos-netfos1-admin@anthos-netfos1
+</span></span><span class=line><span class=cl>kind: Config
+</span></span><span class=line><span class=cl>preferences: <span class=o>{}</span>
+</span></span><span class=line><span class=cl>users:
+</span></span><span class=line><span class=cl>- name: anthos-netfos1-admin
+</span></span><span class=line><span class=cl>  user:
+</span></span><span class=line><span class=cl>    client-certificate-data: 
+</span></span><span class=line><span class=cl>XXX
+</span></span><span class=line><span class=cl>    client-key-data: 
+</span></span><span class=line><span class=cl>XXXX
+</span></span></code></pre></td></tr></table></div></div></li><li><p>登入Anthos Console用憑證下面兩行指令得出的base64 碼</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl><span class=nv>$SECRET_NAME</span><span class=o>=</span><span class=k>$(</span>kubectl get serviceaccount google-cloud-console -o <span class=nv>jsonpath</span><span class=o>=</span><span class=s1>&#39;{$.secrets[0].name}&#39;</span><span class=k>)</span>
+</span></span><span class=line><span class=cl><span class=nv>$kubectl</span> get secret <span class=si>${</span><span class=nv>SECRET_NAME</span><span class=si>}</span> -o <span class=nv>jsonpath</span><span class=o>=</span><span class=s1>&#39;{$.data.token}&#39;</span> <span class=p>|</span> base64 --decode
+</span></span></code></pre></td></tr></table></div></div><p>登入完成
+<img src=https://kenkenny.synology.me:5543/images/2023/09/anthos-login.png loading=lazy alt=image-20230314174734950></p><p><img src=https://kenkenny.synology.me:5543/images/2023/09/anthos-GKE.png loading=lazy alt=image-20230314175007215></p></li><li><p>Workload
+<img src=https://kenkenny.synology.me:5543/images/2023/09/anthos-workload.png loading=lazy alt=image-20230314175203478></p></li><li><p>Marketplace部署測試程式
+<img src=https://kenkenny.synology.me:5543/images/2023/09/anthos-marketplace01.png loading=lazy alt=image-20230314175624682></p></li><li><p>設定並部署
+<img src=https://kenkenny.synology.me:5543/images/2023/09/anthos-marketplace02.png loading=lazy alt=image-20230314175712418></p><p><img src=https://kenkenny.synology.me:5543/images/2023/09/anthos-marketplace03.png loading=lazy alt=image-20230314180133597></p></li><li><p>在地端查看namespace狀態</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl><span class=o>[</span>nutanix@anthos-netfos1-anthos-adminVm-0 ~<span class=o>]</span>$ kubectl get all -n harbor
+</span></span><span class=line><span class=cl>NAME                                          READY   STATUS             RESTARTS   AGE
+</span></span><span class=line><span class=cl>pod/harbor-1-chartmuseum-967bb456b-2vmjk      1/1     Running            <span class=m>0</span>          3m18s
+</span></span><span class=line><span class=cl>pod/harbor-1-core-7956bd9f54-t4jcw            1/1     Running            <span class=m>1</span>          3m18s
+</span></span><span class=line><span class=cl>pod/harbor-1-database-0                       1/1     Running            <span class=m>0</span>          3m18s
+</span></span><span class=line><span class=cl>pod/harbor-1-deployer-rq8m5                   0/1     Completed          <span class=m>0</span>          3m59s
+</span></span><span class=line><span class=cl>pod/harbor-1-exporter-5c86cc7b6d-s78kb        1/2     CrashLoopBackOff   <span class=m>5</span>          3m18s
+</span></span><span class=line><span class=cl>pod/harbor-1-jobservice-9898c468b-5bhzp       1/1     Running            <span class=m>3</span>          3m18s
+</span></span><span class=line><span class=cl>pod/harbor-1-nginx-66d4ccd87-7p7q2            1/1     Running            <span class=m>0</span>          3m18s
+</span></span><span class=line><span class=cl>pod/harbor-1-notary-server-7d7b4b598d-85nm5   1/1     Running            <span class=m>2</span>          3m18s
+</span></span><span class=line><span class=cl>pod/harbor-1-notary-signer-5d59d79f4-4tkn4    1/1     Running            <span class=m>2</span>          3m18s
+</span></span><span class=line><span class=cl>pod/harbor-1-portal-66f4b7478b-5xv5b          1/1     Running            <span class=m>0</span>          3m18s
+</span></span><span class=line><span class=cl>pod/harbor-1-redis-0                          1/1     Running            <span class=m>0</span>          3m18s
+</span></span><span class=line><span class=cl>pod/harbor-1-registry-67bc689779-bvw8m        2/2     Running            <span class=m>0</span>          3m18s
+</span></span><span class=line><span class=cl>pod/harbor-1-trivy-0                          1/1     Running            <span class=m>0</span>          3m18s
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>NAME                             TYPE        CLUSTER-IP       EXTERNAL-IP   PORT<span class=o>(</span>S<span class=o>)</span>                      AGE
+</span></span><span class=line><span class=cl>service/harbor                   ClusterIP   172.31.202.245   &lt;none&gt;        80/TCP,443/TCP,4443/TCP      3m19s
+</span></span><span class=line><span class=cl>service/harbor-1-chartmuseum     ClusterIP   172.31.6.127     &lt;none&gt;        80/TCP                       3m19s
+</span></span><span class=line><span class=cl>service/harbor-1-core            ClusterIP   172.31.17.10     &lt;none&gt;        80/TCP,8001/TCP              3m19s
+</span></span><span class=line><span class=cl>service/harbor-1-database        ClusterIP   172.31.204.175   &lt;none&gt;        5432/TCP                     3m19s
+</span></span><span class=line><span class=cl>service/harbor-1-exporter        ClusterIP   172.31.107.19    &lt;none&gt;        8001/TCP                     3m19s
+</span></span><span class=line><span class=cl>service/harbor-1-jobservice      ClusterIP   172.31.128.4     &lt;none&gt;        80/TCP,8001/TCP              3m19s
+</span></span><span class=line><span class=cl>service/harbor-1-notary-server   ClusterIP   172.31.240.223   &lt;none&gt;        4443/TCP                     3m19s
+</span></span><span class=line><span class=cl>service/harbor-1-notary-signer   ClusterIP   172.31.221.6     &lt;none&gt;        7899/TCP                     3m19s
+</span></span><span class=line><span class=cl>service/harbor-1-portal          ClusterIP   172.31.38.67     &lt;none&gt;        80/TCP                       3m19s
+</span></span><span class=line><span class=cl>service/harbor-1-redis           ClusterIP   172.31.38.202    &lt;none&gt;        6379/TCP                     3m19s
+</span></span><span class=line><span class=cl>service/harbor-1-registry        ClusterIP   172.31.16.8      &lt;none&gt;        5000/TCP,8080/TCP,8001/TCP   3m18s
+</span></span><span class=line><span class=cl>service/harbor-1-trivy           ClusterIP   172.31.70.71     &lt;none&gt;        8080/TCP                     3m18s
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>NAME                                     READY   UP-TO-DATE   AVAILABLE   AGE
+</span></span><span class=line><span class=cl>deployment.apps/harbor-1-chartmuseum     1/1     <span class=m>1</span>            <span class=m>1</span>           3m18s
+</span></span><span class=line><span class=cl>deployment.apps/harbor-1-core            1/1     <span class=m>1</span>            <span class=m>1</span>           3m18s
+</span></span><span class=line><span class=cl>deployment.apps/harbor-1-exporter        0/1     <span class=m>1</span>            <span class=m>0</span>           3m18s
+</span></span><span class=line><span class=cl>deployment.apps/harbor-1-jobservice      1/1     <span class=m>1</span>            <span class=m>1</span>           3m18s
+</span></span><span class=line><span class=cl>deployment.apps/harbor-1-nginx           1/1     <span class=m>1</span>            <span class=m>1</span>           3m18s
+</span></span><span class=line><span class=cl>deployment.apps/harbor-1-notary-server   1/1     <span class=m>1</span>            <span class=m>1</span>           3m18s
+</span></span><span class=line><span class=cl>deployment.apps/harbor-1-notary-signer   1/1     <span class=m>1</span>            <span class=m>1</span>           3m18s
+</span></span><span class=line><span class=cl>deployment.apps/harbor-1-portal          1/1     <span class=m>1</span>            <span class=m>1</span>           3m18s
+</span></span><span class=line><span class=cl>deployment.apps/harbor-1-registry        1/1     <span class=m>1</span>            <span class=m>1</span>           3m18s
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>NAME                                                DESIRED   CURRENT   READY   AGE
+</span></span><span class=line><span class=cl>replicaset.apps/harbor-1-chartmuseum-967bb456b      <span class=m>1</span>         <span class=m>1</span>         <span class=m>1</span>       3m18s
+</span></span><span class=line><span class=cl>replicaset.apps/harbor-1-core-7956bd9f54            <span class=m>1</span>         <span class=m>1</span>         <span class=m>1</span>       3m18s
+</span></span><span class=line><span class=cl>replicaset.apps/harbor-1-exporter-5c86cc7b6d        <span class=m>1</span>         <span class=m>1</span>         <span class=m>0</span>       3m18s
+</span></span><span class=line><span class=cl>replicaset.apps/harbor-1-jobservice-9898c468b       <span class=m>1</span>         <span class=m>1</span>         <span class=m>1</span>       3m18s
+</span></span><span class=line><span class=cl>replicaset.apps/harbor-1-nginx-66d4ccd87            <span class=m>1</span>         <span class=m>1</span>         <span class=m>1</span>       3m18s
+</span></span><span class=line><span class=cl>replicaset.apps/harbor-1-notary-server-7d7b4b598d   <span class=m>1</span>         <span class=m>1</span>         <span class=m>1</span>       3m18s
+</span></span><span class=line><span class=cl>replicaset.apps/harbor-1-notary-signer-5d59d79f4    <span class=m>1</span>         <span class=m>1</span>         <span class=m>1</span>       3m18s
+</span></span><span class=line><span class=cl>replicaset.apps/harbor-1-portal-66f4b7478b          <span class=m>1</span>         <span class=m>1</span>         <span class=m>1</span>       3m18s
+</span></span><span class=line><span class=cl>replicaset.apps/harbor-1-registry-67bc689779        <span class=m>1</span>         <span class=m>1</span>         <span class=m>1</span>       3m18s
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>NAME                                 READY   AGE
+</span></span><span class=line><span class=cl>statefulset.apps/harbor-1-database   1/1     3m18s
+</span></span><span class=line><span class=cl>statefulset.apps/harbor-1-redis      1/1     3m18s
+</span></span><span class=line><span class=cl>statefulset.apps/harbor-1-trivy      1/1     3m18s
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>NAME                          COMPLETIONS   DURATION   AGE
+</span></span><span class=line><span class=cl>job.batch/harbor-1-deployer   1/1           44s        3m59s
+</span></span></code></pre></td></tr></table></div></div></li><li><p>測試redmine</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl><span class=o>[</span>nutanix@anthos-netfos1-anthos-adminVm-0 redmine<span class=o>]</span>$ kubectl get all -n redmine
+</span></span><span class=line><span class=cl>NAME                                               READY   STATUS    RESTARTS   AGE
+</span></span><span class=line><span class=cl>pod/redmine-58cfd55655-qthfz                       1/1     Running   <span class=m>0</span>          38m
+</span></span><span class=line><span class=cl>pod/redmine-postgres-deployment-6b8f85c97b-72vkl   1/1     Running   <span class=m>0</span>          106m
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>NAME                               TYPE        CLUSTER-IP       EXTERNAL-IP     PORT<span class=o>(</span>S<span class=o>)</span>          AGE
+</span></span><span class=line><span class=cl>service/redmine-postgres-service   NodePort    172.31.163.134   &lt;none&gt;          5432:31432/TCP   106m
+</span></span><span class=line><span class=cl>service/redmine-service            ClusterIP   172.31.151.36    172.16.90.213   80/TCP           38m
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>NAME                                          READY   UP-TO-DATE   AVAILABLE   AGE
+</span></span><span class=line><span class=cl>deployment.apps/redmine                       1/1     <span class=m>1</span>            <span class=m>1</span>           38m
+</span></span><span class=line><span class=cl>deployment.apps/redmine-postgres-deployment   1/1     <span class=m>1</span>            <span class=m>1</span>           106m
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>NAME                                                     DESIRED   CURRENT   READY   AGE
+</span></span><span class=line><span class=cl>replicaset.apps/redmine-58cfd55655                       <span class=m>1</span>         <span class=m>1</span>         <span class=m>1</span>       38m
+</span></span><span class=line><span class=cl>replicaset.apps/redmine-postgres-deployment-6b8f85c97b   <span class=m>1</span>         <span class=m>1</span>         <span class=m>1</span>       106m
+</span></span></code></pre></td></tr></table></div></div></li><li><p>IngressVIP : 172.16.90.213
+<img src=https://kenkenny.synology.me:5543/images/2023/09/anthos-redmine.png loading=lazy alt=image-20230320170954778></p></li><li><p>anthos畫面
+<img src=https://kenkenny.synology.me:5543/images/2023/09/anthos-redmine2.png loading=lazy alt=image-20230320171120742></p><p><img src=https://kenkenny.synology.me:5543/images/2023/09/anthos-redmine3.png loading=lazy alt=image-20230320171223253></p><p>StorageClass &ndash;> default block storage</p><p>預設會是用Nutanix的iSCSI block storage，如果要使用NFS則要另外設定</p><p><img src=https://kenkenny.synology.me:5543/images/2023/09/anthos-redmine4.png loading=lazy alt=image-20230320171344271></p></li></ol></section><footer class=article-footer><section class=article-tags><a href=/tags/nutanix/>Nutanix</a>
+<a href=/tags/anthos/>Anthos</a>
+<a href=/tags/kubernetes/>Kubernetes</a></section><section class=article-copyright><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
+<span>Licensed under CC BY-NC-SA 4.0</span></section></footer></article><aside class=related-content--wrapper><h2 class=section-title>相關文章</h2><div class=related-content><div class="flex article-list--tile"><article><a href=/p/ocp-4.12.45_on_nutanixipi/><div class=article-details><h2 class=article-title>OCP-4.12.45_on_Nutanix(IPI)</h2></div></a></article><article><a href=/p/nutanix-nke-v2.8/><div class=article-details><h2 class=article-title>Nutanix-NKE-v2.8</h2></div></a></article><article><a href=/p/karbonfiles/><div class=article-details><h2 class=article-title>Nutanix Karbon&amp;Files</h2></div></a></article><article><a href=/p/hello-world/><div class=article-details><h2 class=article-title>Hello World</h2></div></a></article><article><a href=/p/ocp-4.11.9_on_vsphereupi/><div class=article-details><h2 class=article-title>OCP-4.11.9_on_vSphere(UPI)</h2></div></a></article></div></div></aside><div class=disqus-container><div id=disqus_thread></div><script>window.disqus_config=function(){},function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById("disqus_thread").innerHTML="Disqus comments not available by default when the website is previewed locally.";return}var t=document,e=t.createElement("script");e.async=!0,e.src="//wangken0129.disqus.com/embed.js",e.setAttribute("data-timestamp",+new Date),(t.head||t.body).appendChild(e)}()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></div><style>.disqus-container{background-color:var(--card-background);border-radius:var(--card-border-radius);box-shadow:var(--shadow-l1);padding:var(--card-padding)}</style><script>window.addEventListener("onColorSchemeChange",e=>{typeof DISQUS=="object"&&DISQUS.reset({reload:!0})})</script><footer class=site-footer><section class=copyright>&copy;
+2023 -
+2024 Ken's blog</section><section class=powerby>使用 <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> 建立<br>主題 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.21.0>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 設計</section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/ts/main.js defer></script><script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>
