@@ -1,13 +1,13 @@
 ---
-title: OCP4.12.45_on_Nutanix-IPI
-description: OCP4.12.45_on_Nutanix-IPI
-slug: OCP4.12.45_on_Nutanix-IPI
-date: 2024-03-04T08:01:26+08:00
+title: OCP-4.12.45_on_Nutanix(IPI)
+description: OCP-4.12.45_on_Nutanix(IPI)
+slug: OCP-4.12.45_on_Nutanix(IPI)
+date: 2024-03-04T08:15:21+08:00
 categories:
     - Lab Category
 tags:
     - Kubernetes
-    - OCP
+    - Openshift
     - Nutanix
 weight: 1       # You can add weight to some posts to override the default sorting (date descending)
 ---
@@ -100,7 +100,7 @@ OCP Ingress VIP: IP + DNS FQDN
 
    
 
-4. 下載mirror-registry、oc-mirror plugin、oc client
+4. 下載ccoctl、openshift-install、oc client
 
    ```
    $ wget https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.12.45/ccoctl-linux-4.12.45.tar.gz
@@ -200,8 +200,8 @@ $ openssl req -x509 -nodes -days 3650 \
 3. 1 Ingress VIP for load balancer on worker node
 
 4. DNS record : 
-   vip.<cluster name>.<base domain>
-   *.apps.<cluster name>.<base domain>
+   vip.(cluster name).(base domain)
+   *.apps.(cluster name).(base domain)
 
 5. IPAM with 7 ip addresses.
 
@@ -213,8 +213,8 @@ $ openssl req -x509 -nodes -days 3650 \
 - 1 installation bastion machines 
 
 7. SSH Key
-8. download oc , oc-mirror, ccoctl, openshift-install, 
-9. CoreOS image on web server or nutanix Object
+8. download oc , ccoctl, openshift-install, 
+9. CoreOS image on web server or Nutanix Object
 10. Prism Central CA 
 
 
