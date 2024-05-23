@@ -2,13 +2,13 @@
 title: Nutanix_NDK-v1.0.0_On_OCP-4.13
 description: Nutanix_NDK-v1.0.0_On_OCP-4.13
 slug: Nutanix_NDK-v1.0.0_On_OCP-4.13
-date: 2024-05-23T02:56:17+08:00
+date: 2024-05-23T03:19:56+08:00
 categories:
     - Lab Category
 tags:
     - Kubernetes
+    - Openshift
     - Nutanix
-    - OCP
 weight: 1       # You can add weight to some posts to override the default sorting (date descending)
 ---
 # NDK v1.0.0 on OCP v4.13
@@ -410,7 +410,7 @@ nutanix-csi-storage/questions.yml
 
    
 
-3. pull image to docker hub
+3. push image to docker hub
 
    ```
    $ echo -n 'kenkennyinfo:xuxxxxxxxx' |base64
@@ -515,7 +515,7 @@ nutanix-csi-storage/questions.yml
    
    Helm 安裝
    
-   $ helm install k8s-agent-1.0.0 /home/nutanix/k8s-agent-1.0.0  --set pc.endpoint=172.16.90.75,pc.username=ocpadmin,pc.password=Ocpadmin@123,pc.insecure=true,k8sClusterName=ocplab-qx6t5,k8sClusterUUID=25c8543a-3df0-442a-83eb-5af1ab1b7be3,k8sDistribution=OCP -n ntnx-system --create-namespace
+   $ helm install k8s-agent-1.0.0 /home/nutanix/k8s-agent-1.0.0  --set pc.endpoint=172.16.90.75,pc.username=ocpadmin,pc.password=password,pc.insecure=true,k8sClusterName=ocplab-qx6t5,k8sClusterUUID=25c8543a-3df0-442a-83eb-5af1ab1b7be3,k8sDistribution=OCP -n ntnx-system --create-namespace
    WARNING: Kubernetes configuration file is group-readable. This is insecure. Location: /home/nutanix/.kube/config
    NAME: k8s-agent-594
    LAST DEPLOYED: Wed May 15 14:09:01 2024
@@ -527,7 +527,7 @@ nutanix-csi-storage/questions.yml
    
    ## 安裝新版本或是更改密碼可以使用helm upgrade (修改values.yaml)
    
-   $ helm upgrade k8s-agent-594 /home/nutanix/k8s-agent-1.0.0 --set pc.endpoint=172.16.90.75,pc.username=ocpadmin,pc.password=Ocpadmin.123,pc.insecure=true,k8sClusterName=ocplab-qx6t5,k8sClusterUUID=25c8543a-3df0-442a-83eb-5af1ab1b7be3 -n ntnx-system
+   $ helm upgrade k8s-agent-594 /home/nutanix/k8s-agent-1.0.0 --set pc.endpoint=172.16.90.75,pc.username=ocpadmin,pc.password=password,pc.insecure=true,k8sClusterName=ocplab-qx6t5,k8sClusterUUID=25c8543a-3df0-442a-83eb-5af1ab1b7be3 -n ntnx-system
    WARNING: Kubernetes configuration file is group-readable. This is insecure. Location: /home/nutanix/.kube/config
    Release "k8s-agent-594" has been upgraded. Happy Helming!
    NAME: k8s-agent-594
@@ -537,7 +537,7 @@ nutanix-csi-storage/questions.yml
    REVISION: 2
    TEST SUITE: None
    
-   $ helm upgrade k8s-agent-594 /home/nutanix/k8s-agent-1.0.0 --set pc.endpoint=172.16.90.75,pc.username=ocpadmin,pc.password=Ocpadmin.123,pc.insecure=true,k8sClusterName=ocplab-qx6t5,k8sClusterUUID=25c8543a-3df0-442a-83eb-5af1ab1b7be3 -n ntnx-system
+   $ helm upgrade k8s-agent-594 /home/nutanix/k8s-agent-1.0.0 --set pc.endpoint=172.16.90.75,pc.username=ocpadmin,pc.password=password,pc.insecure=true,k8sClusterName=ocplab-qx6t5,k8sClusterUUID=25c8543a-3df0-442a-83eb-5af1ab1b7be3 -n ntnx-system
    WARNING: Kubernetes configuration file is group-readable. This is insecure. Location: /home/nutanix/.kube/config
    Release "k8s-agent-594" has been upgraded. Happy Helming!
    NAME: k8s-agent-594
@@ -776,7 +776,7 @@ nutanix-csi-storage/questions.yml
      name: nutanix-k8s-agent-pull-secret
    type: kubernetes.io/dockerconfigjson
    data:
-     .dockerconfigjson: "ewogICAgImF1dGhzIjogewogICAgICAgICJodHRwczovL2luZGV4LmRvY2tlci5pby92MS8iOiB7CiAgICAgICAgICAgICJhdXRoIjogImEyVnVhMlZ1Ym5scGJtWnZPbmgxYkRSeGRYQXpiWEEyIgogICAgICAgIH0KICAgIH0KfQo="
+     .dockerconfigjson: "ewogICAgImF1dGhzIjogewogICAgICAXXXXXXXXXxxxXXxXXXX"
    
    ---
    $ vim ntnx-pc-secret2.yaml
@@ -788,7 +788,7 @@ nutanix-csi-storage/questions.yml
      namespace: ntnx-system
    stringData:
      # prism-pc-ip:prism-port:admin:password
-     key: 172.16.90.75:9440:ocpadmin:Ocpadmin.123
+     key: 172.16.90.75:9440:ocpadmin:password
    ---
    
    $ oc apply -f nutanix-k8s-agent-pull-secret.yaml -n ntnx-system
@@ -1030,7 +1030,7 @@ nutanix-csi-storage/questions.yml
      name: mysql-password
    type: opaque
    stringData:
-     MYSQL_ROOT_PASSWORD: Ocpadmin.123
+     MYSQL_ROOT_PASSWORD: password
    ---
    apiVersion: apps/v1
    kind: StatefulSet
