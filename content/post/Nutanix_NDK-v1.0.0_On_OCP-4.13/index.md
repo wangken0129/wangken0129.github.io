@@ -2,13 +2,13 @@
 title: Nutanix_NDK-v1.0.0_On_OCP-4.13
 description: Nutanix_NDK-v1.0.0_On_OCP-4.13
 slug: Nutanix_NDK-v1.0.0_On_OCP-4.13
-date: 2024-05-23T03:19:56+08:00
+date: 2024-05-23T08:00:46+08:00
 categories:
     - Lab Category
 tags:
     - Kubernetes
-    - Openshift
     - Nutanix
+    - Openshift
 weight: 1       # You can add weight to some posts to override the default sorting (date descending)
 ---
 # NDK v1.0.0 on OCP v4.13
@@ -30,6 +30,8 @@ OCP IPI 安裝此篇不贅述，請參考其他篇
 https://portal.nutanix.com/page/documents/solutions/details?targetId=TN-2030-Red-Hat-OpenShift-on-Nutanix:TN-2030-Red-Hat-OpenShift-on-Nutanix
 
 https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Data-Services-for-Kubernetes-v1_0:Nutanix-Data-Services-for-Kubernetes-v1_0
+
+https://portal.nutanix.com/page/documents/details?targetId=Release-Notes-Nutanix-Data-Services-for-Kubernetes-v1_0:Release-Notes-Nutanix-Data-Services-for-Kubernetes-v1_0
 
 https://github.com/nutanix/helm/tree/nutanix-csi-snapshot-6.3.2/charts/nutanix-csi-snapshot#install
 
@@ -56,6 +58,8 @@ Prism Central 2023.4 以上
 Kubernetes version v1.26 以上
 
 Nutanix CSI Driver v3.0 (beta) 以上 
+
+![image-20240523120449110](https://kenkenny.synology.me:5543/images/2024/05/image-20240523120449110.png)
 
 ![image-20240515115102568](https://kenkenny.synology.me:5543/images/2024/05/image-20240515115102568.png)
 
@@ -413,8 +417,8 @@ nutanix-csi-storage/questions.yml
 3. push image to docker hub
 
    ```
-   $ echo -n 'kenkennyinfo:xuxxxxxxxx' |base64
-   a2Vua2Vubnxxxxxxxxxxxxxxxx2
+   $ echo -n 'kenxxxxxxxx:xuxxxxxxxx' |base64
+   dockerconfigVubnxxxxxxxxxxxxxxxx2
    
    
    {
@@ -427,7 +431,7 @@ nutanix-csi-storage/questions.yml
    
    $ vim dockerconfig.json
    $ cat dockerconfig.json |base64
-   ewogICAgImF1dGhzIjogewogICAa2Vua2Vubnxxxxxxxxxxxxxxxx2
+   dockerconfigVubnxxxxxxxxxxxxxxxx2
    
    $ podman load -i k8s-agent-1.0.0.tar 
    $ podman tag localhost/k8s-agent:1.0.0 kenkennyinfo/nke-k8s-agent:1.0.0
@@ -467,7 +471,7 @@ nutanix-csi-storage/questions.yml
        tag: 668
        privateRegistry: true
        imageCredentials:
-         dockerconfig: "ewogICAgImF1dGhzIjogewogICAa2Vua2Vubnxxxxxxxxxxxxxxxx2"
+         dockerconfig: "dockerconfigVubnxxxxxxxxxxxxxxxx2"
      updateConfigInMin: 10
      updateMetricsInMin: 360
    
@@ -776,7 +780,7 @@ nutanix-csi-storage/questions.yml
      name: nutanix-k8s-agent-pull-secret
    type: kubernetes.io/dockerconfigjson
    data:
-     .dockerconfigjson: "ewogICAgImF1dGhzIjogewogICAgICAXXXXXXXXXxxxXXxXXXX"
+     .dockerconfigjson: "dockerconfigVubnxxxxxxxxxxxxxxxx2"
    
    ---
    $ vim ntnx-pc-secret2.yaml
