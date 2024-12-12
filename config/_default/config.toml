@@ -1,7 +1,7 @@
 # Change baseurl before deploy
 baseurl = "https://wangken0129.github.io"
 languageCode = "en-us"
-paginate = 5
+paginate = 10
 title = "Ken's blog"
 
 # Theme i18n support
