@@ -2,13 +2,13 @@
 title: Nutanix_NKP-v2.12_AHV
 description: Nutanix_NKP-v2.12_AHV
 slug: Nutanix_NKP-v2.12_AHV
-date: 2024-12-12T10:00:16+08:00
+date: 2024-12-12T10:16:03+08:00
 categories:
     - Lab Category
 tags:
     - Nutanix
-    - Kubernetes
     - NKP
+    - Kubernetes
 weight: 1       # You can add weight to some posts to override the default sorting (date descending)
 ---
 # Nutanix NKP v2.12 For AHV
