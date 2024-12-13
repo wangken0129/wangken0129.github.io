@@ -29,6 +29,8 @@ Part1 是Typora作為筆記軟體，並用Picgo上傳圖片到自架的NAS當作
 
 Part2 是透過Hugo + Github Page來做靜態網站，以存放Typora的筆記。
 
+Part3 是自動化腳本。
+
 ## Typora
 
 我使用Typora作為我的Markdown筆記軟體，操作簡單而且可以匯出很多格式。

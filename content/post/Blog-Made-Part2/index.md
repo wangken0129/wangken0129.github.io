@@ -77,6 +77,45 @@ Hexo主題: https://hexo.io/themes/index.html
    hugo v0.118.2-da7983ac4b94d97d776d7c2405040de97e95c03d+extended darwin/arm64 BuildDate=2023-08-31T11:23:51Z VendorInfo=brew
    ```
 
+3. ( Option ) 升級 hugo 版本跟部落格版本，遇到版本支援問題時會需要升級 ( 2024-12-13 更新 )
+
+   ```
+   wangken@wangken-MAC myblog % brew upgrade hugo
+   
+   Running `brew update --auto-update`...
+   ==> Downloading https://ghcr.io/v2/homebrew/portable-ruby/portable-ruby/blobs/sha256:303bed4c7fc431a685db3c3c151d873740114adbdccd23762ea2d1e39ea78f47
+   ######################################################################### 100.0%
+   ==> Pouring portable-ruby-3.3.6.arm64_big_sur.bottle.tar.gz
+   ==> Auto-updated Homebrew!
+   You have 56 outdated formulae and 1 outdated cask installed.
+   ==> Migrating formula python-certifi to certifi
+   ==> Unlinking python-certifi
+   ==> Moving python-certifi versions to /opt/homebrew/Cellar/certifi
+   ==> Relinking certifi
+   ...
+   
+   wangken@wangken-MAC myblog % hugo version     
+   hugo v0.139.4+extended+withdeploy darwin/arm64 BuildDate=2024-12-09T17:45:23Z VendorInfo=brew
+   
+   模板升級
+   
+   wangken@wangken-MAC hugo-blog % hugo mod get -u github.com/CaiJimmy/hugo-theme-stack/v3
+   WARN  deprecated: site config key paginate was deprecated in Hugo v0.128.0 and will be removed in a future release. Use pagination.pagerSize instead.
+   hugo: downloading modules …
+   hugo: collected modules in 3638 ms
+   go: downloading github.com/CaiJimmy/hugo-theme-stack/v3 v3.29.0
+   go: downloading github.com/CaiJimmy/hugo-theme-stack v2.6.0+incompatible
+   go: upgraded github.com/CaiJimmy/hugo-theme-stack/v3 v3.21.0 => v3.29.0
+   
+   wangken@wangken-MAC hugo-blog % hugo mod tidy
+   WARN  deprecated: site config key paginate was deprecated in Hugo v0.128.0 and will be removed in a future release. Use pagination.pagerSize instead.
+   
+   ```
+
+   遇到的錯誤訊息 ( 在 Github 的 Action 內，Build 的時候發生錯誤，只能等原模板的作者更新，或自行修改 ）
+
+   ![image-20241213092834099](https://kenkenny.synology.me:5543/images/2024/12/image-20241213092834099.png)
+
 
 
 ### Test Hugo
