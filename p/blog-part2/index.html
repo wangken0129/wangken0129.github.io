@@ -1,0 +1,435 @@
+<!doctype html><html lang=en-us dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="Hugo + Github Page + Stack Theme"><title>製作Blog Part2</title>
+<link rel=canonical href=https://wangken0129.github.io/p/blog-part2/><link rel=stylesheet href=/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css><meta property='og:title' content="製作Blog Part2"><meta property='og:description' content="Hugo + Github Page + Stack Theme"><meta property='og:url' content='https://wangken0129.github.io/p/blog-part2/'><meta property='og:site_name' content="Ken's blog"><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='Blog'><meta property='article:tag' content='KB'><meta property='article:published_time' content='2023-09-20T08:15:00+08:00'><meta property='article:modified_time' content='2023-09-20T08:15:00+08:00'><meta name=twitter:title content="製作Blog Part2"><meta name=twitter:description content="Hugo + Github Page + Stack Theme"><link rel="shortcut icon" href=/favicon.png></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切換選單>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar_hu897059592634026878.png width=300 height=300 class=site-logo loading=lazy alt=Avatar>
+</a><span class=emoji>🇹🇼</span></figure><div class=site-meta><h1 class=site-name><a href=/>Ken's blog</a></h1><h2 class=site-description>紀錄與分享，當個快樂的工程師</h2></div></header><ol class=menu-social><li><a href=https://github.com/wangken0129/wangken0129.github.io target=_blank title=GitHub rel=me><svg class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li><li><a href=https://www.linkedin.com/in/ken-wang-88924b181/ target=_blank title=LinkedIn rel=me><svg class="icon icon-tabler icon-tabler-brand-linkedin" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4m0 2a2 2 0 012-2h12a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2z"/><path d="M8 11v5"/><path d="M8 8v.01"/><path d="M12 16v-5"/><path d="M16 16v-3a2 2 0 00-4 0"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>Home</span></a></li><li><a href=/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>Archives</span></a></li><li><a href=/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>Search</span></a></li><li><a href=/links/><svg class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 14a3.5 3.5.0 005 0l4-4a3.5 3.5.0 00-5-5l-.5.5"/><path d="M14 10a3.5 3.5.0 00-5 0l-4 4a3.5 3.5.0 005 5l.5-.5"/></svg>
+<span>Links</span></a></li><li class=menu-bottom-section><ol class=menu><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>夜晚模式</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目錄</h2><div class=widget--toc><nav id=TableOfContents><ol><li><a href=#預先準備>預先準備</a></li><li><a href=#hugo>Hugo</a><ol><li><a href=#簡介>簡介</a></li><li><a href=#install-hugo>Install Hugo</a></li><li><a href=#test-hugo>Test Hugo</a></li></ol></li><li><a href=#github-pages>Github Pages</a><ol><li><a href=#申請github帳號>申請Github帳號</a></li><li><a href=#套用模板與基本設定>套用模板與基本設定</a></li><li><a href=#設定模板>設定模板</a></li></ol></li><li><a href=#後記>後記</a></li></ol></nav></div></section></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><header class=article-category><a href=/categories/knowledge-base-category/ style=background-color:#87cefa;color:#fff>Knowledge Base Category</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/p/blog-part2/>製作Blog Part2</a></h2><h3 class=article-subtitle>Hugo + Github Page + Stack Theme</h3></div><footer class=article-time><div><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published>Sep 20, 2023</time></div><div><svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>閱讀時間: 7 分鐘</time></div></footer></div></header><section class=article-content><h1 id=製作blog-part2>製作Blog Part2</h1><p>前篇寫了 Typora + Picgo + NAS 的筆記製作過程，</p><p>接下來要將做的筆記用Hugo + Github Page + Stack Theme 的方式做成一個靜態網站。</p><h2 id=預先準備>預先準備</h2><ol><li><p><strong>Homebrew</strong></p><p>Homebrew 安裝參考：https://brew.sh</p></li><li><p><strong>Git</strong></p><p>Git 安裝參考：<a class=link href=https://git-scm.com/book/zh-tw/v2/%e9%96%8b%e5%a7%8b-Git-%e5%ae%89%e8%a3%9d%e6%95%99%e5%ad%b8 target=_blank rel=noopener>https://git-scm.com/book/zh-tw/v2/開始-Git-安裝教學</a></p></li></ol><h2 id=hugo>Hugo</h2><h3 id=簡介>簡介</h3><p>Hugo是一個由Go語言開發的靜態網頁產生器，</p><p>老實說跟另一個叫Hexo的產生器比起來，Hexo的主題、中文文件比較多，</p><p>以部落格的好看性來說應該是Hexo較優，而且是由台灣人開發出來的，</p><p>但Hexo的安裝可能還要考慮Node.js的相依性等，我在安裝時遇到了一些問題懶得去解決，</p><p>所以最後就選擇Hugo，相對來說安裝上就簡單很多，反正簡單、好用就好，</p><p>可以參考下方的主題來選擇自己要的產生器。</p><p>Hugo主題: <a class=link href=https://themes.gohugo.io/tags/blog target=_blank rel=noopener>https://themes.gohugo.io/tags/blog</a></p><p>Hexo主題: <a class=link href=https://hexo.io/themes/index.html target=_blank rel=noopener>https://hexo.io/themes/index.html</a></p><h3 id=install-hugo>Install Hugo</h3><p>官方文件：https://gohugo.io/installation/macos/</p><ol><li><p>確認Homebrew版本，推薦Mac用戶都要安裝這個套件軟體</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>wangken@wangken-MAC ~ % brew -v
+</span></span><span class=line><span class=cl>Homebrew 4.1.11
+</span></span></code></pre></td></tr></table></div></div></li><li><p>透過Homebrew安裝Hugo，裝好後確認hugo版本</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>wangken@wangken-MAC ~ % brew install hugo
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>wangken@wangken-MAC ~ % hugo version
+</span></span><span class=line><span class=cl>hugo v0.118.2-da7983ac4b94d97d776d7c2405040de97e95c03d+extended darwin/arm64 BuildDate=2023-08-31T11:23:51Z VendorInfo=brew
+</span></span></code></pre></td></tr></table></div></div></li><li><p>( Option ) 升級 hugo 版本跟部落格版本，遇到版本支援問題時會需要升級 ( 2024-12-13 更新 )</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-gdscript3 data-lang=gdscript3><span class=line><span class=cl><span class=n>wangken</span><span class=err>@</span><span class=n>wangken</span><span class=o>-</span><span class=n>MAC</span> <span class=n>myblog</span> <span class=o>%</span> <span class=n>brew</span> <span class=n>upgrade</span> <span class=n>hugo</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>Running</span> <span class=err>`</span><span class=n>brew</span> <span class=n>update</span> <span class=o>--</span><span class=n>auto</span><span class=o>-</span><span class=n>update</span><span class=err>`</span><span class=o>...</span>
+</span></span><span class=line><span class=cl><span class=o>==&gt;</span> <span class=n>Downloading</span> <span class=n>https</span><span class=p>:</span><span class=o>//</span><span class=n>ghcr</span><span class=o>.</span><span class=n>io</span><span class=o>/</span><span class=n>v2</span><span class=o>/</span><span class=n>homebrew</span><span class=o>/</span><span class=n>portable</span><span class=o>-</span><span class=n>ruby</span><span class=o>/</span><span class=n>portable</span><span class=o>-</span><span class=n>ruby</span><span class=o>/</span><span class=n>blobs</span><span class=o>/</span><span class=n>sha256</span><span class=p>:</span><span class=mi>303</span><span class=n>bed4c7fc431a685db3c3c151d873740114adbdccd23762ea2d1e39ea78f47</span>
+</span></span><span class=line><span class=cl><span class=c1>######################################################################### 100.0%</span>
+</span></span><span class=line><span class=cl><span class=o>==&gt;</span> <span class=n>Pouring</span> <span class=n>portable</span><span class=o>-</span><span class=n>ruby</span><span class=o>-</span><span class=mf>3.3</span><span class=o>.</span><span class=mf>6.</span><span class=n>arm64_big_sur</span><span class=o>.</span><span class=n>bottle</span><span class=o>.</span><span class=n>tar</span><span class=o>.</span><span class=n>gz</span>
+</span></span><span class=line><span class=cl><span class=o>==&gt;</span> <span class=n>Auto</span><span class=o>-</span><span class=n>updated</span> <span class=n>Homebrew</span><span class=o>!</span>
+</span></span><span class=line><span class=cl><span class=n>You</span> <span class=n>have</span> <span class=mi>56</span> <span class=n>outdated</span> <span class=n>formulae</span> <span class=ow>and</span> <span class=mi>1</span> <span class=n>outdated</span> <span class=n>cask</span> <span class=n>installed</span><span class=o>.</span>
+</span></span><span class=line><span class=cl><span class=o>==&gt;</span> <span class=n>Migrating</span> <span class=n>formula</span> <span class=n>python</span><span class=o>-</span><span class=n>certifi</span> <span class=n>to</span> <span class=n>certifi</span>
+</span></span><span class=line><span class=cl><span class=o>==&gt;</span> <span class=n>Unlinking</span> <span class=n>python</span><span class=o>-</span><span class=n>certifi</span>
+</span></span><span class=line><span class=cl><span class=o>==&gt;</span> <span class=n>Moving</span> <span class=n>python</span><span class=o>-</span><span class=n>certifi</span> <span class=n>versions</span> <span class=n>to</span> <span class=o>/</span><span class=n>opt</span><span class=o>/</span><span class=n>homebrew</span><span class=o>/</span><span class=n>Cellar</span><span class=o>/</span><span class=n>certifi</span>
+</span></span><span class=line><span class=cl><span class=o>==&gt;</span> <span class=n>Relinking</span> <span class=n>certifi</span>
+</span></span><span class=line><span class=cl><span class=o>...</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>wangken</span><span class=err>@</span><span class=n>wangken</span><span class=o>-</span><span class=n>MAC</span> <span class=n>myblog</span> <span class=o>%</span> <span class=n>hugo</span> <span class=n>version</span>     
+</span></span><span class=line><span class=cl><span class=n>hugo</span> <span class=n>v0</span><span class=o>.</span><span class=mf>139.4</span><span class=o>+</span><span class=n>extended</span><span class=o>+</span><span class=n>withdeploy</span> <span class=n>darwin</span><span class=o>/</span><span class=n>arm64</span> <span class=n>BuildDate</span><span class=o>=</span><span class=mi>2024</span><span class=o>-</span><span class=mi>12</span><span class=o>-</span><span class=mi>09</span><span class=n>T17</span><span class=p>:</span><span class=mi>45</span><span class=p>:</span><span class=mi>23</span><span class=n>Z</span> <span class=n>VendorInfo</span><span class=o>=</span><span class=n>brew</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=err>模板升級</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>wangken</span><span class=err>@</span><span class=n>wangken</span><span class=o>-</span><span class=n>MAC</span> <span class=n>hugo</span><span class=o>-</span><span class=n>blog</span> <span class=o>%</span> <span class=n>hugo</span> <span class=n>mod</span> <span class=n>get</span> <span class=o>-</span><span class=n>u</span> <span class=n>github</span><span class=o>.</span><span class=n>com</span><span class=o>/</span><span class=n>CaiJimmy</span><span class=o>/</span><span class=n>hugo</span><span class=o>-</span><span class=n>theme</span><span class=o>-</span><span class=n>stack</span><span class=o>/</span><span class=n>v3</span>
+</span></span><span class=line><span class=cl><span class=n>WARN</span>  <span class=n>deprecated</span><span class=p>:</span> <span class=n>site</span> <span class=n>config</span> <span class=n>key</span> <span class=n>paginate</span> <span class=n>was</span> <span class=n>deprecated</span> <span class=ow>in</span> <span class=n>Hugo</span> <span class=n>v0</span><span class=o>.</span><span class=mf>128.0</span> <span class=ow>and</span> <span class=n>will</span> <span class=n>be</span> <span class=n>removed</span> <span class=ow>in</span> <span class=n>a</span> <span class=n>future</span> <span class=n>release</span><span class=o>.</span> <span class=n>Use</span> <span class=n>pagination</span><span class=o>.</span><span class=n>pagerSize</span> <span class=n>instead</span><span class=o>.</span>
+</span></span><span class=line><span class=cl><span class=n>hugo</span><span class=p>:</span> <span class=n>downloading</span> <span class=n>modules</span> <span class=err>…</span>
+</span></span><span class=line><span class=cl><span class=n>hugo</span><span class=p>:</span> <span class=n>collected</span> <span class=n>modules</span> <span class=ow>in</span> <span class=mi>3638</span> <span class=n>ms</span>
+</span></span><span class=line><span class=cl><span class=n>go</span><span class=p>:</span> <span class=n>downloading</span> <span class=n>github</span><span class=o>.</span><span class=n>com</span><span class=o>/</span><span class=n>CaiJimmy</span><span class=o>/</span><span class=n>hugo</span><span class=o>-</span><span class=n>theme</span><span class=o>-</span><span class=n>stack</span><span class=o>/</span><span class=n>v3</span> <span class=n>v3</span><span class=o>.</span><span class=mf>29.0</span>
+</span></span><span class=line><span class=cl><span class=n>go</span><span class=p>:</span> <span class=n>downloading</span> <span class=n>github</span><span class=o>.</span><span class=n>com</span><span class=o>/</span><span class=n>CaiJimmy</span><span class=o>/</span><span class=n>hugo</span><span class=o>-</span><span class=n>theme</span><span class=o>-</span><span class=n>stack</span> <span class=n>v2</span><span class=o>.</span><span class=mf>6.0</span><span class=o>+</span><span class=n>incompatible</span>
+</span></span><span class=line><span class=cl><span class=n>go</span><span class=p>:</span> <span class=n>upgraded</span> <span class=n>github</span><span class=o>.</span><span class=n>com</span><span class=o>/</span><span class=n>CaiJimmy</span><span class=o>/</span><span class=n>hugo</span><span class=o>-</span><span class=n>theme</span><span class=o>-</span><span class=n>stack</span><span class=o>/</span><span class=n>v3</span> <span class=n>v3</span><span class=o>.</span><span class=mf>21.0</span> <span class=o>=&gt;</span> <span class=n>v3</span><span class=o>.</span><span class=mf>29.0</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>wangken</span><span class=err>@</span><span class=n>wangken</span><span class=o>-</span><span class=n>MAC</span> <span class=n>hugo</span><span class=o>-</span><span class=n>blog</span> <span class=o>%</span> <span class=n>hugo</span> <span class=n>mod</span> <span class=n>tidy</span>
+</span></span><span class=line><span class=cl><span class=n>WARN</span>  <span class=n>deprecated</span><span class=p>:</span> <span class=n>site</span> <span class=n>config</span> <span class=n>key</span> <span class=n>paginate</span> <span class=n>was</span> <span class=n>deprecated</span> <span class=ow>in</span> <span class=n>Hugo</span> <span class=n>v0</span><span class=o>.</span><span class=mf>128.0</span> <span class=ow>and</span> <span class=n>will</span> <span class=n>be</span> <span class=n>removed</span> <span class=ow>in</span> <span class=n>a</span> <span class=n>future</span> <span class=n>release</span><span class=o>.</span> <span class=n>Use</span> <span class=n>pagination</span><span class=o>.</span><span class=n>pagerSize</span> <span class=n>instead</span><span class=o>.</span>
+</span></span></code></pre></td></tr></table></div></div><p>遇到的錯誤訊息 ( 在 Github 的 Action 內，Build 的時候發生錯誤，只能等原模板的作者更新，或自行修改 ）</p><p><img src=https://kenkenny.synology.me:5543/images/2024/12/image-20241213092834099.png loading=lazy alt=image-20241213092834099></p></li></ol><h3 id=test-hugo>Test Hugo</h3><ol><li><p>開啟終端機，新增一個hugo的網站目錄</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>wangken@wangken-MAC ~ % hugo new site test-hugo
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Congratulations! Your new Hugo site was created in /Users/wangken/test-hugo.
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Just a few more steps...
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>1. Change the current directory to /Users/wangken/test-hugo.
+</span></span><span class=line><span class=cl>2. Create or install a theme:
+</span></span><span class=line><span class=cl>   - Create a new theme with the command &#34;hugo new theme &lt;THEMENAME&gt;&#34;
+</span></span><span class=line><span class=cl>   - Install a theme from https://themes.gohugo.io/
+</span></span><span class=line><span class=cl>3. Edit hugo.toml, setting the &#34;theme&#34; property to the theme name.
+</span></span><span class=line><span class=cl>4. Create new content with the command &#34;hugo new content &lt;SECTIONNAME&gt;/&lt;FILENAME&gt;.&lt;FORMAT&gt;&#34;.
+</span></span><span class=line><span class=cl>5. Start the embedded web server with the command &#34;hugo server --buildDrafts&#34;.
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>See documentation at https://gohugo.io/.
+</span></span></code></pre></td></tr></table></div></div></li><li><p>cd進入專案目錄 test-hugo</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>wangken@wangken-MAC ~ % cd test-hugo 
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>wangken@wangken-MAC test-hugo % ls -l
+</span></span><span class=line><span class=cl>total 8
+</span></span><span class=line><span class=cl>drwxr-xr-x  3 wangken  staff  96  9 20 12:05 archetypes
+</span></span><span class=line><span class=cl>drwxr-xr-x  2 wangken  staff  64  9 20 12:05 assets
+</span></span><span class=line><span class=cl>drwxr-xr-x  2 wangken  staff  64  9 20 12:05 content
+</span></span><span class=line><span class=cl>drwxr-xr-x  2 wangken  staff  64  9 20 12:05 data
+</span></span><span class=line><span class=cl>-rw-r--r--  1 wangken  staff  83  9 20 12:05 hugo.toml
+</span></span><span class=line><span class=cl>drwxr-xr-x  2 wangken  staff  64  9 20 12:05 i18n
+</span></span><span class=line><span class=cl>drwxr-xr-x  2 wangken  staff  64  9 20 12:05 layouts
+</span></span><span class=line><span class=cl>drwxr-xr-x  2 wangken  staff  64  9 20 12:05 static
+</span></span><span class=line><span class=cl>drwxr-xr-x  2 wangken  staff  64  9 20 12:05 themes
+</span></span></code></pre></td></tr></table></div></div></li><li><p>啟動hugo，輸入hugo serve</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>wangken@wangken-MAC test-hugo % hugo serve
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Watching for changes in /Users/wangken/test-hugo/{archetypes,assets,content,data,i18n,layouts,static}
+</span></span><span class=line><span class=cl>Watching for config changes in /Users/wangken/test-hugo/hugo.toml
+</span></span><span class=line><span class=cl>Start building sites … 
+</span></span><span class=line><span class=cl>hugo v0.118.2-da7983ac4b94d97d776d7c2405040de97e95c03d+extended darwin/arm64 BuildDate=2023-08-31T11:23:51Z VendorInfo=brew
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>WARN  found no layout file for &#34;html&#34; for kind &#34;taxonomy&#34;: You should create a template file which matches Hugo Layouts Lookup Rules for this combination.
+</span></span><span class=line><span class=cl>WARN  found no layout file for &#34;html&#34; for kind &#34;home&#34;: You should create a template file which matches Hugo Layouts Lookup Rules for this combination.
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>                   | EN  
+</span></span><span class=line><span class=cl>-------------------+-----
+</span></span><span class=line><span class=cl>  Pages            |  3  
+</span></span><span class=line><span class=cl>  Paginator pages  |  0  
+</span></span><span class=line><span class=cl>  Non-page files   |  0  
+</span></span><span class=line><span class=cl>  Static files     |  0  
+</span></span><span class=line><span class=cl>  Processed images |  0  
+</span></span><span class=line><span class=cl>  Aliases          |  0  
+</span></span><span class=line><span class=cl>  Sitemaps         |  1  
+</span></span><span class=line><span class=cl>  Cleaned          |  0  
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Built in 6 ms
+</span></span><span class=line><span class=cl>Environment: &#34;development&#34;
+</span></span><span class=line><span class=cl>Serving pages from memory
+</span></span><span class=line><span class=cl>Running in Fast Render Mode. For full rebuilds on change: hugo server --disableFastRender
+</span></span><span class=line><span class=cl>Web Server is available at http://localhost:1313/ (bind address 127.0.0.1)
+</span></span><span class=line><span class=cl>Press Ctrl+C to stop
+</span></span></code></pre></td></tr></table></div></div></li><li><p>將 http://localhost:1313 貼到瀏覽器上，確認有顯示出 <strong>Page Not Found</strong></p><p>表示Hugo運作正常，會顯示這個訊息是因為Hugo會需要主題來運作，而且也沒有任何的文章發布</p><p><img src=https://kenkenny.synology.me:5543/images/2023/09/image-20230920121219994.png loading=lazy alt=image-20230920121219994></p></li><li><p>終端機輸入Control+C 結束hugo網站，到此hugo的安裝就完成了，</p><p>後續我會直接套用Stack主題的模板，如要其他模板可以參考其他文章來建立。</p></li></ol><h2 id=github-pages>Github Pages</h2><h3 id=申請github帳號>申請Github帳號</h3><ol><li><p>進入Github官網，點右上角的Sign up，接著輸入必要的資訊即可</p><p><a class=link href=https://github.com/ target=_blank rel=noopener>https://github.com/</a></p><p><img src=https://kenkenny.synology.me:5543/images/2023/09/image-20230920111615527.png loading=lazy alt=image-20230920111615527></p></li></ol><h3 id=套用模板與基本設定>套用模板與基本設定</h3><ol><li><p>點開Stack 主題模板的連結，下方有說明可以參考</p><p><a class=link href=https://github.com/CaiJimmy/hugo-theme-stack-starter target=_blank rel=noopener>https://github.com/CaiJimmy/hugo-theme-stack-starter</a></p></li><li><p>點擊 Use this template &ndash;> Create a new repository</p><p><img src=https://kenkenny.synology.me:5543/images/2023/09/image-20230920122233724.png loading=lazy alt=image-20230920122233724></p></li><li><p>在Repository name的地方要輸入 『 github帳號.github.io 』，</p><p>這樣github page的連結才會是根網站像 <a class=link href=https://wangken0129.github.io target=_blank rel=noopener>https://wangken0129.github.io</a></p><p>如果輸入其他名稱連結會變成 <a class=link href=https://wangken0129.github.io/ target=_blank rel=noopener>https://wangken0129.github.io/</a>其他名稱</p><p><img src=https://kenkenny.synology.me:5543/images/2023/09/image-20230920122343907.png loading=lazy alt=image-20230920122343907></p></li><li><p>匯入完成後會看到有兩個branch，<strong>master</strong>跟<strong>gh-pages</strong>，</p><p>其他兩個是如果上一步驟有勾選 Include all branches就會複製過來</p><p><img src=https://kenkenny.synology.me:5543/images/2023/09/image-20230920145122008.png loading=lazy alt=image-20230920145122008></p></li><li><p>複製過來後原文件說明是可以直接在綠色 Code地方新增一個codespace，這是可以直接在github上面直接去編輯配置文件</p><p>但為了後續管理文件方便，我選擇回到筆電終端機上建立一個資料夾來當作工作目錄。</p></li><li><p>再來要設定好 github page 所用的branch，最點選右邊的Settings &ndash;> Pages</p><p>根據下圖的設定，Branch那邊要選擇 <strong>gh-pages</strong></p><p><img src=https://kenkenny.synology.me:5543/images/2023/09/image-20230920150015698.png loading=lazy alt=image-20230920150015698></p></li><li><p>接下來可以在github上先新增一個token，用來在筆電上跟github做溝通，</p><p>點選右上角的圓圈&ndash;> Settings</p><p><img src=https://kenkenny.synology.me:5543/images/2023/09/image-20230920150444875.png loading=lazy alt=image-20230920150444875></p></li><li><p>拉到最下面有個Developer settings</p><p><img src=https://kenkenny.synology.me:5543/images/2023/09/image-20230920150654570.png loading=lazy alt=image-20230920150654570></p></li><li><p>Personal access tokens &ndash;> Tokens (classic) 新增一組Token，</p><p>這組Token請小心保存，而且只會出現一次，可以根據需求設定到期時間、名稱等</p><p><img src=https://kenkenny.synology.me:5543/images/2023/09/image-20230920150749028.png loading=lazy alt=image-20230920150749028></p></li></ol><h3 id=設定模板>設定模板</h3><ol><li><p>回到剛剛的Github Repository上面，點選 Code &ndash;> SSH 並複製下方那串SSH</p><p><img src=https://kenkenny.synology.me:5543/images/2023/09/image-20230920151123036.png loading=lazy alt=image-20230920151123036></p></li><li><p>開啟筆電終端機，新增一個資料夾作為工作目錄，並進入此資料夾</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>wangken@wangken-MAC ~ % mkdir workspace
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>wangken@wangken-MAC ~ % <span class=nb>cd</span> workspace 
+</span></span><span class=line><span class=cl>wangken@wangken-MAC workspace % 
+</span></span></code></pre></td></tr></table></div></div></li><li><p>git 登入，最後面使用 authentication token，就是上面複製的token</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>wangken@wangken-MAC workspace % gh auth login
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>? What account <span class=k>do</span> you want to log into? GitHub.com
+</span></span><span class=line><span class=cl>? You<span class=err>&#39;</span>re already logged into github.com. Do you want to re-authenticate? Yes
+</span></span><span class=line><span class=cl>? What is your preferred protocol <span class=k>for</span> Git operations? HTTPS
+</span></span><span class=line><span class=cl>? Authenticate Git with your GitHub credentials? Yes
+</span></span><span class=line><span class=cl>? How would you like to authenticate GitHub CLI?  <span class=o>[</span>Use arrows to move, <span class=nb>type</span> to filter<span class=o>]</span>
+</span></span><span class=line><span class=cl>  Login with a web browser
+</span></span><span class=line><span class=cl>&gt; Paste an authentication token
+</span></span></code></pre></td></tr></table></div></div></li><li><p>用git初始化工作目錄，並用 -b 指定branch為master</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>wangken@wangken-MAC workspace % git init -b master
+</span></span><span class=line><span class=cl>已初始化空的 Git 版本庫於 /Users/wangken/workspace/.git/
+</span></span></code></pre></td></tr></table></div></div></li><li><p>git 新增遠端Github的Repository，並用 git remote -v 確認</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>wangken@wangken-MAC workspace % git remote add origin git@github.com:wangken0129/wangken0129.github.io.git
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>wangken@wangken-MAC workspace % git remote -v
+</span></span><span class=line><span class=cl>origin	git@github.com:wangken0129/wangken0129.github.io.git <span class=o>(</span>fetch<span class=o>)</span>
+</span></span><span class=line><span class=cl>origin	git@github.com:wangken0129/wangken0129.github.io.git <span class=o>(</span>push<span class=o>)</span>
+</span></span></code></pre></td></tr></table></div></div></li><li><p>將遠端的branch 拉下來，此時就會看到github上有的資料夾以及檔案</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>wangken@wangken-MAC workspace % git pull git@github.com:wangken0129/wangken0129.github.io.git 
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>remote: Enumerating objects: 247, <span class=k>done</span>.
+</span></span><span class=line><span class=cl>remote: Counting objects: 100% <span class=o>(</span>247/247<span class=o>)</span>, <span class=k>done</span>.
+</span></span><span class=line><span class=cl>remote: Compressing objects: 100% <span class=o>(</span>128/128<span class=o>)</span>, <span class=k>done</span>.
+</span></span><span class=line><span class=cl>remote: Total <span class=m>247</span> <span class=o>(</span>delta 109<span class=o>)</span>, reused <span class=m>195</span> <span class=o>(</span>delta 68<span class=o>)</span>, pack-reused <span class=m>0</span>
+</span></span><span class=line><span class=cl>接收物件中: 100% <span class=o>(</span>247/247<span class=o>)</span>, 141.87 KiB <span class=p>|</span> 470.00 KiB/s, 完成.
+</span></span><span class=line><span class=cl>處理 delta 中: 100% <span class=o>(</span>109/109<span class=o>)</span>, 完成.
+</span></span><span class=line><span class=cl>來自 github.com:wangken0129/wangken0129.github.io
+</span></span><span class=line><span class=cl> * branch            HEAD       -&gt; FETCH_HEAD
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> wangken@wangken-MAC workspace % ls -l
+</span></span><span class=line><span class=cl>total <span class=m>32</span>
+</span></span><span class=line><span class=cl>-rw-r--r--  <span class=m>1</span> wangken  staff  <span class=m>1066</span>  <span class=m>9</span> <span class=m>20</span> 15:16 LICENSE
+</span></span><span class=line><span class=cl>-rw-r--r--  <span class=m>1</span> wangken  staff  <span class=m>2874</span>  <span class=m>9</span> <span class=m>20</span> 15:16 README.md
+</span></span><span class=line><span class=cl>drwxr-xr-x  <span class=m>4</span> wangken  staff   <span class=m>128</span>  <span class=m>9</span> <span class=m>20</span> 15:16 assets
+</span></span><span class=line><span class=cl>drwxr-xr-x  <span class=m>3</span> wangken  staff    <span class=m>96</span>  <span class=m>9</span> <span class=m>20</span> 15:16 config
+</span></span><span class=line><span class=cl>drwxr-xr-x  <span class=m>6</span> wangken  staff   <span class=m>192</span>  <span class=m>9</span> <span class=m>20</span> 15:16 content
+</span></span><span class=line><span class=cl>-rw-r--r--  <span class=m>1</span> wangken  staff   <span class=m>130</span>  <span class=m>9</span> <span class=m>20</span> 15:16 go.mod
+</span></span><span class=line><span class=cl>-rw-r--r--  <span class=m>1</span> wangken  staff   <span class=m>199</span>  <span class=m>9</span> <span class=m>20</span> 15:16 go.sum
+</span></span><span class=line><span class=cl>drwxr-xr-x  <span class=m>3</span> wangken  staff    <span class=m>96</span>  <span class=m>9</span> <span class=m>20</span> 15:16 static
+</span></span></code></pre></td></tr></table></div></div></li><li><p>在config/_default/config.toml內的有幾項需要先設定</p><p>baseurl = ”https://Github帳號名稱.github.io“</p><p>title = &ldquo;自定義&rdquo;</p><p>defaultContentLanguage = &ldquo;zh-tw&rdquo;</p><p>disqusShortname = &ldquo;disqus建立的Shortname&rdquo; (這是部落格底下的留言板功能，可先忽略)</p><p>可以去官網註冊帳號，並建立一個Site，官網： <a class=link href=https://disqus.com/profile/signup/intent/ target=_blank rel=noopener>https://disqus.com/profile/signup/intent/</a></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>wangken@wangken-MAC workspace % vi config/_default/config.toml 
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># Change baseurl before deploy</span>
+</span></span><span class=line><span class=cl><span class=nv>baseurl</span> <span class=o>=</span> <span class=s2>&#34;https://wangken0129.github.io&#34;</span>
+</span></span><span class=line><span class=cl><span class=nv>languageCode</span> <span class=o>=</span> <span class=s2>&#34;en-us&#34;</span>
+</span></span><span class=line><span class=cl><span class=nv>paginate</span> <span class=o>=</span> <span class=m>5</span>
+</span></span><span class=line><span class=cl><span class=nv>title</span> <span class=o>=</span> <span class=s2>&#34;Ken&#39;s blog&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># Theme i18n support</span>
+</span></span><span class=line><span class=cl><span class=c1># Available values: en, fr, id, ja, ko, pt-br, zh-cn, zh-tw, es, de, nl, it, th, el, uk, ar</span>
+</span></span><span class=line><span class=cl><span class=nv>defaultContentLanguage</span> <span class=o>=</span> <span class=s2>&#34;zh-tw&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># Set hasCJKLanguage to true if DefaultContentLanguage is in [zh-cn ja ko]</span>
+</span></span><span class=line><span class=cl><span class=c1># This will make .Summary and .WordCount behave correctly for CJK languages.</span>
+</span></span><span class=line><span class=cl><span class=nv>hasCJKLanguage</span> <span class=o>=</span> <span class=nb>false</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># Change it to your Disqus shortname before using</span>
+</span></span><span class=line><span class=cl><span class=nv>disqusShortname</span> <span class=o>=</span> <span class=s2>&#34;wangken0129&#34;</span>
+</span></span></code></pre></td></tr></table></div></div></li><li><p>基本設定這些就可以建立網站了，後續的一些設定可以參考官方文件，幾乎都可以在config/_default 目錄底下去設定</p><p>Stack主題的官方文件：https://stack.jimmycai.com/</p></li><li><p>後續如果有文章想新增的話，根據此主題的架構要新增目錄在content/post裡面</p><p>並依照下方的目錄結構去新增，並且md檔案前面會需要加上front matter</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl><span class=c1># 文章結構，每篇都會有index.md</span>
+</span></span><span class=line><span class=cl>content
+</span></span><span class=line><span class=cl>└── post
+</span></span><span class=line><span class=cl>    └── my-first-post
+</span></span><span class=line><span class=cl>        ├── index.md
+</span></span><span class=line><span class=cl>        ├── image1.png
+</span></span><span class=line><span class=cl>        └── image2.png
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># front matter範例，以此文章為範例，放在md檔案最上面前後都要加 ```</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=sb>```</span>
+</span></span><span class=line><span class=cl><span class=c1># 文章標題</span>
+</span></span><span class=line><span class=cl>title: 製作Blog Part2
+</span></span><span class=line><span class=cl><span class=c1># 文章描述</span>
+</span></span><span class=line><span class=cl>description: Hugo + Github Page + Stack Theme
+</span></span><span class=line><span class=cl><span class=c1># slug</span>
+</span></span><span class=line><span class=cl>slug: blog-part2
+</span></span><span class=line><span class=cl><span class=c1># 時間，固定格式UTC+08:00</span>
+</span></span><span class=line><span class=cl>date: 2023-09-20T07:15:00+08:00
+</span></span><span class=line><span class=cl><span class=c1># 文章分類</span>
+</span></span><span class=line><span class=cl>categories:
+</span></span><span class=line><span class=cl>    - Knowledge Base Category
+</span></span><span class=line><span class=cl><span class=c1># 文章標籤</span>
+</span></span><span class=line><span class=cl>tags:
+</span></span><span class=line><span class=cl>    - Blog
+</span></span><span class=line><span class=cl>    - KB
+</span></span><span class=line><span class=cl>weight: <span class=m>1</span>       <span class=c1># You can add weight to some posts to override the default sorting (date descending)</span>
+</span></span><span class=line><span class=cl><span class=sb>```</span>
+</span></span></code></pre></td></tr></table></div></div></li><li><p>設定完成後即可push到github上面，指令如下：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>git add .
+</span></span><span class=line><span class=cl>git commit -m &#34;msg&#34;
+</span></span><span class=line><span class=cl>git push --set-upstream origin master
+</span></span></code></pre></td></tr></table></div></div></li><li><p>成功push後可以點進Github 上的Repository &ndash;> Actions</p><p>套用此模板的好處之一，就是已經自動幫你建立好workflows，</p><p>只要在電腦編輯好後再push上去，有任何更動都會幫你套用到網站</p><p>同時也會自動更新主題的一些Bug</p><p><img src=https://kenkenny.synology.me:5543/images/2023/09/image-20230920154906316.png loading=lazy alt=image-20230920154906316></p></li><li><p>連線確認網站OK</p><p><img src=https://kenkenny.synology.me:5543/images/2023/09/image-20230920160059559.png loading=lazy alt=image-20230920160059559></p></li></ol><h2 id=後記>後記</h2><p>完成部落格的設定後，再來就要把之前做的筆記套用Front Matter放上來跟之後的撰寫了，</p><p>針對Hugo的一些配置檔的調整，我會使用Visual Studio Code來做編輯跟調整，</p><p>因為針對.toml檔案的編輯還是比較友善，</p><p>像下方的params.toml，我有去修改[sidebar]下方的值，</p><p><img src=https://kenkenny.synology.me:5543/images/2023/09/image-20230920163349713.png loading=lazy alt=image-20230920163349713></p><p>其他筆記的撰寫我就還是用Typora，左邊可以分為檔案的目錄檢視，</p><p><img src=https://kenkenny.synology.me:5543/images/2023/09/image-20230920163708312.png loading=lazy alt=image-20230920163708312></p><p>或是切換到大綱檢視，分為文章裡面的大小標題等等，</p><p><img src=https://kenkenny.synology.me:5543/images/2023/09/image-20230920163841527.png loading=lazy alt=image-20230920163841527></p><p>最後因為會頻繁地做git push的動作，所以我也參考網路的Script來自動化的push，</p><p>希望最後是能變成從寫完後就全部都自動化，有的話再寫上來分享。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=cp>#!/bin/sh
+</span></span></span><span class=line><span class=cl><span class=cp></span>
+</span></span><span class=line><span class=cl><span class=c1>#Put this script outside the workspace folder</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># If a command fails then the deploy stops</span>
+</span></span><span class=line><span class=cl><span class=nb>set</span> -e
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>printf</span> <span class=s2>&#34;\033[0;32mDeploying updates to GitHub...\033[0m\n&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># Go To workspace folder</span>
+</span></span><span class=line><span class=cl><span class=nb>cd</span> workspace
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># Add changes to git.</span>
+</span></span><span class=line><span class=cl>git add .
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># Commit changes.</span>
+</span></span><span class=line><span class=cl><span class=nv>msg</span><span class=o>=</span><span class=s2>&#34;rebuilding site </span><span class=k>$(</span>date<span class=k>)</span><span class=s2>&#34;</span>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=o>[</span> -n <span class=s2>&#34;</span><span class=nv>$*</span><span class=s2>&#34;</span> <span class=o>]</span><span class=p>;</span> <span class=k>then</span>
+</span></span><span class=line><span class=cl>	<span class=nv>msg</span><span class=o>=</span><span class=s2>&#34;</span><span class=nv>$*</span><span class=s2>&#34;</span>
+</span></span><span class=line><span class=cl><span class=k>fi</span>
+</span></span><span class=line><span class=cl>git commit -m <span class=s2>&#34;</span><span class=nv>$msg</span><span class=s2>&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># Push source and build repos.</span>
+</span></span><span class=line><span class=cl>git push origin master
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># come back</span>
+</span></span><span class=line><span class=cl><span class=nb>cd</span> ..
+</span></span></code></pre></td></tr></table></div></div></section><footer class=article-footer><section class=article-tags><a href=/tags/blog/>Blog</a>
+<a href=/tags/kb/>KB</a></section><section class=article-copyright><svg class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
+<span>Licensed under CC BY-NC-SA 4.0</span></section></footer></article><aside class=related-content--wrapper><h2 class=section-title>相關文章</h2><div class=related-content><div class="flex article-list--tile"><article><a href=/p/blog-part3/><div class=article-details><h2 class=article-title>製作Blog Part3 (半自動腳本)</h2></div></a></article><article><a href=/p/blog-part1/><div class=article-details><h2 class=article-title>製作Blog Part1</h2></div></a></article><article><a href=/p/nutanix-notes/><div class=article-details><h2 class=article-title>Nutanix-Notes</h2></div></a></article><article><a href=/p/guide_rke2rancher_install/><div class=article-details><h2 class=article-title>Guide_RKE2&amp;Rancher_install</h2></div></a></article><article><a href=/p/guide_neuvector/><div class=article-details><h2 class=article-title>Guide_NeuVector</h2></div></a></article></div></div></aside><div class=disqus-container><div id=disqus_thread></div><script>window.disqus_config=function(){},function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById("disqus_thread").innerHTML="Disqus comments not available by default when the website is previewed locally.";return}var t=document,e=t.createElement("script");e.async=!0,e.src="//wangken0129.disqus.com/embed.js",e.setAttribute("data-timestamp",+new Date),(t.head||t.body).appendChild(e)}()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></div><style>.disqus-container{background-color:var(--card-background);border-radius:var(--card-border-radius);box-shadow:var(--shadow-l1);padding:var(--card-padding)}</style><script>window.addEventListener("onColorSchemeChange",e=>{typeof DISQUS=="object"&&DISQUS.reset({reload:!0})})</script><footer class=site-footer><section class=copyright>&copy;
+2023 -
+2024 Ken's blog</section><section class=powerby>使用 <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> 建立<br>主題 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.29.0>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 設計</section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js defer></script><script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>
