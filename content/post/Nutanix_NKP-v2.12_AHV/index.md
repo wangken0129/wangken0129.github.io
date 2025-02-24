@@ -2,12 +2,12 @@
 title: Nutanix_NKP-v2.12_AHV
 description: Nutanix_NKP-v2.12_AHV
 slug: Nutanix_NKP-v2.12_AHV
-date: 2024-12-12T10:16:03+08:00
+date: 2025-02-24T07:22:10+08:00
 categories:
     - Lab Category
 tags:
-    - Nutanix
     - NKP
+    - Nutanix
     - Kubernetes
 weight: 1       # You can add weight to some posts to override the default sorting (date descending)
 ---
@@ -2925,3 +2925,62 @@ Events:                   <none>
 ```
 
 ![image-20241209171829715](https://kenkenny.synology.me:5543/images/2024/12/image-20241209171829715.png)
+
+
+
+## Metallb-system
+
+新增 loadbalancer ip 到 ip pool 裡面
+
+```
+[nkp@ken-rhel9 ~]$ kubectl get ipaddresspools -n metallb-system
+NAME      AUTO ASSIGN   AVOID BUGGY IPS   ADDRESSES
+metallb   true          false             ["172.16.90.209-172.16.90.209"]
+
+[nkp@ken-rhel9 ~]$ kubectl edit ipaddresspools -n metallb-system
+ipaddresspool.metallb.io/metallb edited
+
+[nkp@ken-rhel9 ~]$ kubectl describe ipaddresspools -n metallb-system
+Name:         metallb
+Namespace:    metallb-system
+Labels:       <none>
+Annotations:  <none>
+API Version:  metallb.io/v1beta1
+Kind:         IPAddressPool
+Metadata:
+  Creation Timestamp:  2024-10-01T03:37:31Z
+  Generation:          2
+  Resource Version:    318510970
+  UID:                 3cba6b6f-06c6-4002-a039-12774eedda72
+Spec:
+  Addresses:
+    172.16.90.209-172.16.90.211
+  Auto Assign:       true
+  Avoid Buggy I Ps:  false
+Events:              <none>
+```
+
+![image-20250220095215314](https://kenkenny.synology.me:5543/images/2025/02/image-20250220095215314.png)
+
+```
+[nkp@ken-rhel9 ~]$ kubectl get svc -n ken-ns
+NAME           TYPE           CLUSTER-IP       EXTERNAL-IP     PORT(S)             AGE
+carts          ClusterIP      10.99.139.74     <none>          80/TCP              18h
+carts-db       ClusterIP      10.99.20.222     <none>          27017/TCP           18h
+catalogue      ClusterIP      10.106.141.207   <none>          80/TCP              18h
+catalogue-db   ClusterIP      10.102.80.220    <none>          3306/TCP            18h
+front-end      LoadBalancer   10.103.0.112     172.16.90.211   80:30239/TCP        18h
+orders         ClusterIP      10.106.57.160    <none>          80/TCP              18h
+orders-db      ClusterIP      10.110.189.178   <none>          27017/TCP           18h
+payment        ClusterIP      10.102.165.251   <none>          80/TCP              18h
+queue-master   ClusterIP      10.96.248.113    <none>          80/TCP              18h
+rabbitmq       ClusterIP      10.109.56.231    <none>          5672/TCP,9090/TCP   18h
+session-db     ClusterIP      10.98.29.122     <none>          6379/TCP            18h
+shipping       ClusterIP      10.97.155.46     <none>          80/TCP              18h
+user           ClusterIP      10.99.13.238     <none>          80/TCP              18h
+user-db        ClusterIP      10.105.150.252   <none>          27017/TCP           18h
+
+
+```
+
+![image-20250220095316530](https://kenkenny.synology.me:5543/images/2025/02/image-20250220095316530.png)
