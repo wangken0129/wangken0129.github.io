@@ -2,8 +2,8 @@
 baseurl = "https://wangken0129.github.io"
 languageCode = "en-us"
 #paginate = 12
-pagination:
-  pagerSize: 200
+#pagination:
+#  pagerSize: 200
 title = "Ken's blog"
 
 # Theme i18n support
