@@ -1,0 +1,585 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>NeuVector on Ken's blog</title><link>https://wangken0129.github.io/tags/neuvector/</link><description>Recent content in NeuVector on Ken's blog</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Sat, 23 Sep 2023 07:38:37 +0800</lastBuildDate><atom:link href="https://wangken0129.github.io/tags/neuvector/index.xml" rel="self" type="application/rss+xml"/><item><title>Guide_NeuVector</title><link>https://wangken0129.github.io/p/guide_neuvector/</link><pubDate>Sat, 23 Sep 2023 07:38:37 +0800</pubDate><guid>https://wangken0129.github.io/p/guide_neuvector/</guid><description>&lt;h1 id="neuvector">NeuVector
+&lt;/h1>&lt;h2 id="0-install-rke2">0. install RKE2
+&lt;/h2>&lt;h3 id="01-下載安裝腳本">0.1. 下載安裝腳本
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">rancher@rms1:~&amp;gt; curl -sfL https://get.rke2.io --output install.sh
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">rancher@rms1:~&amp;gt; chmod +x install.sh
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="02-設定rke2基本餐數">0.2. 設定RKE2基本餐數
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">rancher@rms1:~&amp;gt; sudo mkdir -p /etc/rancher/rke2/
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">[sudo] root 的密碼：
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">rancher@rms1:~&amp;gt; sudo vim /etc/rancher/rke2/config.yaml
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">rancher@rms1:~&amp;gt; cat /etc/rancher/rke2/config.yaml
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">node-name:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> - &amp;#34;rms1&amp;#34;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">token: my-shared-secret
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="03-安裝rke2">0.3. 安裝rke2
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="n">rancher&lt;/span>&lt;span class="err">@&lt;/span>&lt;span class="n">rms1&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="o">~&amp;gt;&lt;/span> &lt;span class="n">sudo&lt;/span> &lt;span class="o">./&lt;/span>&lt;span class="n">install&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">sh&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">[&lt;/span>&lt;span class="n">WARN&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="n">usr&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">local&lt;/span> &lt;span class="n">is&lt;/span> &lt;span class="n">read&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">only&lt;/span> &lt;span class="ow">or&lt;/span> &lt;span class="n">a&lt;/span> &lt;span class="n">mount&lt;/span> &lt;span class="n">point&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">installing&lt;/span> &lt;span class="n">to&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="n">opt&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">rke2&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">[&lt;/span>&lt;span class="n">INFO&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="n">finding&lt;/span> &lt;span class="n">release&lt;/span> &lt;span class="k">for&lt;/span> &lt;span class="n">channel&lt;/span> &lt;span class="n">v1&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="mf">24.6&lt;/span>&lt;span class="o">+&lt;/span>&lt;span class="n">rke2r1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">[&lt;/span>&lt;span class="n">INFO&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="n">using&lt;/span> &lt;span class="n">v1&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="mf">24.6&lt;/span>&lt;span class="o">+&lt;/span>&lt;span class="n">rke2r1&lt;/span> &lt;span class="n">as&lt;/span> &lt;span class="n">release&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">[&lt;/span>&lt;span class="n">INFO&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="n">downloading&lt;/span> &lt;span class="n">checksums&lt;/span> &lt;span class="n">at&lt;/span> &lt;span class="n">https&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="o">//&lt;/span>&lt;span class="n">github&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">com&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">rancher&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">rke2&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">releases&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">download&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">v1&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="mf">24.6&lt;/span>&lt;span class="o">+&lt;/span>&lt;span class="n">rke2r1&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">sha256sum&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">amd64&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">txt&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">[&lt;/span>&lt;span class="n">INFO&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="n">downloading&lt;/span> &lt;span class="n">tarball&lt;/span> &lt;span class="n">at&lt;/span> &lt;span class="n">https&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="o">//&lt;/span>&lt;span class="n">github&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">com&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">rancher&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">rke2&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">releases&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">download&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">v1&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="mf">24.6&lt;/span>&lt;span class="o">+&lt;/span>&lt;span class="n">rke2r1&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">rke2&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">linux&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">amd64&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">tar&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">gz&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">[&lt;/span>&lt;span class="n">INFO&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="n">verifying&lt;/span> &lt;span class="n">tarball&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">[&lt;/span>&lt;span class="n">INFO&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="n">unpacking&lt;/span> &lt;span class="n">tarball&lt;/span> &lt;span class="n">file&lt;/span> &lt;span class="n">to&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="n">opt&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">rke2&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">[&lt;/span>&lt;span class="n">INFO&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="n">updating&lt;/span> &lt;span class="n">tarball&lt;/span> &lt;span class="n">contents&lt;/span> &lt;span class="n">to&lt;/span> &lt;span class="n">reflect&lt;/span> &lt;span class="n">install&lt;/span> &lt;span class="n">path&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">[&lt;/span>&lt;span class="n">INFO&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="n">moving&lt;/span> &lt;span class="n">systemd&lt;/span> &lt;span class="n">units&lt;/span> &lt;span class="n">to&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="n">etc&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">systemd&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">system&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">[&lt;/span>&lt;span class="n">INFO&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="n">install&lt;/span> &lt;span class="n">complete&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">you&lt;/span> &lt;span class="n">may&lt;/span> &lt;span class="n">want&lt;/span> &lt;span class="n">to&lt;/span> &lt;span class="n">run&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="k">export&lt;/span> &lt;span class="n">PATH&lt;/span>&lt;span class="o">=$&lt;/span>&lt;span class="n">PATH&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">opt&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">rke2&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">bin&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">rancher&lt;/span>&lt;span class="err">@&lt;/span>&lt;span class="n">rms1&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="o">~&amp;gt;&lt;/span> &lt;span class="k">export&lt;/span> &lt;span class="n">PATH&lt;/span>&lt;span class="o">=$&lt;/span>&lt;span class="n">PATH&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">opt&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">rke2&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">bin&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="04-enable-rke2-and-setup-kubeconfig">0.4. enable rke2 and setup kubeconfig
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="n">rancher&lt;/span>&lt;span class="err">@&lt;/span>&lt;span class="n">rms1&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="o">~&amp;gt;&lt;/span> &lt;span class="n">sudo&lt;/span> &lt;span class="n">systemctl&lt;/span> &lt;span class="n">enable&lt;/span> &lt;span class="n">rke2&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">server&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Created&lt;/span> &lt;span class="n">symlink&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="n">etc&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">systemd&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">system&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">multi&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">user&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">target&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">wants&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">rke2&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">server&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">service&lt;/span> &lt;span class="err">→&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="n">etc&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">systemd&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">system&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">rke2&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">server&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">service&lt;/span>&lt;span class="o">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">rancher&lt;/span>&lt;span class="err">@&lt;/span>&lt;span class="n">rms1&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="o">~&amp;gt;&lt;/span> &lt;span class="n">sudo&lt;/span> &lt;span class="n">systemctl&lt;/span> &lt;span class="n">start&lt;/span> &lt;span class="n">rke2&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">server&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">rancher&lt;/span>&lt;span class="err">@&lt;/span>&lt;span class="n">rms1&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="o">~&amp;gt;&lt;/span> &lt;span class="n">mkdir&lt;/span> &lt;span class="o">.&lt;/span>&lt;span class="n">kube&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">rancher&lt;/span>&lt;span class="err">@&lt;/span>&lt;span class="n">rms1&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="o">~&amp;gt;&lt;/span> &lt;span class="n">sudo&lt;/span> &lt;span class="n">cp&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="n">etc&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">rancher&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">rke2&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">rke2&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">yaml&lt;/span> &lt;span class="o">.&lt;/span>&lt;span class="n">kube&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">config&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">[&lt;/span>&lt;span class="n">sudo&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="n">root&lt;/span> &lt;span class="err">的密碼：&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">rancher&lt;/span>&lt;span class="err">@&lt;/span>&lt;span class="n">rms1&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="o">~&amp;gt;&lt;/span> &lt;span class="n">sudo&lt;/span> &lt;span class="n">chown&lt;/span> &lt;span class="n">rancher&lt;/span> &lt;span class="o">.&lt;/span>&lt;span class="n">kube&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">config&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">rancher&lt;/span>&lt;span class="err">@&lt;/span>&lt;span class="n">rms1&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="o">~&amp;gt;&lt;/span> &lt;span class="n">sudo&lt;/span> &lt;span class="n">cp&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="k">var&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">lib&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">rancher&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">rke2&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">bin&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">kubectl&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="n">usr&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">local&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">bin&lt;/span>&lt;span class="o">/&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="05-check-pod-status">0.5. check pod status
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">rancher@rms1:~&amp;gt; kubectl get po
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">No resources found in default namespace.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">rancher@rms1:~&amp;gt; kubectl get po -A
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">NAMESPACE NAME READY STATUS RESTARTS AGE
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kube-system cloud-controller-manager-rms1 1/1 Running 0 15m
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kube-system etcd-rms1 1/1 Running 0 15m
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kube-system helm-install-rke2-canal-6bpd4 0/1 Completed 0 15m
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kube-system helm-install-rke2-coredns-mjflj 0/1 Completed 0 15m
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kube-system helm-install-rke2-ingress-nginx-76r2c 0/1 Completed 0 15m
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kube-system helm-install-rke2-metrics-server-wkc4k 0/1 Completed 0 15m
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kube-system kube-apiserver-rms1 1/1 Running 0 15m
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kube-system kube-controller-manager-rms1 1/1 Running 0 15m
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kube-system kube-proxy-rms1 1/1 Running 0 15m
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kube-system kube-scheduler-rms1 1/1 Running 0 15m
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kube-system rke2-canal-8x56p 2/2 Running 0 15m
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kube-system rke2-coredns-rke2-coredns-545d64676-zlnk9 1/1 Running 0 15m
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kube-system rke2-coredns-rke2-coredns-autoscaler-5dd676f5c7-zrdbb 1/1 Running 0 15m
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kube-system rke2-ingress-nginx-controller-xhxr6 1/1 Running 0 14m
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kube-system rke2-metrics-server-6564db4569-542hx 1/1 Running 0 14m
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="1-install-helm3">1. install helm3
+&lt;/h2>&lt;h3 id="11-check-kubernetes-version">1.1. check kubernetes version
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">rancher@rms1:~&amp;gt; kubectl get no
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">NAME STATUS ROLES AGE VERSION
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">rms1 Ready control-plane,etcd,master 37h v1.24.6+rke2r1
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="12-下載與安裝helm">1.2. 下載與安裝helm
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="n">rancher&lt;/span>&lt;span class="err">@&lt;/span>&lt;span class="n">rms1&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="o">~&amp;gt;&lt;/span> &lt;span class="n">wget&lt;/span> &lt;span class="n">https&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="o">//&lt;/span>&lt;span class="n">get&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">helm&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">sh&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">helm&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">v3&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="mf">9.4&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">linux&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">amd64&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">tar&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">gz&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">--&lt;/span>&lt;span class="mi">2022&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="mi">10&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="mi">16&lt;/span> &lt;span class="mi">12&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">34&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">56&lt;/span>&lt;span class="o">--&lt;/span> &lt;span class="n">https&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="o">//&lt;/span>&lt;span class="n">get&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">helm&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">sh&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">helm&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">v3&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="mf">9.4&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">linux&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">amd64&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">tar&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">gz&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Resolving&lt;/span> &lt;span class="n">get&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">helm&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">sh&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">get&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">helm&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">sh&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">...&lt;/span> &lt;span class="mf">152.199&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="mf">39.108&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">2606&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">2800&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">247&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="n">cb7&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">261&lt;/span>&lt;span class="n">b&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="n">f9c&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">2074&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">3&lt;/span>&lt;span class="n">c&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Connecting&lt;/span> &lt;span class="n">to&lt;/span> &lt;span class="n">get&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">helm&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">sh&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">get&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">helm&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">sh&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">|&lt;/span>&lt;span class="mf">152.199&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="mf">39.108&lt;/span>&lt;span class="o">|&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mf">443.&lt;/span>&lt;span class="o">..&lt;/span> &lt;span class="n">connected&lt;/span>&lt;span class="o">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">HTTP&lt;/span> &lt;span class="n">request&lt;/span> &lt;span class="n">sent&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">awaiting&lt;/span> &lt;span class="n">response&lt;/span>&lt;span class="o">...&lt;/span> &lt;span class="mi">200&lt;/span> &lt;span class="n">OK&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Length&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">14026634&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="mi">13&lt;/span>&lt;span class="n">M&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="n">application&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">x&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">tar&lt;/span>&lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Saving&lt;/span> &lt;span class="n">to&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="err">‘&lt;/span>&lt;span class="n">helm&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">v3&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="mf">9.4&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">linux&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">amd64&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">tar&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">gz&lt;/span>&lt;span class="err">’&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">helm&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">v3&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="mf">9.4&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">linux&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">amd64&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">tar&lt;/span> &lt;span class="mi">100&lt;/span>&lt;span class="o">%&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="o">========================================&amp;gt;&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="mf">13.38&lt;/span>&lt;span class="n">M&lt;/span> &lt;span class="mf">7.86&lt;/span>&lt;span class="n">MB&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">s&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="mf">1.7&lt;/span>&lt;span class="n">s&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">2022&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="mi">10&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="mi">16&lt;/span> &lt;span class="mi">12&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">34&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">59&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="mf">7.86&lt;/span> &lt;span class="n">MB&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="err">‘&lt;/span>&lt;span class="n">helm&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">v3&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="mf">9.4&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">linux&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">amd64&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">tar&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">gz&lt;/span>&lt;span class="err">’&lt;/span> &lt;span class="n">saved&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="mi">14026634&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="mi">14026634&lt;/span>&lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">rancher&lt;/span>&lt;span class="err">@&lt;/span>&lt;span class="n">rms1&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="o">~&amp;gt;&lt;/span> &lt;span class="n">tar&lt;/span> &lt;span class="n">zxvf&lt;/span> &lt;span class="n">helm&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">v3&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="mf">9.4&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">linux&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">amd64&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">tar&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">gz&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">linux&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">amd64&lt;/span>&lt;span class="o">/&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">linux&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">amd64&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">helm&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">linux&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">amd64&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">LICENSE&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">linux&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">amd64&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">README&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">md&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">rancher&lt;/span>&lt;span class="err">@&lt;/span>&lt;span class="n">rms1&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="o">~&amp;gt;&lt;/span> &lt;span class="n">sudo&lt;/span> &lt;span class="n">cp&lt;/span> &lt;span class="n">linux&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">amd64&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">helm&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="n">usr&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">local&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">bin&lt;/span>&lt;span class="o">/&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">[&lt;/span>&lt;span class="n">sudo&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="n">password&lt;/span> &lt;span class="k">for&lt;/span> &lt;span class="n">root&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">rancher&lt;/span>&lt;span class="err">@&lt;/span>&lt;span class="n">rms1&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="o">~&amp;gt;&lt;/span> &lt;span class="n">helm&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="n">help&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">The&lt;/span> &lt;span class="n">Kubernetes&lt;/span> &lt;span class="n">package&lt;/span> &lt;span class="n">manager&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Common&lt;/span> &lt;span class="n">actions&lt;/span> &lt;span class="k">for&lt;/span> &lt;span class="n">Helm&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">-&lt;/span> &lt;span class="n">helm&lt;/span> &lt;span class="n">search&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">search&lt;/span> &lt;span class="k">for&lt;/span> &lt;span class="n">charts&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">-&lt;/span> &lt;span class="n">helm&lt;/span> &lt;span class="n">pull&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">download&lt;/span> &lt;span class="n">a&lt;/span> &lt;span class="n">chart&lt;/span> &lt;span class="n">to&lt;/span> &lt;span class="n">your&lt;/span> &lt;span class="n">local&lt;/span> &lt;span class="n">directory&lt;/span> &lt;span class="n">to&lt;/span> &lt;span class="n">view&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">-&lt;/span> &lt;span class="n">helm&lt;/span> &lt;span class="n">install&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">upload&lt;/span> &lt;span class="n">the&lt;/span> &lt;span class="n">chart&lt;/span> &lt;span class="n">to&lt;/span> &lt;span class="n">Kubernetes&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">-&lt;/span> &lt;span class="n">helm&lt;/span> &lt;span class="n">list&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">list&lt;/span> &lt;span class="n">releases&lt;/span> &lt;span class="n">of&lt;/span> &lt;span class="n">charts&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">...&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">...&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">...&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="2-install-neuvector">2. install NeuVector
+&lt;/h2>&lt;h3 id="21-加入neuvector-helm-chart">2.1. 加入neuvector helm chart
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">rancher@rms1:~&amp;gt; helm repo add neuvector https://neuvector.github.io/neuvector-helm/
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&amp;#34;neuvector&amp;#34; has been added to your repositories
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">rancher@rms1:~&amp;gt; helm search repo neuvector/core
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">NAME CHART VERSION APP VERSION DESCRIPTION
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">neuvector/core 2.2.3 5.0.3 Helm chart for NeuVector&amp;#39;s core services
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">rancher@rms1:~&amp;gt; helm search repo neuvector/core -l
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">NAME CHART VERSION APP VERSION DESCRIPTION
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">neuvector/core 2.2.3 5.0.3 Helm chart for NeuVector&amp;#39;s core services
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">neuvector/core 2.2.2 5.0.2 Helm chart for NeuVector&amp;#39;s core services
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">neuvector/core 2.2.1 5.0.1 Helm chart for NeuVector&amp;#39;s core services
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">neuvector/core 2.2.0 5.0.0 Helm chart for NeuVector&amp;#39;s core services
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">neuvector/core 1.9.2 4.4.4-s2 Helm chart for NeuVector&amp;#39;s core services
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">neuvector/core 1.9.1 4.4.4 Helm chart for NeuVector&amp;#39;s core services
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">neuvector/core 1.9.0 4.4.4 Helm chart for NeuVector&amp;#39;s core services
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">neuvector/core 1.8.9 4.4.3 Helm chart for NeuVector&amp;#39;s core services
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">neuvector/core 1.8.8 4.4.2 Helm chart for NeuVector&amp;#39;s core services
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">neuvector/core 1.8.7 4.4.1 Helm chart for NeuVector&amp;#39;s core services
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">neuvector/core 1.8.6 4.4.0 Helm chart for NeuVector&amp;#39;s core services
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">neuvector/core 1.8.5 4.3.2 Helm chart for NeuVector&amp;#39;s core services
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">neuvector/core 1.8.4 4.3.2 Helm chart for NeuVector&amp;#39;s core services
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">neuvector/core 1.8.3 4.3.2 Helm chart for NeuVector&amp;#39;s core services
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">neuvector/core 1.8.2 4.3.1 Helm chart for NeuVector&amp;#39;s core services
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">neuvector/core 1.8.0 4.3.0 Helm chart for NeuVector&amp;#39;s core services
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">neuvector/core 1.7.7 4.2.2 Helm chart for NeuVector&amp;#39;s core services
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">neuvector/core 1.7.6 4.2.2 Helm chart for NeuVector&amp;#39;s core services
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">neuvector/core 1.7.5 4.2.0 Helm chart for NeuVector&amp;#39;s core services
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">neuvector/core 1.7.2 4.2.0 Helm chart for NeuVector&amp;#39;s core services
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">neuvector/core 1.7.1 4.2.0 Helm chart for NeuVector&amp;#39;s core services
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">neuvector/core 1.7.0 4.0.0 Helm chart for NeuVector&amp;#39;s core services
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">neuvector/core 1.6.9 4.0.0 Helm chart for NeuVector&amp;#39;s core services
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">neuvector/core 1.6.8 4.0.0 Helm chart for NeuVector&amp;#39;s core services
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">neuvector/core 1.6.7 4.0.0 Helm chart for NeuVector&amp;#39;s core services
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">neuvector/core 1.6.6 4.0.0 Helm chart for NeuVector&amp;#39;s core services
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">neuvector/core 1.6.5 4.0.0 Helm chart for NeuVector&amp;#39;s core services
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">neuvector/core 1.6.4 4.0.0 Helm chart for NeuVector&amp;#39;s core services
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">neuvector/core 1.6.1 4.0.0 NeuVector Full Lifecycle Container Security Pla...
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">rancher@rms1:~&amp;gt; helm show values neuvector/core --version 2.2.3 &amp;gt; neuvector-values.yaml
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="22-調整yaml---part-1replicas-for-test">2.2. 調整yaml - part-1(replicas for test)
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">controller:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">...
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> replicas: 1
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">...
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">...
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">...
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> scanner:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> enabled: true
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> replicas: 1
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">...
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">...
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="23-調整yaml---part-2cri-for-k3s">2.3. 調整yaml - part-2(CRI for k3s)
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">k3s:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> enabled: true
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="24-建立neuvector-namespace-and-create-neuvector">2.4. 建立NeuVector NameSpace and create neuvector
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">rancher@rms1:~&amp;gt; kubectl create ns neuvector
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">namespace/neuvector created
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">rancher@rms1:~&amp;gt; helm install neuvector neuvector/core --version 2.2.3 --namespace neuvector --values neuvector-values.yaml
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">NAME: neuvector
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">LAST DEPLOYED: Sun Oct 16 13:10:22 2022
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">NAMESPACE: neuvector
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">STATUS: deployed
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">REVISION: 1
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">TEST SUITE: None
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">NOTES:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Get the NeuVector URL by running these commands:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> NODE_PORT=$(kubectl get --namespace neuvector -o jsonpath=&amp;#34;{.spec.ports[0].nodePort}&amp;#34; services neuvector-service-webui)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> NODE_IP=$(kubectl get nodes --namespace neuvector -o jsonpath=&amp;#34;{.items[0].status.addresses[0].address}&amp;#34;)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> echo https://$NODE_IP:$NODE_PORT
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">rancher@rms1:~&amp;gt; kubectl -n neuvector get po
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">NAME READY STATUS RESTARTS AGE
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">neuvector-controller-pod-6cf58c7894-hvvlw 1/1 Running 0 42s
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">neuvector-enforcer-pod-rpzqg 1/1 Running 0 42s
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">neuvector-manager-pod-8488cb586c-87q9n 1/1 Running 0 42s
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">neuvector-scanner-pod-7d6bc8f775-pfwkk 1/1 Running 0 42s
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">rancher@rms1:~&amp;gt; kubectl -n neuvector get svc
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">NAME TYPE CLUSTER-IP EXTERNAL-IP PORT(S) AGE
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">neuvector-service-webui NodePort 10.43.189.243 &amp;lt;none&amp;gt; 8443:30805/TCP 66s
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">neuvector-svc-admission-webhook ClusterIP 10.43.103.17 &amp;lt;none&amp;gt; 443/TCP 67s
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">neuvector-svc-controller ClusterIP None &amp;lt;none&amp;gt; 18300/TCP,18301/TCP,18301/UDP 67s
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">neuvector-svc-crd-webhook ClusterIP 10.43.185.195 &amp;lt;none&amp;gt; 443/TCP 66s
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="3-其他">3. 其他
+&lt;/h2>&lt;h3 id="31-image-registry">3.1. image registry
+&lt;/h3>&lt;ol>
+&lt;li>Name: Nginx&lt;/li>
+&lt;li>Registry: &lt;a class="link" href="https://registry.hub.docker.com/" target="_blank" rel="noopener"
+>https://registry.hub.docker.com/&lt;/a>&lt;/li>
+&lt;li>Filter: nginx:stable&lt;/li>
+&lt;/ol>
+&lt;h3 id="32-response-rule">3.2. Response Rule
+&lt;/h3>&lt;ol>
+&lt;li>Category: &lt;code>Security Event&lt;/code>&lt;/li>
+&lt;li>Group: &lt;code>nv.default&lt;/code>&lt;/li>
+&lt;li>Criteria: &lt;code>name:Process.Profile.Violation&lt;/code>&lt;/li>
+&lt;li>Action: &lt;code>Quarantine&lt;/code>&lt;/li>
+&lt;li>Status: &lt;code>Enabled&lt;/code>&lt;/li>
+&lt;/ol>
+&lt;h3 id="33-cli-reference">3.3. CLI reference
+&lt;/h3>&lt;h4 id="331-nginx-install-recon-ng">3.3.1. nginx install recon-ng
+&lt;/h4>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;span class="lnt">46
+&lt;/span>&lt;span class="lnt">47
+&lt;/span>&lt;span class="lnt">48
+&lt;/span>&lt;span class="lnt">49
+&lt;/span>&lt;span class="lnt">50
+&lt;/span>&lt;span class="lnt">51
+&lt;/span>&lt;span class="lnt">52
+&lt;/span>&lt;span class="lnt">53
+&lt;/span>&lt;span class="lnt">54
+&lt;/span>&lt;span class="lnt">55
+&lt;/span>&lt;span class="lnt">56
+&lt;/span>&lt;span class="lnt">57
+&lt;/span>&lt;span class="lnt">58
+&lt;/span>&lt;span class="lnt">59
+&lt;/span>&lt;span class="lnt">60
+&lt;/span>&lt;span class="lnt">61
+&lt;/span>&lt;span class="lnt">62
+&lt;/span>&lt;span class="lnt">63
+&lt;/span>&lt;span class="lnt">64
+&lt;/span>&lt;span class="lnt">65
+&lt;/span>&lt;span class="lnt">66
+&lt;/span>&lt;span class="lnt">67
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="nx">rancher&lt;/span>&lt;span class="err">@&lt;/span>&lt;span class="nx">rms1&lt;/span>&lt;span class="p">:~&amp;gt;&lt;/span> &lt;span class="nx">kubectl&lt;/span> &lt;span class="nx">create&lt;/span> &lt;span class="nx">deploy&lt;/span> &lt;span class="nx">web&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="nx">image&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="nx">nginx&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="nx">port&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="mi">80&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="nx">replicas&lt;/span>&lt;span class="p">=&lt;/span>&lt;span class="mi">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">deployment&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">apps&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="nx">web&lt;/span> &lt;span class="nx">created&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">rancher&lt;/span>&lt;span class="err">@&lt;/span>&lt;span class="nx">rms1&lt;/span>&lt;span class="p">:~&amp;gt;&lt;/span> &lt;span class="nx">kubectl&lt;/span> &lt;span class="nx">get&lt;/span> &lt;span class="nx">po&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">NAME&lt;/span> &lt;span class="nx">READY&lt;/span> &lt;span class="nx">STATUS&lt;/span> &lt;span class="nx">RESTARTS&lt;/span> &lt;span class="nx">AGE&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">web&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">cff6559d7&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">jddwt&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="mi">1&lt;/span> &lt;span class="nx">Running&lt;/span> &lt;span class="mi">0&lt;/span> &lt;span class="mi">8&lt;/span>&lt;span class="nx">s&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">rancher&lt;/span>&lt;span class="err">@&lt;/span>&lt;span class="nx">rms1&lt;/span>&lt;span class="p">:~&amp;gt;&lt;/span> &lt;span class="nx">kubectl&lt;/span> &lt;span class="nx">exec&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="nx">it&lt;/span> &lt;span class="nx">web&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">cff6559d7&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">jddwt&lt;/span> &lt;span class="o">--&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="nx">bin&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="nx">bash&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">root&lt;/span>&lt;span class="err">@&lt;/span>&lt;span class="nx">web&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">cff6559d7&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">jddwt&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="err">#&lt;/span> &lt;span class="nx">apt&lt;/span> &lt;span class="nx">update&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">Get&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">1&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="c1">//deb.debian.org/debian bullseye InRelease [116 kB]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">Get&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">2&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="c1">//deb.debian.org/debian-security bullseye-security InRelease [48.4 kB]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">Get&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">3&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="c1">//deb.debian.org/debian bullseye-updates InRelease [44.1 kB]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">Get&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">4&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="c1">//deb.debian.org/debian bullseye/main amd64 Packages [8184 kB]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">Get&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">5&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="c1">//deb.debian.org/debian-security bullseye-security/main amd64 Packages [189 kB] &lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">Get&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">6&lt;/span> &lt;span class="nx">http&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="c1">//deb.debian.org/debian bullseye-updates/main amd64 Packages [6340 B] &lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">Fetched&lt;/span> &lt;span class="mi">8588&lt;/span> &lt;span class="nx">kB&lt;/span> &lt;span class="nx">in&lt;/span> &lt;span class="mi">8&lt;/span>&lt;span class="nf">s&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="mi">1050&lt;/span> &lt;span class="nx">kB&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="nx">s&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">Reading&lt;/span> &lt;span class="kn">package&lt;/span> &lt;span class="nx">lists&lt;/span>&lt;span class="o">...&lt;/span> &lt;span class="nx">Done&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">Building&lt;/span> &lt;span class="nx">dependency&lt;/span> &lt;span class="nx">tree&lt;/span>&lt;span class="o">...&lt;/span> &lt;span class="nx">Done&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">Reading&lt;/span> &lt;span class="nx">state&lt;/span> &lt;span class="nx">information&lt;/span>&lt;span class="o">...&lt;/span> &lt;span class="nx">Done&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">1&lt;/span> &lt;span class="kn">package&lt;/span> &lt;span class="nx">can&lt;/span> &lt;span class="nx">be&lt;/span> &lt;span class="nx">upgraded&lt;/span>&lt;span class="p">.&lt;/span> &lt;span class="nx">Run&lt;/span> &lt;span class="err">&amp;#39;&lt;/span>&lt;span class="nx">apt&lt;/span> &lt;span class="nx">list&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="nx">upgradable&lt;/span>&lt;span class="err">&amp;#39;&lt;/span> &lt;span class="nx">to&lt;/span> &lt;span class="nx">see&lt;/span> &lt;span class="nx">it&lt;/span>&lt;span class="p">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">root&lt;/span>&lt;span class="err">@&lt;/span>&lt;span class="nx">web&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">cff6559d7&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">jddwt&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="err">#&lt;/span> &lt;span class="nx">apt&lt;/span> &lt;span class="nx">install&lt;/span> &lt;span class="nx">recon&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">ng&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">Reading&lt;/span> &lt;span class="kn">package&lt;/span> &lt;span class="nx">lists&lt;/span>&lt;span class="o">...&lt;/span> &lt;span class="nx">Done&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">Building&lt;/span> &lt;span class="nx">dependency&lt;/span> &lt;span class="nx">tree&lt;/span>&lt;span class="o">...&lt;/span> &lt;span class="nx">Done&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">Reading&lt;/span> &lt;span class="nx">state&lt;/span> &lt;span class="nx">information&lt;/span>&lt;span class="o">...&lt;/span> &lt;span class="nx">Done&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">The&lt;/span> &lt;span class="nx">following&lt;/span> &lt;span class="nx">additional&lt;/span> &lt;span class="nx">packages&lt;/span> &lt;span class="nx">will&lt;/span> &lt;span class="nx">be&lt;/span> &lt;span class="nx">installed&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">javascript&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">common&lt;/span> &lt;span class="nx">libgpm2&lt;/span> &lt;span class="nx">libjs&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">jquery&lt;/span> &lt;span class="nx">libjs&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">skeleton&lt;/span> &lt;span class="nx">libjs&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">sphinxdoc&lt;/span> &lt;span class="nx">libjs&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">underscore&lt;/span> &lt;span class="nx">libmpdec3&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">...&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">...&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">...&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">0&lt;/span> &lt;span class="nx">upgraded&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">69&lt;/span> &lt;span class="nx">newly&lt;/span> &lt;span class="nx">installed&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">0&lt;/span> &lt;span class="nx">to&lt;/span> &lt;span class="nx">remove&lt;/span> &lt;span class="nx">and&lt;/span> &lt;span class="mi">1&lt;/span> &lt;span class="nx">not&lt;/span> &lt;span class="nx">upgraded&lt;/span>&lt;span class="p">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">Need&lt;/span> &lt;span class="nx">to&lt;/span> &lt;span class="nx">get&lt;/span> &lt;span class="mf">13.0&lt;/span> &lt;span class="nx">MB&lt;/span> &lt;span class="nx">of&lt;/span> &lt;span class="nx">archives&lt;/span>&lt;span class="p">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">After&lt;/span> &lt;span class="nx">this&lt;/span> &lt;span class="nx">operation&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">55.7&lt;/span> &lt;span class="nx">MB&lt;/span> &lt;span class="nx">of&lt;/span> &lt;span class="nx">additional&lt;/span> &lt;span class="nx">disk&lt;/span> &lt;span class="nx">space&lt;/span> &lt;span class="nx">will&lt;/span> &lt;span class="nx">be&lt;/span> &lt;span class="nx">used&lt;/span>&lt;span class="p">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">Do&lt;/span> &lt;span class="nx">you&lt;/span> &lt;span class="nx">want&lt;/span> &lt;span class="nx">to&lt;/span> &lt;span class="k">continue&lt;/span>&lt;span class="err">?&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="nx">Y&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="nx">n&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="nx">y&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">...&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">...&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">...&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">Setting&lt;/span> &lt;span class="nx">up&lt;/span> &lt;span class="nx">recon&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nf">ng&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="mf">5.1.1&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="mi">3&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">...&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">Processing&lt;/span> &lt;span class="nx">triggers&lt;/span> &lt;span class="k">for&lt;/span> &lt;span class="nx">libc&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nf">bin&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="mf">2.31&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="mi">13&lt;/span>&lt;span class="o">+&lt;/span>&lt;span class="nx">deb11u4&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">...&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">root&lt;/span>&lt;span class="err">@&lt;/span>&lt;span class="nx">web&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">cff6559d7&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">jddwt&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="err">#&lt;/span> &lt;span class="nx">recon&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">ng&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">[&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="nx">Version&lt;/span> &lt;span class="nx">check&lt;/span> &lt;span class="nx">disabled&lt;/span>&lt;span class="p">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="nx">_&lt;/span>&lt;span class="o">/&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">/&lt;/span>\
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">/&lt;/span> &lt;span class="err">\\&lt;/span> &lt;span class="o">/&lt;/span>\
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">Sponsored&lt;/span> &lt;span class="nx">by&lt;/span>&lt;span class="o">...&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="err">\&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="err">\&lt;/span>&lt;span class="o">/&lt;/span> &lt;span class="err">\\&lt;/span>&lt;span class="nx">V&lt;/span> &lt;span class="err">\&lt;/span>&lt;span class="o">/&lt;/span>\
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">/&lt;/span> &lt;span class="err">\\&lt;/span>&lt;span class="o">/&lt;/span> &lt;span class="c1">// \\\\\ \\ \/\&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// // BLACK HILLS \/ \\&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">www&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">blackhillsinfosec&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">com&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">____&lt;/span> &lt;span class="nx">____&lt;/span> &lt;span class="nx">____&lt;/span> &lt;span class="nx">____&lt;/span> &lt;span class="nx">_____&lt;/span> &lt;span class="nx">_&lt;/span> &lt;span class="nx">____&lt;/span> &lt;span class="nx">____&lt;/span> &lt;span class="nx">____&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">|&lt;/span>&lt;span class="nx">____&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nx">___&lt;/span>&lt;span class="o">/&lt;/span> &lt;span class="p">|&lt;/span>&lt;span class="nx">____&lt;/span>&lt;span class="p">|&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="p">|&lt;/span>&lt;span class="nx">____&lt;/span> &lt;span class="p">|&lt;/span>&lt;span class="nx">____&lt;/span> &lt;span class="p">|&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">|&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="err">\&lt;/span>&lt;span class="nx">_&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="p">|&lt;/span>&lt;span class="nx">____&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nx">____&lt;/span>&lt;span class="p">|&lt;/span> &lt;span class="p">|&lt;/span>&lt;span class="nx">____&lt;/span> &lt;span class="p">|&lt;/span>&lt;span class="nx">____&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">www&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">practisec&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">com&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">[&lt;/span>&lt;span class="nx">recon&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">ng&lt;/span> &lt;span class="nx">v5&lt;/span>&lt;span class="mf">.1.1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">Tim&lt;/span> &lt;span class="nf">Tomes&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="err">@&lt;/span>&lt;span class="nx">lanmaster53&lt;/span>&lt;span class="p">)]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">[&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="nx">No&lt;/span> &lt;span class="nx">modules&lt;/span> &lt;span class="nx">enabled&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="nx">installed&lt;/span>&lt;span class="p">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">[&lt;/span>&lt;span class="nx">recon&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">ng&lt;/span>&lt;span class="p">][&lt;/span>&lt;span class="k">default&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h4 id="332-nginx-bash">3.3.2. nginx bash
+&lt;/h4>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">rancher@rms1:~&amp;gt; kubectl get po
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">NAME READY STATUS RESTARTS AGE
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">web-cff6559d7-jddwt 1/1 Running 0 5m4s
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">rancher@rms1:~&amp;gt; kubectl exec -it web-cff6559d7-jddwt -- /bin/bash
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div></description></item></channel></rss>
