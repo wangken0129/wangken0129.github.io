@@ -2,7 +2,7 @@
 title: Nutanix_NKP-v2.13_AHV
 description: Nutanix_NKP-v2.13_AHV
 slug: Nutanix_NKP-v2.13_AHV
-date: 2025-02-24T07:52:50+08:00
+date: 2025-02-25T07:14:25+08:00
 categories:
     - Lab Category
 tags:
@@ -140,37 +140,37 @@ Permissive
 ```
 "switch to root" (方便使用，也可以用一般使用者，但要另外設定)
 
-[root@nkp-bastion ~]# podman login registry-1.docker.io
+[root@nkp-bastion ~] podman login registry-1.docker.io
 
 "Start registry"
 
-[root@nkp-bastion ~]# podman run -d -p 5000:5000 --restart always --name nkp-registry registry:latest
-[root@nkp-bastion ~]# export BOOTSTRAP_HOST_IP=10.38.14.24 >> .bashrc
-[root@nkp-bastion ~]# echo "export REGISTRY_URL=http://10.38.14.24:5000" >> .bashrc
-[root@nkp-bastion ~]# source .bashrc
+[root@nkp-bastion ~] podman run -d -p 5000:5000 --restart always --name nkp-registry registry:latest
+[root@nkp-bastion ~] export BOOTSTRAP_HOST_IP=10.38.14.24 >> .bashrc
+[root@nkp-bastion ~] echo "export REGISTRY_URL=http://10.38.14.24:5000" >> .bashrc
+[root@nkp-bastion ~] source .bashrc
 
 ```
 
-#### 推送 Image
+#### 推送 NKP Image
 
 ```
 "Push Image"
 
-[root@nkp-bastion ~]# nkp push bundle --bundle /home/nkp/nkptools/nkp-airgap/nkp-v2.13.1/container-images/kommander-image-bundle-v2.13.1.tar --to-registry=$REGISTRY_URL --to-registry-insecure-skip-tls-verify
+[root@nkp-bastion ~] nkp push bundle --bundle /home/nkp/nkptools/nkp-airgap/nkp-v2.13.1/container-images/kommander-image-bundle-v2.13.1.tar --to-registry=$REGISTRY_URL --to-registry-insecure-skip-tls-verify
  ✓ Creating temporary directory
  ✓ Unarchiving image bundle "/home/nkp/nkptools/nkp-airgap/nkp-v2.13.1/container-images/kommander-image-bundle-v2.13.1.tar"
  ✓ Parsing image bundle config
  ✓ Starting temporary Docker registry
  ✓ Pushing bundled images [================================>123/123] (time elapsed 57s) 
  
-[root@nkp-bastion ~]# nkp push bundle --bundle /home/nkp/nkptools/nkp-airgap/nkp-v2.13.1/container-images/konvoy-image-bundle-v2.13.1.tar --to-registry=$REGISTRY_URL --to-registry-insecure-skip-tls-verify
+[root@nkp-bastion ~] nkp push bundle --bundle /home/nkp/nkptools/nkp-airgap/nkp-v2.13.1/container-images/konvoy-image-bundle-v2.13.1.tar --to-registry=$REGISTRY_URL --to-registry-insecure-skip-tls-verify
  ✓ Creating temporary directory
  ✓ Unarchiving image bundle "/home/nkp/nkptools/nkp-airgap/nkp-v2.13.1/container-images/konvoy-image-bundle-v2.13.1.tar"
  ✓ Parsing image bundle config
  ✓ Starting temporary Docker registry
  ✓ Pushing bundled images [================================>115/115] (time elapsed 35s) 
  
-[root@nkp-bastion ~]# nkp push bundle --bundle /home/nkp/nkptools/nkp-airgap/nkp-v2.13.1/container-images/nkp-catalog-applications-image-bundle-v2.13.1.tar --to-registry=$REGISTRY_URL --to-registry-insecure-skip-tls-verify
+[root@nkp-bastion ~] nkp push bundle --bundle /home/nkp/nkptools/nkp-airgap/nkp-v2.13.1/container-images/nkp-catalog-applications-image-bundle-v2.13.1.tar --to-registry=$REGISTRY_URL --to-registry-insecure-skip-tls-verify
  ✓ Creating temporary directory
  ✓ Unarchiving image bundle "/home/nkp/nkptools/nkp-airgap/nkp-v2.13.1/container-images/nkp-catalog-applications-image-bundle-v2.13.1.tar"
  ✓ Parsing image bundle config
@@ -186,7 +186,7 @@ Permissive
 podman load -i /home/nkp/nkptools/nkp-airgap/nkp-v2.13.1/konvoy-bootstrap-image-v2.13.1.tar
 podman load -i /home/nkp/nkptools/nkp-airgap/nkp-v2.13.1/nkp-image-builder-image-v0.20.0.tar
 
-[root@nkp-bastion ~]# podman images
+[root@nkp-bastion ~] podman images
 REPOSITORY                              TAG         IMAGE ID      CREATED        SIZE
 localhost/mesosphere/konvoy-bootstrap   v2.13.1     e7b2ed9a825c  5 weeks ago    2.13 GB
 docker.io/library/registry              latest      26b2eb03618e  16 months ago  26 MB
@@ -204,16 +204,16 @@ localhost/mesosphere/nkp-image-builder  v0.20.0     f8ce7f154c3b  45 years ago  
 ### Bootstrap Cluster
 
 ```
-[root@nkp-bastion ~]# nkp create bootstrap
+[root@nkp-bastion ~] nkp create bootstrap
  ✓ Creating a bootstrap cluster 
  ✓ Initializing new CAPI components 
  ✓ Initializing new CAPI components 
  ✓ Creating ClusterClass resources 
  
- [root@nkp-bastion ~]# kubectl get nodes
+ [root@nkp-bastion ~] kubectl get nodes
 NAME                                     STATUS   ROLES           AGE     VERSION
 konvoy-capi-bootstrapper-control-plane   Ready    control-plane   2m27s   v1.30.5
-[root@nkp-bastion ~]# kubectl get pods -A
+[root@nkp-bastion ~] kubectl get pods -A
 NAMESPACE                           NAME                                                             READY   STATUS    RESTARTS   AGE
 caaph-system                        caaph-controller-manager-5c4b55f8b6-n6l5j                        1/1     Running   0          93s
 capa-system                         capa-controller-manager-6c9654f67d-4cr6z                         1/1     Running   0          108s
@@ -238,7 +238,7 @@ echo "export SUBNET=primary" >> ~/.bashrc
 
 source ~/.bashrc
 
-[root@nkp-bastion ~]# env
+[root@nkp-bastion ~] env
 REGISTRY_URL=http://10.38.14.24:5000
 PE_CLUSTER_NAME=PHX-SPOC014-1
 NUTANIX_USER=admin
@@ -248,7 +248,7 @@ BOOTSTRAP_HOST_IP=10.38.14.24
 
 
 
-[root@nkp-bastion ~]# nkp create image nutanix ubuntu-22.04 --cluster=$PE_CLUSTER_NAME --endpoint=$PC_ENDPOINT --subnet=$SUBNET --insecure
+[root@nkp-bastion ~] nkp create image nutanix ubuntu-22.04 --cluster=$PE_CLUSTER_NAME --endpoint=$PC_ENDPOINT --subnet=$SUBNET --insecure
 
 ==> Wait completed after 6 minutes 33 seconds
 
@@ -285,7 +285,7 @@ source ~/.bashrc
 
 ### Management Cluster
 
-#### Env
+#### Env 設定環境變數
 
 ```
 env.sh
@@ -308,7 +308,7 @@ export REGISTRY_URL="http://10.38.14.24:5000"
 source env.sh
 ```
 
-#### Create
+#### Create  Cluster
 
 ```
 nkp create cluster nutanix \
@@ -330,13 +330,13 @@ nkp create cluster nutanix \
 --dry-run \
 --output=yaml > deploy-nkp-$MGMT_CLUSTER_NAME.yaml
 
-[root@nkp-bastion ~]# ll
+[root@nkp-bastion ~] ll
 total 16
 -rw-------. 1 root root  997 Feb 20 22:43 anaconda-ks.cfg
 -rw-r--r--. 1 root root 5913 Feb 21 01:20 deploy-nkp-nkp-poc.yaml
 -rwxr-xr-x. 1 root root  586 Feb 21 01:17 env.sh
 
-[root@nkp-bastion ~]# kubectl create -f deploy-nkp-nkp-poc.yaml
+[root@nkp-bastion ~] kubectl create -f deploy-nkp-nkp-poc.yaml
 cluster.cluster.x-k8s.io/nkp-poc created
 secret/nkp-poc-pc-credentials created
 secret/nkp-poc-pc-credentials-for-csi created
@@ -350,9 +350,9 @@ watch -n 5 nkp describe cluster --cluster-name $MGMT_CLUSTER_NAME
 ![image-20250221172657309](https://kenkenny.synology.me:5543/images/2025/02/image-20250221172657309.png)
 
 ```
-[root@nkp-bastion ~]# nkp get kubeconfig --cluster-name nkp-poc > nkp-poc.conf
-[root@nkp-bastion ~]# chmod 600 nkp-poc.conf
-[root@nkp-bastion ~]# ll
+[root@nkp-bastion ~] nkp get kubeconfig --cluster-name nkp-poc > nkp-poc.conf
+[root@nkp-bastion ~] chmod 600 nkp-poc.conf
+[root@nkp-bastion ~] ll
 total 32
 -rw-------. 1 root root  997 Feb 20 22:43 anaconda-ks.cfg
 -rw-r--r--. 1 root root 5913 Feb 21 01:20 deploy-nkp-nkp-poc.yaml
@@ -363,7 +363,7 @@ total 32
 echo "export KUBECONFIG=~/nkp-poc.conf" >> ~/.bashrc
 source .bashrc 
 
-[root@nkp-bastion ~]# kubectl get nodes
+[root@nkp-bastion ~] kubectl get nodes
 NAME                             STATUS   ROLES           AGE     VERSION
 nkp-poc-d78fs-dkfnd              Ready    control-plane   5m43s   v1.30.5
 nkp-poc-d78fs-gmllf              Ready    control-plane   8m8s    v1.30.5
@@ -375,7 +375,7 @@ nkp-poc-md-0-clx8j-g5pnb-m9dkw   Ready    <none>          6m18s   v1.30.5
 
 
 "建立 capi-components"
-[root@nkp-bastion ~]# nkp create capi-components
+[root@nkp-bastion ~] nkp create capi-components
  ✓ Initializing new CAPI components 
  ✓ Initializing new CAPI components 
  ✓ Creating ClusterClass resources 
@@ -386,22 +386,22 @@ nkp-poc-md-0-clx8j-g5pnb-m9dkw   Ready    <none>          6m18s   v1.30.5
 ```
 "從 bootstratp 移轉 capi-resources"
 
-[root@nkp-bastion ~]# unset KUBECONFIG
-[root@nkp-bastion ~]# kubectl get nodes
+[root@nkp-bastion ~] unset KUBECONFIG
+[root@nkp-bastion ~] kubectl get nodes
 NAME                                     STATUS   ROLES           AGE   VERSION
 konvoy-capi-bootstrapper-control-plane   Ready    control-plane   60m   v1.30.5
 
-[root@nkp-bastion ~]# nkp move capi-resources --to-kubeconfig nkp-poc.conf
+[root@nkp-bastion ~] nkp move capi-resources --to-kubeconfig nkp-poc.conf
  ✓ Moving cluster resources 
 
 You can now view resources in the moved cluster by using the --kubeconfig flag with kubectl.
 For example: kubectl --kubeconfig="nkp-poc.conf" get nodes
 
-[root@nkp-bastion ~]# nkp delete bootstrap
+[root@nkp-bastion ~] nkp delete bootstrap
  ✓ Deleting bootstrap cluster 
  
-[root@nkp-bastion ~]# source ~/.bashrc
-[root@nkp-bastion ~]# kubectl get nodes
+[root@nkp-bastion ~] source ~/.bashrc
+[root@nkp-bastion ~] kubectl get nodes
 NAME                             STATUS   ROLES           AGE   VERSION
 nkp-poc-d78fs-dkfnd              Ready    control-plane   12m   v1.30.5
 nkp-poc-d78fs-gmllf              Ready    control-plane   14m   v1.30.5
@@ -410,7 +410,7 @@ nkp-poc-md-0-clx8j-g5pnb-4jbfm   Ready    <none>          12m   v1.30.5
 nkp-poc-md-0-clx8j-g5pnb-cxlx7   Ready    <none>          13m   v1.30.5
 nkp-poc-md-0-clx8j-g5pnb-kwvlj   Ready    <none>          12m   v1.30.5
 nkp-poc-md-0-clx8j-g5pnb-m9dkw   Ready    <none>          12m   v1.30.5
-[root@nkp-bastion ~]# kubectl get ns
+[root@nkp-bastion ~] kubectl get ns
 NAME                                STATUS   AGE
 caaph-system                        Active   4m56s
 capa-system                         Active   5m9s
@@ -444,28 +444,32 @@ ntnx-system                         Active   14m
 
 watch kubectl get pods -n kommander
 
-[root@nkp-bastion ~]# nkp get dashboard 
+[root@nkp-bastion ~] nkp get dashboard 
 Username: clever_euclid
 Password: 8JW63deYbPpIIrCtTPBXJihIF8xsWxw0YTCSVvcAa1SupyZ14GqEEVFGXzAb7ZB7
 URL: https://10.38.14.52/dkp/kommander/dashboard
 ```
+
+串接LDAP、License匯入完成後登入畫面
+
+![image-20250225151046730](https://kenkenny.synology.me:5543/images/2025/02/image-20250225151046730.png)
 
 #### 其他叢集資訊
 
 ```
 "叢集資訊"
 
-[root@nkp-bastion ~]# kubectl get namespace kube-system --output jsonpath={.metadata.uid}
+[root@nkp-bastion ~] kubectl get namespace kube-system --output jsonpath={.metadata.uid}
 7e1c859a-0d30-46a3-83d5-21398e4d7cc4
 
-[root@nkp-bastion ~]# kubectl get cluster
+[root@nkp-bastion ~] kubectl get cluster
 NAME      CLUSTERCLASS   PHASE         AGE     VERSION
 nkp-poc   nkp-nutanix    Provisioned   2d20h   v1.30.5
 
 "POC License Key"
-AEAAN-AAAYY-T9A7V-5UL6S-49UQ2-H89DG-EP2AR
+# AEAAN-AAAYY-T9A7V-5UL6S-49UQ2-H89DG-EP2AR
 
-[root@nkp-bastion ~]# kubectl describe cluster nkp-poc
+[root@nkp-bastion ~] kubectl describe cluster nkp-poc
 Name:         nkp-poc
 Namespace:    default
 Labels:       cluster.x-k8s.io/cluster-name=nkp-poc
