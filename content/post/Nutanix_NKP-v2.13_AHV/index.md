@@ -2,7 +2,7 @@
 title: Nutanix_NKP-v2.13_AHV
 description: Nutanix_NKP-v2.13_AHV
 slug: Nutanix_NKP-v2.13_AHV
-date: 2025-03-07T05:45:12+08:00
+date: 2025-03-07T05:53:22+08:00
 categories:
     - Lab Category
 tags:
@@ -1113,6 +1113,48 @@ nkp-poc-md-0-clx8j-gfbbp-g6rtw   Ready    <none>          7m59s   v1.31.4
 nkp-poc-md-0-clx8j-gfbbp-qzrkh   Ready    <none>          3m15s   v1.31.4
 nkp-poc-md-0-clx8j-gfbbp-sh8b2   Ready    <none>          14m     v1.31.4
 nkp-poc-md-0-clx8j-gfbbp-xlmc7   Ready    <none>          12m     v1.31.4
+
+
+[nkp@nkp-bastion ~]$ kubectl get helmreleases -A
+NAMESPACE                     NAME                                AGE   READY   STATUS
+kommander-default-workspace   karma-traefik-certs                 13d   True    Helm upgrade succeeded for release kommander-default-workspace/karma-traefik-certs.v2 with chart kommander-cert-federation@0.0.12
+kommander-default-workspace   prometheus-traefik-certs            13d   True    Helm upgrade succeeded for release kommander-default-workspace/prometheus-traefik-certs.v2 with chart kommander-cert-federation@0.0.12
+kommander                     ai-navigator-app                    10d   True    Helm install succeeded for release kommander/ai-navigator-cluster-info-api.v1 with chart ai-navigator-cluster-info-api@0.2.8
+kommander                     cluster-observer-2360587938         13d   True    Helm upgrade succeeded for release kommander/cluster-observer-2360587938.v2 with chart cluster-observer@1.4.1
+kommander                     cosi-driver-ceph-dkp-object-store   20h   True    Helm install succeeded for release kommander/rook-ceph-cluster-cosi-driver.v1 with chart cosi-bucket-kit@0.0.5
+kommander                     dex                                 13d   True    Helm upgrade succeeded for release kommander/dex.v3 with chart dex@2.14.0
+kommander                     dex-k8s-authenticator               13d   True    Helm upgrade succeeded for release kommander/dex-k8s-authenticator.v5 with chart dex-k8s-authenticator@1.4.1
+kommander                     fluent-bit                          10d   True    Helm upgrade succeeded for release kommander/kommander-fluent-bit.v2 with chart fluent-bit@0.48.5
+kommander                     gatekeeper                          13d   True    Helm upgrade succeeded for release kommander/kommander-gatekeeper.v2 with chart gatekeeper@3.18.2
+kommander                     gatekeeper-proxy-mutations          13d   True    Helm install succeeded for release kommander/gatekeeper-proxy-mutations.v1 with chart gatekeeper-proxy-mutations@v0.0.1
+kommander                     gateway-api-crds                    20h   True    Helm install succeeded for release kommander/gateway-api-crds.v1 with chart traefik-crds@1.2.0
+kommander                     grafana-logging                     10d   True    Helm upgrade succeeded for release kommander/grafana-logging.v2 with chart grafana@8.9.0
+kommander                     grafana-loki                        10d   True    Helm install succeeded for release kommander/grafana-loki.v1 with chart loki-distributed@0.79.4
+kommander                     istio                               10d   True    Helm upgrade succeeded for release istio-system/istio.v3 with chart istio@1.23.3
+kommander                     jaeger                              10d   True    Helm upgrade succeeded for release istio-system/jaeger.v2 with chart jaeger-operator@2.57.0
+kommander                     karma-traefik-certs                 13d   True    Helm upgrade succeeded for release kommander/karma-traefik-certs.v2 with chart kommander-cert-federation@0.0.12
+kommander                     kiali                               10d   True    Helm upgrade succeeded for release istio-system/kiali.v2 with chart kiali-operator@2.4.0
+kommander                     kommander                           13d   True    Helm upgrade succeeded for release kommander/kommander.v2 with chart kommander@v2.14.0
+kommander                     kommander-appmanagement             13d   True    Helm upgrade succeeded for release kommander/kommander-appmanagement.v2 with chart kommander-appmanagement@v2.14.0
+kommander                     kommander-operator                  13d   True    Helm upgrade succeeded for release kommander/kommander-operator.v2 with chart kommander-operator@0.3.2
+kommander                     kommander-ui                        13d   True    Helm upgrade succeeded for release kommander/kommander-kommander-ui.v2 with chart kommander-ui@17.42.7
+kommander                     kube-oidc-proxy                     13d   True    Helm upgrade succeeded for release kommander/kube-oidc-proxy.v2 with chart kube-oidc-proxy@0.3.4
+kommander                     kube-prometheus-stack               10d   True    Helm upgrade succeeded for release kommander/kube-prometheus-stack.v3 with chart kube-prometheus-stack@69.1.2
+kommander                     kubefed                             13d   True    Helm upgrade succeeded for release kube-federation-system/kubefed.v2 with chart kubefed@0.10.4
+kommander                     kubernetes-dashboard                10d   True    Helm upgrade succeeded for release kommander/kubernetes-dashboard.v2 with chart kubernetes-dashboard@7.10.3
+kommander                     kubetunnel                          10d   True    Helm upgrade succeeded for release kommander/kubetunnel.v2 with chart kubetunnel@v0.0.39
+kommander                     logging-operator                    10d   True    Helm upgrade succeeded for release kommander/logging-operator.v2 with chart logging-operator@5.0.1
+kommander                     logging-operator-logging            10d   True    Helm upgrade succeeded for release kommander/logging-operator-logging.v2 with chart logging-operator-logging@4.2.2
+kommander                     object-bucket-claims                10d   True    Helm upgrade succeeded for release kommander/object-bucket-claims.v2 with chart object-bucket-claim@0.1.11
+kommander                     prometheus-adapter                  10d   True    Helm install succeeded for release kommander/prometheus-adapter.v1 with chart prometheus-adapter@4.11.0
+kommander                     prometheus-traefik-certs            13d   True    Helm upgrade succeeded for release kommander/prometheus-traefik-certs.v2 with chart kommander-cert-federation@0.0.12
+kommander                     reloader                            13d   True    Helm upgrade succeeded for release kommander/kommander-reloader.v2 with chart reloader@1.2.1
+kommander                     rook-ceph                           10d   True    Helm upgrade succeeded for release kommander/rook-ceph.v2 with chart rook-ceph@v1.16.2
+kommander                     rook-ceph-cluster                   10d   True    Helm upgrade succeeded for release kommander/rook-ceph-cluster.v2 with chart rook-ceph-cluster@v1.16.2
+kommander                     traefik                             13d   True    Helm upgrade succeeded for release kommander/kommander-traefik.v2 with chart traefik@34.1.0
+kommander                     traefik-crds                        20h   True    Helm install succeeded for release kommander/traefik-crds.v1 with chart traefik-crds@1.2.0
+kommander                     traefik-forward-auth-mgmt           13d   True    Helm upgrade succeeded for release kommander/traefik-forward-auth-mgmt.v2 with chart traefik-forward-auth@0.3.10
+kommander                     velero                              10d   True    Helm upgrade succeeded for release kommander/velero.v2 with chart velero@8.3.0
 ```
 
 Management 升級完成後之後再升級 workload cluster
