@@ -1,0 +1,1216 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Quay on Ken's blog</title><link>https://wangken0129.github.io/tags/quay/</link><description>Recent content in Quay on Ken's blog</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Sat, 23 Sep 2023 08:18:17 +0800</lastBuildDate><atom:link href="https://wangken0129.github.io/tags/quay/index.xml" rel="self" type="application/rss+xml"/><item><title>Redhat_Quay&amp;Clair</title><link>https://wangken0129.github.io/p/redhat_quayclair/</link><pubDate>Sat, 23 Sep 2023 08:18:17 +0800</pubDate><guid>https://wangken0129.github.io/p/redhat_quayclair/</guid><description>&lt;h1 id="install-redhat-quay--clair">Install Redhat Quay &amp;amp; Clair
+&lt;/h1>&lt;p>安裝單節點的Quay跟Clair在同一台VM上面執行，需先裝好Clair再安裝Quay。&lt;/p>
+&lt;h1 id="參考文件">參考文件
+&lt;/h1>&lt;p>1.原廠文件：https://access.redhat.com/documentation/en-us/red_hat_quay/2.9/html/manage_red_hat_quay/clair-initial-setup&lt;/p>
+&lt;p>2.原廠文件：https://access.redhat.com/documentation/zh-tw/red_hat_quay/3.7/html/manage_red_hat_quay/clair-intro2&lt;/p>
+&lt;p>3.quay&amp;amp;clair: &lt;a class="link" href="https://examples.openshift.pub/quay/" target="_blank" rel="noopener"
+>https://examples.openshift.pub/quay/&lt;/a>
+&lt;a class="link" href="https://www.modb.pro/db/109809" target="_blank" rel="noopener"
+>https://www.modb.pro/db/109809&lt;/a> &amp;ndash;&amp;gt; 本篇參考
+&lt;a class="link" href="https://docs.projectquay.io/deploy_quay.html" target="_blank" rel="noopener"
+>https://docs.projectquay.io/deploy_quay.html&lt;/a>&lt;/p>
+&lt;h1 id="架構-單節點">架構 (單節點)
+&lt;/h1>&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th style="text-align: left">Clair&lt;/th>
+&lt;th>說明&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td style="text-align: left">OS_User&lt;/td>
+&lt;td>root、devop / redhat&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align: left">OS&lt;/td>
+&lt;td>RHEL8.6&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align: left">OS_IP&lt;/td>
+&lt;td>192.168.33.34&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align: left">CPU、RAM&lt;/td>
+&lt;td>4vCPU、16GB Ram、100GB Disk&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align: left">HostName&lt;/td>
+&lt;td>quay.ocp.ken.lab&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align: left">WorkDir&lt;/td>
+&lt;td>/home/devop/clair&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align: left">Postgresdb&lt;/td>
+&lt;td>clairuser / welcome1 / clairdb&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align: left">Clair&lt;/td>
+&lt;td>v3.5.0&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align: left">Quay&lt;/td>
+&lt;td>v3.7.3&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align: left">clairpod&lt;/td>
+&lt;td>-p 5433:5432 -p 8081:8081 -p 8089:8089&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th style="text-align: left">Quay&lt;/th>
+&lt;th>說明&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td style="text-align: left">OS_User&lt;/td>
+&lt;td>devop&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align: left">OS&lt;/td>
+&lt;td>RHEL8.5&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align: left">OS_IP&lt;/td>
+&lt;td>192.168.3.28&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align: left">WorkDir&lt;/td>
+&lt;td>/home/devop&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align: left">Postgresdb&lt;/td>
+&lt;td>quayuser / welcome1&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align: left">quay admin&lt;/td>
+&lt;td>quayadmin / welcome1&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align: left">redis password&lt;/td>
+&lt;td>welcome1&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align: left">quay-pod port&lt;/td>
+&lt;td>80:8080、3306:3306、5432:5432&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align: left">Quay Version&lt;/td>
+&lt;td>v3.7.3&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align: left">Wordpresspod&lt;/td>
+&lt;td>8989:80、3307:3306&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h1 id="安裝步驟">安裝步驟
+&lt;/h1>&lt;h2 id="os-設定">OS 設定
+&lt;/h2>&lt;h3 id="users">Users
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">[root@quay ~]# useradd devop
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">[root@quay ~]# passwd devop
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="disk">Disk
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">[root@quay ~]# df -h
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Filesystem Size Used Avail Use% Mounted on
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">devtmpfs 7.8G 0 7.8G 0% /dev
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">tmpfs 7.8G 0 7.8G 0% /dev/shm
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">tmpfs 7.8G 8.7M 7.8G 1% /run
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">tmpfs 7.8G 0 7.8G 0% /sys/fs/cgroup
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">/dev/mapper/rhel-root 61G 2.8G 59G 5% /
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">/dev/sda2 1014M 207M 808M 21% /boot
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">/dev/mapper/rhel-home 30G 245M 30G 1% /home
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">/dev/sda1 599M 5.9M 594M 1% /boot/efi
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">tmpfs 1.6G 0 1.6G 0% /run/user/0
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">tmpfs 1.6G 0 1.6G 0% /run/user/1000
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="network">NetWork
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">[root@quay ~]# nmcli c s
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">NAME UUID TYPE DEVICE
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">ens192 7e9a88db-859f-4580-bfc9-9fbe9c5985c6 ethernet ens192
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">[root@quay ~]# nmcli c mod ens192 ipv4.method manual ipv4.address 192.168.33.34/24 ipv4.gateway 192.168.33.251 ipv4.dns 168.95.1.1
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">[root@quay ~]# nmcli c u ens192
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">[root@quay ~]# cat /etc/resolv.conf
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># Generated by NetworkManager
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">search ocp.ken.lab
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">nameserver 192.168.33.21
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">nameserver 168.95.1.1
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="sudo">sudo
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">[root@quay ~]# cat /etc/sudoers.d/devop
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">devop ALL=(ALL) NOPASSWD: ALL
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="subsciption">subsciption
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">root@quay ~]# subscription-manager register
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Registering to: subscription.rhsm.redhat.com:443/subscription
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Username: ken.wang@infotech.com.tw
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Password:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">The system has been registered with ID: 77693b7f-9bbe-412d-9e15-210c55e799ef
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">The registered system name is: quay.ocp.ken.lab
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="yum">yum
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">[root@quay ~]# yum repolist
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Updating Subscription Management repositories.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">repo id repo name
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">rhel-8-for-x86_64-appstream-rpms Red Hat Enterprise Linux 8 for x86_64 - AppStream (RPMs)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">rhel-8-for-x86_64-baseos-rpms Red Hat Enterprise Linux 8 for x86_64 - BaseOS (RPMs)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="install-podman">Install Podman
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">[root@quay ~]# yum install podman -y
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">[root@quay ~]# podman -v
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">podman version 4.1.1
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="環境設定">環境設定
+&lt;/h2>&lt;ol>
+&lt;li>
+&lt;p>建立 Clair_pod&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">[devop@uat-quay ~]$ cat create_clairpod.sh
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">podman pod create --name=clairpod -p 5433:5432 -p 8081:8081 -p 8089:8089
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">[devop@uat-quay ~]$ ./create_clairpod.sh
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>建立 Quay_pod&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">[devop@quay quay]$ cat createpod.sh
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">podman pod create --name=quaypod -p 80:8080 -p 443:8443 -p 6379:6379 -p 5432:5432
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">[devop@quay quay]$ ./createpod.sh
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">f3fcbd51ffa7454c4e8825806a07252a9072ed7d26ad092e6bd21eb992033948
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>設定防火牆、SELinux&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="p">[&lt;/span>&lt;span class="n">devop&lt;/span>&lt;span class="err">@&lt;/span>&lt;span class="n">quay&lt;/span> &lt;span class="n">quay&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="o">$&lt;/span> &lt;span class="n">sudo&lt;/span> &lt;span class="n">systemctl&lt;/span> &lt;span class="n">disable&lt;/span> &lt;span class="n">firewalld&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="n">now&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">[&lt;/span>&lt;span class="n">devop&lt;/span>&lt;span class="err">@&lt;/span>&lt;span class="n">quay&lt;/span> &lt;span class="n">quay&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="o">$&lt;/span> &lt;span class="n">sudo&lt;/span> &lt;span class="n">su&lt;/span> &lt;span class="o">-&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">[&lt;/span>&lt;span class="n">root&lt;/span>&lt;span class="err">@&lt;/span>&lt;span class="n">quay&lt;/span> &lt;span class="o">~&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="c1"># setenforce 0&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">[&lt;/span>&lt;span class="n">root&lt;/span>&lt;span class="err">@&lt;/span>&lt;span class="n">quay&lt;/span> &lt;span class="o">~&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="c1"># vim /etc/selinux/config &lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">[&lt;/span>&lt;span class="n">root&lt;/span>&lt;span class="err">@&lt;/span>&lt;span class="n">quay&lt;/span> &lt;span class="o">~&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="c1"># cat /etc/selinux/config &lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># This file controls the state of SELinux on the system.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># SELINUX= can take one of these three values:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># enforcing - SELinux security policy is enforced.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># permissive - SELinux prints warnings instead of enforcing.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># disabled - No SELinux policy is loaded.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">SELINUX&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">disabled&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># SELINUXTYPE= can take one of these three values:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># targeted - Targeted processes are protected,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># minimum - Modification of targeted policy. Only selected processes are protected. &lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># mls - Multi Level Security protection.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">SELINUXTYPE&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">targeted&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>調整podman port binding權限&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">sudo su -
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">echo &amp;#34;net.ipv4.ip_unprivileged_port_start = 80&amp;#34; &amp;gt;&amp;gt; /etc/sysctl.conf
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">[root@quay ~]# reboot
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>podman 登入 registry.redhat.io&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">[devop@quay clair]$ podman login registry.redhat.io
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Username: ken.wang@infotech.com.tw
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Password:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Login Succeeded!
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>podman 登入 安裝quay時使用&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="o">[&lt;/span>devop@quay ~&lt;span class="o">]&lt;/span>$ cat podmanlogin.sh
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">#!/bin/bash&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">podman login -u&lt;span class="o">=&lt;/span>&lt;span class="s2">&amp;#34;redhat+quay&amp;#34;&lt;/span> -p&lt;span class="o">=&lt;/span>&lt;span class="s2">&amp;#34;O81WSHRSJR14UAZBK54GQHJS0P1V4CLWAJV1X2C4SD7KO59CQ9N3RE12612XU1HR&amp;#34;&lt;/span> quay.io
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>產生CA&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;span class="lnt">46
+&lt;/span>&lt;span class="lnt">47
+&lt;/span>&lt;span class="lnt">48
+&lt;/span>&lt;span class="lnt">49
+&lt;/span>&lt;span class="lnt">50
+&lt;/span>&lt;span class="lnt">51
+&lt;/span>&lt;span class="lnt">52
+&lt;/span>&lt;span class="lnt">53
+&lt;/span>&lt;span class="lnt">54
+&lt;/span>&lt;span class="lnt">55
+&lt;/span>&lt;span class="lnt">56
+&lt;/span>&lt;span class="lnt">57
+&lt;/span>&lt;span class="lnt">58
+&lt;/span>&lt;span class="lnt">59
+&lt;/span>&lt;span class="lnt">60
+&lt;/span>&lt;span class="lnt">61
+&lt;/span>&lt;span class="lnt">62
+&lt;/span>&lt;span class="lnt">63
+&lt;/span>&lt;span class="lnt">64
+&lt;/span>&lt;span class="lnt">65
+&lt;/span>&lt;span class="lnt">66
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="o">[&lt;/span>devop@quay certs&lt;span class="o">]&lt;/span>$ cat gencert.sh
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">#!/bin/bash&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Create certificate given a specific url name&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">if&lt;/span> &lt;span class="o">[&lt;/span> &lt;span class="nv">$#&lt;/span> -ne &lt;span class="m">1&lt;/span> &lt;span class="o">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">then&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;No arguments supplied or too many arguments&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;Usage: &lt;/span>&lt;span class="nv">$0&lt;/span>&lt;span class="s2"> domain_name&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">exit&lt;/span> &lt;span class="m">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">fi&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">MYNAME&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="nv">$1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;Generating a private key...for &lt;/span>&lt;span class="nv">$MYNAME&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">openssl genrsa -out &lt;span class="nv">$MYNAME&lt;/span>.key &lt;span class="m">4096&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;Generating a CSR...for &lt;/span>&lt;span class="nv">$MYNAME&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">openssl req -new -key &lt;span class="nv">$MYNAME&lt;/span>.key &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span>-out &lt;span class="nv">$MYNAME&lt;/span>.csr &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span>-subj &lt;span class="s2">&amp;#34;/C=TW/ST=TW/L=Taipei/O=KEN/OU=LAB/CN=&lt;/span>&lt;span class="nv">$MYNAME&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;Generating a certificate...for &lt;/span>&lt;span class="nv">$MYNAME&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">openssl x509 -req -days &lt;span class="m">366&lt;/span> -in &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span>&lt;span class="nv">$MYNAME&lt;/span>.csr -signkey &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span>&lt;span class="nv">$MYNAME&lt;/span>.key &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span>-out &lt;span class="nv">$MYNAME&lt;/span>.crt -extensions v3_req -extfile quay.cnf
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">---
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">[&lt;/span>devop@quay certs&lt;span class="o">]&lt;/span>$ cat quay.cnf
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">[&lt;/span>req&lt;span class="o">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">req_extensions&lt;/span> &lt;span class="o">=&lt;/span> v3_req
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">distinguished_name&lt;/span> &lt;span class="o">=&lt;/span> req_distinguished_name
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">[&lt;/span>req_distinguished_name&lt;span class="o">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">[&lt;/span> v3_req &lt;span class="o">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">basicConstraints&lt;/span> &lt;span class="o">=&lt;/span> CA:FALSE
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">keyUsage&lt;/span> &lt;span class="o">=&lt;/span> nonRepudiation, digitalSignature, keyEncipherment
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">subjectAltName&lt;/span> &lt;span class="o">=&lt;/span> @alt_names
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">[&lt;/span>alt_names&lt;span class="o">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">DNS.1 &lt;span class="o">=&lt;/span> quay.ocp.ken.lab
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">DNS.2 &lt;span class="o">=&lt;/span> quay
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">---
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">[&lt;/span>devop@quay ~&lt;span class="o">]&lt;/span>$ ./gencert.sh quay.ocp.ken.lab
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Generating a private key...for quay.ocp.ken.lab
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Generating RSA private key, &lt;span class="m">2048&lt;/span> bit long modulus &lt;span class="o">(&lt;/span>&lt;span class="m">2&lt;/span> primes&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">.....+++++
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">.................................+++++
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">e is &lt;span class="m">65537&lt;/span> &lt;span class="o">(&lt;/span>0x010001&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Generating a CSR...for quay.ocp.ken.lab
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Generating a certificate...for quay.ocp.ken.lab
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Signature ok
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">subject&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="nv">C&lt;/span> &lt;span class="o">=&lt;/span> TW, &lt;span class="nv">ST&lt;/span> &lt;span class="o">=&lt;/span> TW, &lt;span class="nv">L&lt;/span> &lt;span class="o">=&lt;/span> Taipei, &lt;span class="nv">O&lt;/span> &lt;span class="o">=&lt;/span> KEN, &lt;span class="nv">OU&lt;/span> &lt;span class="o">=&lt;/span> LAB, &lt;span class="nv">CN&lt;/span> &lt;span class="o">=&lt;/span> quay.ocp.ken.lab
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Getting Private key
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">---
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">[&lt;/span>devop@quay certs&lt;span class="o">]&lt;/span>$ ll
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">total &lt;span class="m">20&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-rwxrwxr-x &lt;span class="m">1&lt;/span> devop devop &lt;span class="m">600&lt;/span> Oct &lt;span class="m">17&lt;/span> 17:13 gencert.sh
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-rw-rw-r-- &lt;span class="m">1&lt;/span> devop devop &lt;span class="m">279&lt;/span> Oct &lt;span class="m">17&lt;/span> 17:12 quay.cnf
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-rw-rw-r-- &lt;span class="m">1&lt;/span> devop devop &lt;span class="m">1988&lt;/span> Oct &lt;span class="m">17&lt;/span> 17:14 quay.ocp.ken.lab.crt
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-rw-rw-r-- &lt;span class="m">1&lt;/span> devop devop &lt;span class="m">1691&lt;/span> Oct &lt;span class="m">17&lt;/span> 17:14 quay.ocp.ken.lab.csr
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-rw------- &lt;span class="m">1&lt;/span> devop devop &lt;span class="m">3243&lt;/span> Oct &lt;span class="m">17&lt;/span> 17:14 quay.ocp.ken.lab.key
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">---
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">[&lt;/span>devop@quay certs&lt;span class="o">]&lt;/span>$ sudo cp quay.ocp.ken.lab.crt /etc/pki/ca-trust/source/anchors/
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">[&lt;/span>devop@quay certs&lt;span class="o">]&lt;/span>$ sudo update-ca-trust
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">[&lt;/span>devop@quay certs&lt;span class="o">]&lt;/span>$
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;/ol>
+&lt;h2 id="安裝db-postgresql">安裝DB Postgresql
+&lt;/h2>&lt;ol>
+&lt;li>
+&lt;p>建立Clair_pgsql目錄&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="p">[&lt;/span>&lt;span class="n">devop&lt;/span>&lt;span class="err">@&lt;/span>&lt;span class="n">uat&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">quay&lt;/span> &lt;span class="o">~&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="o">$&lt;/span> &lt;span class="n">mkdir&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">p&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="n">home&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">devop&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="k">var&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">lib&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">pgsql_clair&lt;/span>&lt;span class="o">/&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">[&lt;/span>&lt;span class="n">devop&lt;/span>&lt;span class="err">@&lt;/span>&lt;span class="n">uat&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">quay&lt;/span> &lt;span class="o">~&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="o">$&lt;/span> &lt;span class="n">chmod&lt;/span> &lt;span class="mi">777&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="n">home&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">devop&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="k">var&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">lib&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">pgsql_clair&lt;/span>&lt;span class="o">/&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>建立Quay_pgsql目錄&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="p">[&lt;/span>&lt;span class="n">devop&lt;/span>&lt;span class="err">@&lt;/span>&lt;span class="n">uat&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">quay&lt;/span> &lt;span class="o">~&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="o">$&lt;/span> &lt;span class="n">mkdir&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">p&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="n">home&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">devop&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="k">var&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">lib&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">pgsql&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">[&lt;/span>&lt;span class="n">devop&lt;/span>&lt;span class="err">@&lt;/span>&lt;span class="n">uat&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">quay&lt;/span> &lt;span class="o">~&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="o">$&lt;/span> &lt;span class="n">chmod&lt;/span> &lt;span class="mi">777&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="n">home&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">devop&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="k">var&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">lib&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">pgsql&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>啟動Clair_pgsql&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="o">[&lt;/span>devop@uat-quay clair&lt;span class="o">]&lt;/span>$ cat start_pgsql_clair.sh
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">#!/bin/bash&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">podman run -d --pod&lt;span class="o">=&lt;/span>clairpod --name&lt;span class="o">=&lt;/span>clair-pgsql &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span> -e &lt;span class="nv">POSTGRESQL_ADMIN_PASSWORD&lt;/span>&lt;span class="o">=&lt;/span>welcome1 &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span> -e &lt;span class="nv">POSTGRESQL_USER&lt;/span>&lt;span class="o">=&lt;/span>clairuser &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span> -e &lt;span class="nv">POSTGRESQL_PASSWORD&lt;/span>&lt;span class="o">=&lt;/span>welcome1 &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span> -e &lt;span class="nv">POSTGRESQL_DATABASE&lt;/span>&lt;span class="o">=&lt;/span>clairdb &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span> -v /home/devop/var/lib/pgsql_clair:/var/lib/pgsql/data:Z &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span> registry.redhat.io/rhel8/postgresql-10:1
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">[&lt;/span>devop@uat-quay clair&lt;span class="o">]&lt;/span>$ ./start_pgsql_clair.sh
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>建立Clairdb Extension&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="o">[&lt;/span>devop@uat-quay clair&lt;span class="o">]&lt;/span>$ cat test_pgsql_clair.sh
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">#!/bin/bash&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">podman &lt;span class="nb">exec&lt;/span> -it clair-pgsql /bin/bash -c &lt;span class="s1">&amp;#39;echo &amp;#34;CREATE EXTENSION IF NOT EXISTS \&amp;#34;uuid-ossp\&amp;#34;&amp;#34; | psql -d clairdb -U postgres&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">[&lt;/span>devop@uat-quay clair&lt;span class="o">]&lt;/span>$ ./test_pgsql_clair.sh
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">CREATE EXTENSION
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>啟動Quay_pgsql&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="o">[&lt;/span>devop@quay quay&lt;span class="o">]&lt;/span>$ cat start_pgsql.sh
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">#!/bin/bash&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">podman run -d --pod&lt;span class="o">=&lt;/span>quaypod --name&lt;span class="o">=&lt;/span>quay-pgsql &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span> -e &lt;span class="nv">POSTGRESQL_ADMIN_PASSWORD&lt;/span>&lt;span class="o">=&lt;/span>welcome1 &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span> -e &lt;span class="nv">POSTGRESQL_USER&lt;/span>&lt;span class="o">=&lt;/span>quayuser &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span> -e &lt;span class="nv">POSTGRESQL_PASSWORD&lt;/span>&lt;span class="o">=&lt;/span>welcome1 &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span> -e &lt;span class="nv">POSTGRESQL_DATABASE&lt;/span>&lt;span class="o">=&lt;/span>quaydb &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span> -v /home/devop/var/lib/pgsql:/var/lib/pgsql/data:Z &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span> registry.redhat.io/rhel8/postgresql-10:1
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>建立 quaydb Extension&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">[devop@quay quay]$ podman exec -it quay-pgsql /bin/bash -c &amp;#39;echo &amp;#34;CREATE EXTENSION IF NOT EXISTS pg_trgm&amp;#34; | psql -d quaydb -U postgres&amp;#39;
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;/ol>
+&lt;h2 id="安裝redis">安裝Redis
+&lt;/h2>&lt;ol>
+&lt;li>
+&lt;p>建立redis資料夾&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="n">mkdir&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">p&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="n">home&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">devop&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="k">var&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">lib&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">redis&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">chmod&lt;/span> &lt;span class="mi">777&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="n">home&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">devop&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="k">var&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">lib&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">redis&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>安裝redis&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="o">[&lt;/span>devop@uat-quay ~&lt;span class="o">]&lt;/span>$ cat start_redis.sh
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">#!/bin/bash&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">podman run -d --pod&lt;span class="o">=&lt;/span>quaypod --name&lt;span class="o">=&lt;/span>quay-redis &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span> -v /home/devop/var/lib/redis:/var/lib/redis/data:Z &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span> -e &lt;span class="nv">REDIS_PASSWORD&lt;/span>&lt;span class="o">=&lt;/span>welcome1 &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span> registry.redhat.io/rhel8/redis-5:1
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">[&lt;/span>devop@quay quay&lt;span class="o">]&lt;/span>$ ./start_redis.sh
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Trying to pull registry.redhat.io/rhel8/redis-5:1...
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Getting image &lt;span class="nb">source&lt;/span> signatures
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Checking &lt;span class="k">if&lt;/span> image destination supports signatures
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Copying blob 8b33c6fa797f &lt;span class="k">done&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Copying blob f70d60810c69 &lt;span class="k">done&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Copying blob 545277d80005 &lt;span class="k">done&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Copying blob 399eb2b7226e &lt;span class="k">done&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Copying config c9df129d49 &lt;span class="k">done&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Writing manifest to image destination
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Storing signatures
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">c2576cc7542ec7637d0fa044c53adc1d2123ffdc99f851901f891084301d579c
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>確認container 狀態&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">podman ps
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;/ol>
+&lt;h2 id="配置quay-config">配置Quay Config
+&lt;/h2>&lt;ol>
+&lt;li>
+&lt;p>podman 登入quay.io&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="o">[&lt;/span>devop@quay ~&lt;span class="o">]&lt;/span>$ cat podmanlogin.sh
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">#!/bin/bash&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">podman login -u&lt;span class="o">=&lt;/span>&lt;span class="s2">&amp;#34;redhat+quay&amp;#34;&lt;/span> -p&lt;span class="o">=&lt;/span>&lt;span class="s2">&amp;#34;O81WSHRSJR14UAZBK54GQHJS0P1V4CLWAJV1X2C4SD7KO59CQ9N3RE12612XU1HR&amp;#34;&lt;/span> quay.io
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">---
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">[&lt;/span>devop@quay ~&lt;span class="o">]&lt;/span>$ ./podmanlogin.sh
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Login Succeeded!
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>安裝quay-config&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="o">[&lt;/span>devop@uat-quay ~&lt;span class="o">]&lt;/span>$ cat start_quay_config.sh
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">#!/bin/bash&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">podman run --rm -it --pod&lt;span class="o">=&lt;/span>quaypod --name&lt;span class="o">=&lt;/span>quay-config &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span> registry.redhat.io/quay/quay-rhel8:v3.7.3 config welcome1
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20220831115811189.png"
+loading="lazy"
+alt="image-20220831115811189"
+>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>連線網頁 &lt;a class="link" href="http://quay.ocp.ken.lab" target="_blank" rel="noopener"
+>http://quay.ocp.ken.lab&lt;/a> quayconfig welcome1&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>左下角共有五項需設定 Hostname、DB、Redis，上傳憑證&lt;/p>
+&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20220831115921288.png"
+loading="lazy"
+alt="image-20220831115921288"
+>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>設定Server Hostname &amp;amp; TLS : quay.ocp.ken.lab
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20221014145935943.png"
+loading="lazy"
+alt="image-20221014145935943"
+>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>設定DB 資訊&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">Database Server: quay.ocp.ken.lab:5432
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Username: quayuser
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Password: welcome1
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Database Name: quaydb
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20221014145956804.png"
+loading="lazy"
+alt="image-20221014145956804"
+>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>設定redis Hostname&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">Redis Hostname: quay.ocp.ken.lab
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Redis Port: 6379
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Redis password: welcome1
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20221014150016457.png"
+loading="lazy"
+alt="image-20221014150016457"
+>&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;h4 id="enable-security-scanner">Enable Security Scanner
+&lt;/h4>&lt;pre>&lt;code>##### Enable Security Scanner &amp;amp; Generate PSK
+PSK: MTg4MDJnaTQ3OWRjYw==
+&lt;/code>&lt;/pre>
+&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20221014150103834.png"
+loading="lazy"
+alt="image-20221014150103834"
+>&lt;/p>
+&lt;ol start="9">
+&lt;li>
+&lt;p>保存設定並下載設定檔，並關閉quay-config&lt;/p>
+&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20220831120853324.png"
+loading="lazy"
+alt="image-20220831120853324"
+>&lt;/p>
+&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20220830154235463.png"
+loading="lazy"
+alt="image-20220830154235463"
+>&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;h2 id="解壓縮config">解壓縮Config
+&lt;/h2>&lt;ol>
+&lt;li>
+&lt;p>下載後解壓縮&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">[devop@quay quay]$ tar xvf quay-config.tar.gz
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">extra_ca_certs/
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">config.yaml
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">ssl.cert
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">ssl.key
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;/ol>
+&lt;h2 id="設定-clair並啟動">設定 Clair並啟動
+&lt;/h2>&lt;ol>
+&lt;li>
+&lt;p>建立Clair目錄&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">[devop@uat-quay ~]$ mkdir -p /home/devop/mnt/clair/config
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">[devop@uat-quay ~]$ chmod 777 /home/devop/mnt/clair/config
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>配置clair的config.yaml &amp;raquo; 要在quay_config階段時Enable Security Scanner 並Generate PSK&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">[devop@uat-quay ~]$ cat prekey.txt
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">MTg4MDJnaTQ3OWRjYw==
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">[devop@uat-quay clair]$ vim config.yaml
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">http_listen_addr: :8081
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">introspection_addr: :8089
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">log_level: info
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">indexer:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> connstring: host=quay.ocp.ken.lab port=5433 dbname=clairdb user=clairuser password=welcome1 sslmode=disable
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> scanlock_retry: 10
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> layer_scan_concurrency: 5
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> migrations: true
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">matcher:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> connstring: host=quay.ocp.ken.lab port=5433 dbname=clairdb user=clairuser password=welcome1 sslmode=disable
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> max_conn_pool: 100
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> run: &amp;#34;&amp;#34;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> migrations: true
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> indexer_addr: clair-indexer
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">notifier:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> connstring: host=quay.ocp.ken.lab port=5433 dbname=clairdb user=clairuser password=welcome1 sslmode=disable
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> delivery_interval: 1m
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> poll_interval: 5m
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> migrations: true
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">auth:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> psk:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> key: &amp;#34;MTg4MDJnaTQ3OWRjYw==&amp;#34;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> iss: [&amp;#34;quay&amp;#34;]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">---
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">[devop@uat-quay clair]$ cp config /home/devop/mnt/clair/config/config.yaml
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>啟動Clair ( 先停止Quay )&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="o">[&lt;/span>devop@uat-quay clair&lt;span class="o">]&lt;/span>$ podman login registry.redhat.io
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Username: ken.wang@infotech.com.tw
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Password:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Login Succeeded!
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">[&lt;/span>devop@quay clair&lt;span class="o">]&lt;/span>$ cat start_clair.sh
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">#!/bin/bash&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">podman run -d --pod clairpod --name clair -e &lt;span class="nv">CLAIR_CONF&lt;/span>&lt;span class="o">=&lt;/span>/clair/config.yaml &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span> -e &lt;span class="nv">CLAIR_MODE&lt;/span>&lt;span class="o">=&lt;/span>combo -e &lt;span class="nv">SSL_CERT_DIR&lt;/span>&lt;span class="o">=&lt;/span>/etc/pki/tls/certs &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span> -v /home/devop/mnt/clair/config:/clair:Z &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span> -v /home/devop/mnt/quay/certs/quay.ocp.ken.lab.crt:/etc/pki/tls/certs/quay.ocp.ken.lab:Z &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span> registry.redhat.io/quay/clair-rhel8:v3.5.0
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">[&lt;/span>devop@quay clair&lt;span class="o">]&lt;/span>$ ./start_clair.sh
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Trying to pull registry.redhat.io/quay/clair-rhel8:v3.5.0...
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Getting image &lt;span class="nb">source&lt;/span> signatures
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Checking &lt;span class="k">if&lt;/span> image destination supports signatures
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Copying blob d821702c1e09 &lt;span class="k">done&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Copying blob 13897c84ca57 &lt;span class="k">done&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Copying blob 64607cc74f9c &lt;span class="k">done&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Copying config 10e4c3931b &lt;span class="k">done&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Writing manifest to image destination
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Storing signatures
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">4d428098362e17ae606dad5412756f880ab40420af4f7a376170242064963154
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>確認container狀態&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">[devop@quay clair]$ podman ps
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">CONTAINER ID IMAGE COMMAND CREATED STATUS PORTS NAMES
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">eb65b55e9875 localhost/podman-pause:4.1.1-1657551413 About an hour ago Up About an hour ago 0.0.0.0:5433-&amp;gt;5432/tcp, 0.0.0.0:8081-&amp;gt;8081/tcp, 0.0.0.0:8089-&amp;gt;8089/tcp 535faabcd216-infra
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">4b465bef2476 registry.redhat.io/rhel8/postgresql-10:1 run-postgresql About an hour ago Up About an hour ago 0.0.0.0:5433-&amp;gt;5432/tcp, 0.0.0.0:8081-&amp;gt;8081/tcp, 0.0.0.0:8089-&amp;gt;8089/tcp clair-pgsql
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">154a0b6a0803 localhost/podman-pause:4.1.1-1657551413 About an hour ago Up About an hour ago 0.0.0.0:80-&amp;gt;8080/tcp, 0.0.0.0:443-&amp;gt;8443/tcp, 0.0.0.0:5432-&amp;gt;5432/tcp, 0.0.0.0:6379-&amp;gt;6379/tcp da7ca63d2ac6-infra
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">518b5db0591a registry.redhat.io/rhel8/postgresql-10:1 run-postgresql About an hour ago Up About an hour ago 0.0.0.0:80-&amp;gt;8080/tcp, 0.0.0.0:443-&amp;gt;8443/tcp, 0.0.0.0:5432-&amp;gt;5432/tcp, 0.0.0.0:6379-&amp;gt;6379/tcp quay-pgsql
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">c2576cc7542e registry.redhat.io/rhel8/redis-5:1 run-redis 46 minutes ago Up 46 minutes ago 0.0.0.0:80-&amp;gt;8080/tcp, 0.0.0.0:443-&amp;gt;8443/tcp, 0.0.0.0:5432-&amp;gt;5432/tcp, 0.0.0.0:6379-&amp;gt;6379/tcp quay-redis
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>確認更新完成即可啟動Quay (約3分鐘)&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">[devop@uat-quay clair]$ podman logs --tail 10 clair
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{&amp;#34;level&amp;#34;:&amp;#34;info&amp;#34;,&amp;#34;component&amp;#34;:&amp;#34;libvuln/New&amp;#34;,&amp;#34;component&amp;#34;:&amp;#34;libvuln/updateDriver/RunUpdaters&amp;#34;,&amp;#34;component&amp;#34;:&amp;#34;internal/updater/Executor&amp;#34;,&amp;#34;run_id&amp;#34;:1879968118,&amp;#34;updater&amp;#34;:&amp;#34;photon-updater-photon3&amp;#34;,&amp;#34;component&amp;#34;:&amp;#34;photon/Updater.Parse&amp;#34;,&amp;#34;time&amp;#34;:&amp;#34;2022-09-14T05:21:38Z&amp;#34;,&amp;#34;time&amp;#34;:&amp;#34;2022-09-14T05:21:38Z&amp;#34;,&amp;#34;message&amp;#34;:&amp;#34;starting parse&amp;#34;}
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{&amp;#34;level&amp;#34;:&amp;#34;info&amp;#34;,&amp;#34;component&amp;#34;:&amp;#34;libvuln/New&amp;#34;,&amp;#34;component&amp;#34;:&amp;#34;libvuln/updateDriver/RunUpdaters&amp;#34;,&amp;#34;component&amp;#34;:&amp;#34;internal/updater/Executor&amp;#34;,&amp;#34;run_id&amp;#34;:1879968118,&amp;#34;updater&amp;#34;:&amp;#34;RHEL8-advanced-virtualization&amp;#34;,&amp;#34;ref&amp;#34;:&amp;#34;0f18ac9b-223f-460d-96ed-08ea268e278e&amp;#34;,&amp;#34;time&amp;#34;:&amp;#34;2022-09-14T05:22:38Z&amp;#34;,&amp;#34;time&amp;#34;:&amp;#34;2022-09-14T05:22:38Z&amp;#34;,&amp;#34;message&amp;#34;:&amp;#34;successful update&amp;#34;}
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{&amp;#34;level&amp;#34;:&amp;#34;info&amp;#34;,&amp;#34;component&amp;#34;:&amp;#34;libvuln/New&amp;#34;,&amp;#34;component&amp;#34;:&amp;#34;libvuln/updateDriver/RunUpdaters&amp;#34;,&amp;#34;component&amp;#34;:&amp;#34;internal/updater/Executor&amp;#34;,&amp;#34;run_id&amp;#34;:1879968118,&amp;#34;updater&amp;#34;:&amp;#34;photon-updater-photon1&amp;#34;,&amp;#34;ref&amp;#34;:&amp;#34;b1ea50fa-b89c-4f94-a182-a65a9284125a&amp;#34;,&amp;#34;time&amp;#34;:&amp;#34;2022-09-14T05:22:48Z&amp;#34;,&amp;#34;time&amp;#34;:&amp;#34;2022-09-14T05:22:48Z&amp;#34;,&amp;#34;message&amp;#34;:&amp;#34;successful update&amp;#34;}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;/ol>
+&lt;h2 id="啟動quay">啟動Quay
+&lt;/h2>&lt;ol>
+&lt;li>
+&lt;p>啟動Quay&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">##建立quay資料夾 並將config 、 CA 放到&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">[&lt;/span>devop@quay quay&lt;span class="o">]&lt;/span>$ mkdir -p /home/devop/mnt/quay/storage
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">[&lt;/span>devop@quay quay&lt;span class="o">]&lt;/span>$ mkdir -p /home/devop/mnt/quay/storage
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">[&lt;/span>devop@quay quay&lt;span class="o">]&lt;/span>$ mkdir -P /home/devop/mnt/quay/certs/
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">[&lt;/span>devop@quay quay&lt;span class="o">]&lt;/span>$ chmod &lt;span class="m">777&lt;/span> /home/devop/mnt/quay/storage
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">[&lt;/span>devop@quay quay&lt;span class="o">]&lt;/span>$ chmod &lt;span class="m">777&lt;/span> /home/devop/mnt/quay/config
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">[&lt;/span>devop@quay quay&lt;span class="o">]&lt;/span>$ chmod &lt;span class="m">777&lt;/span> /home/devop/mnt/quay/certs
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">[&lt;/span>devop@quay quay&lt;span class="o">]&lt;/span>$ cp config.yaml /home/devop/mnt/quay/config/
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">[&lt;/span>devop@quay certs&lt;span class="o">]&lt;/span>$ cp quay.ocp.ken.lab.* /home/devop/mnt/quay/certs
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">[&lt;/span>devop@quay config&lt;span class="o">]&lt;/span>$ ll
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">total &lt;span class="m">16&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-rwxrwxr-x &lt;span class="m">1&lt;/span> devop devop &lt;span class="m">2365&lt;/span> Jan &lt;span class="m">1&lt;/span> &lt;span class="m">1970&lt;/span> config.yaml
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">drwxrwxr-x &lt;span class="m">2&lt;/span> devop devop &lt;span class="m">6&lt;/span> Jan &lt;span class="m">1&lt;/span> &lt;span class="m">1970&lt;/span> extra_ca_certs
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-rw-r--r-- &lt;span class="m">1&lt;/span> devop devop &lt;span class="m">3312&lt;/span> Oct &lt;span class="m">14&lt;/span> 16:10 quay-config.tar.gz
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-rwxrwxr-x &lt;span class="m">1&lt;/span> devop devop &lt;span class="m">1204&lt;/span> Jan &lt;span class="m">1&lt;/span> &lt;span class="m">1970&lt;/span> ssl.cert
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-rwxrwxr-x &lt;span class="m">1&lt;/span> devop devop &lt;span class="m">1679&lt;/span> Jan &lt;span class="m">1&lt;/span> &lt;span class="m">1970&lt;/span> ssl.key
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">[&lt;/span>devop@quay config&lt;span class="o">]&lt;/span>$ &lt;span class="nb">cd&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">[&lt;/span>devop@uat-quay ~&lt;span class="o">]&lt;/span>$ cat start_quay.sh
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">#!/bin/bash&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">podman run -d --pod&lt;span class="o">=&lt;/span>quaypod --name&lt;span class="o">=&lt;/span>quay &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span> -v /home/devop/mnt/quay/config:/conf/stack:Z &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span> -v /home/devop/mnt/quay/storage:/datastorage:Z &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span> registry.redhat.io/quay/quay-rhel8:v3.7.3
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">[&lt;/span>devop@uat-quay ~&lt;span class="o">]&lt;/span>$ ./start_quay.sh
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">5f1915f2038f4167fd6e37c4233903dbad7de00acd6e753957ed9ff66b2d8ba2
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">[&lt;/span>devop@quay quay&lt;span class="o">]&lt;/span>$ podman ps
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">CONTAINER ID IMAGE COMMAND CREATED STATUS PORTS NAMES
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">eb65b55e9875 localhost/podman-pause:4.1.1-1657551413 About an hour ago Up About an hour ago 0.0.0.0:5433-&amp;gt;5432/tcp, 0.0.0.0:8081-&amp;gt;8081/tcp, 0.0.0.0:8089-&amp;gt;8089/tcp 535faabcd216-infra
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">4b465bef2476 registry.redhat.io/rhel8/postgresql-10:1 run-postgresql About an hour ago Up About an hour ago 0.0.0.0:5433-&amp;gt;5432/tcp, 0.0.0.0:8081-&amp;gt;8081/tcp, 0.0.0.0:8089-&amp;gt;8089/tcp clair-pgsql
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">154a0b6a0803 localhost/podman-pause:4.1.1-1657551413 About an hour ago Up About an hour ago 0.0.0.0:80-&amp;gt;8080/tcp, 0.0.0.0:443-&amp;gt;8443/tcp, 0.0.0.0:5432-&amp;gt;5432/tcp, 0.0.0.0:6379-&amp;gt;6379/tcp da7ca63d2ac6-infra
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">518b5db0591a registry.redhat.io/rhel8/postgresql-10:1 run-postgresql About an hour ago Up About an hour ago 0.0.0.0:80-&amp;gt;8080/tcp, 0.0.0.0:443-&amp;gt;8443/tcp, 0.0.0.0:5432-&amp;gt;5432/tcp, 0.0.0.0:6379-&amp;gt;6379/tcp quay-pgsql
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">c2576cc7542e registry.redhat.io/rhel8/redis-5:1 run-redis About an hour ago Up About an hour ago 0.0.0.0:80-&amp;gt;8080/tcp, 0.0.0.0:443-&amp;gt;8443/tcp, 0.0.0.0:5432-&amp;gt;5432/tcp, 0.0.0.0:6379-&amp;gt;6379/tcp quay-redis
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">3c9b87b803d3 registry.redhat.io/quay/clair-rhel8:v3.5.0 &lt;span class="m">12&lt;/span> minutes ago Up &lt;span class="m">12&lt;/span> minutes ago 0.0.0.0:5433-&amp;gt;5432/tcp, 0.0.0.0:8081-&amp;gt;8081/tcp, 0.0.0.0:8089-&amp;gt;8089/tcp clair
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>開啟瀏覽器連線 &lt;a class="link" href="https://quay.ocp.ken.lab" target="_blank" rel="noopener"
+>https://quay.ocp.ken.lab&lt;/a> quayadmin/welcome1
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20221017172605042.png"
+loading="lazy"
+alt="image-20221017172605042"
+>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>確認憑證
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20221017172616780.png"
+loading="lazy"
+alt="image-20221017172616780"
+>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>建立管理員帳號、密碼，Create Account&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">Username: quayadmin
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">E-mail: quayadmin@email.com
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Password: welcome1
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20220831122552327.png"
+loading="lazy"
+alt="image-20220831122552327"
+>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>登入確認
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20220831122620702.png"
+loading="lazy"
+alt="image-20220831122620702"
+>&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;h1 id="測試clair">測試Clair
+&lt;/h1>&lt;ol>
+&lt;li>測試pull &amp;amp; push (憑證可透過 &amp;ndash;tls-verify=false解決 or 將憑證放到podman 設定檔路徑)&lt;/li>
+&lt;/ol>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">[devop@quay ~]$ openssl x509 -in certs/quay.ocp.ken.lab.crt -out certs/quay.ocp.ken.lab.cert
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">[devop@quay ~]$ podman login quay.ocp.ken.lab --cert-dir=/home/devop/certs/
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Username: quayadmin
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Password:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Login Succeeded!
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-----
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">[devop@quay ~]$ sudo mkdir /etc/containers/certs.d/quay.ocp.ken.lab
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">[devop@quay ~]$ sudo cp /home/devop/certs/quay.ocp.ken.lab.crt /etc/containers/certs.d/quay.ocp.ken.lab/
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">＃＃＃重開terminal
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-----
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">[devop@quay ~]$ podman pull docker.io/library/ubuntu:20.04
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Trying to pull docker.io/library/ubuntu:20.04...
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Getting image source signatures
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Copying blob fb0b3276a519 done
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Copying config 817578334b done
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Writing manifest to image destination
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Storing signatures
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">817578334b4dd5e2b0654610e895e08e1bea996c58119bb9c7e3bd9e74dd8936
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">[devop@quay ~]$ podman tag docker.io/library/ubuntu:20.04 quay.ocp.ken.lab/quayadmin/ubuntu:20.04
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">[devop@quay ~]$ podman push quay.ocp.ken.lab/quayadmin/ubuntu:20.04 --cert-dir=/home/devop/certs/
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Getting image source signatures
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Copying blob cdca8156a203 done
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Copying config 817578334b done
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Writing manifest to image destination
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Storing signatures
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20221017174835521.png"
+loading="lazy"
+alt="image-20221017174835521"
+>&lt;/p>
+&lt;ol start="2">
+&lt;li>
+&lt;p>查看Security Scan&lt;/p>
+&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20221017174905497.png"
+loading="lazy"
+alt="image-20221017174905497"
+>&lt;/p>
+&lt;/li>
+&lt;/ol></description></item></channel></rss>

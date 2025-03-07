@@ -1,0 +1,494 @@
+<!doctype html><html lang=en-us dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="Guide_NeuVector"><title>Guide_NeuVector</title>
+<link rel=canonical href=https://wangken0129.github.io/p/guide_neuvector/><link rel=stylesheet href=/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css><meta property='og:title' content="Guide_NeuVector"><meta property='og:description' content="Guide_NeuVector"><meta property='og:url' content='https://wangken0129.github.io/p/guide_neuvector/'><meta property='og:site_name' content="Ken's blog"><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='NeuVector'><meta property='article:tag' content='SUSE'><meta property='article:tag' content='Kubernetes'><meta property='article:published_time' content='2023-09-23T07:38:37+08:00'><meta property='article:modified_time' content='2023-09-23T07:38:37+08:00'><meta name=twitter:title content="Guide_NeuVector"><meta name=twitter:description content="Guide_NeuVector"><link rel="shortcut icon" href=/favicon.png></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切換選單>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar_hu_c68a00bbf16dac8.png width=300 height=300 class=site-logo loading=lazy alt=Avatar>
+</a><span class=emoji>🇹🇼</span></figure><div class=site-meta><h1 class=site-name><a href=/>Ken's blog</a></h1><h2 class=site-description>紀錄與分享，當個快樂的工程師</h2></div></header><ol class=menu-social><li><a href=https://github.com/wangken0129/wangken0129.github.io target=_blank title=GitHub rel=me><svg class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li><li><a href=https://www.linkedin.com/in/ken-wang-88924b181/ target=_blank title=LinkedIn rel=me><svg class="icon icon-tabler icon-tabler-brand-linkedin" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4m0 2a2 2 0 012-2h12a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2z"/><path d="M8 11v5"/><path d="M8 8v.01"/><path d="M12 16v-5"/><path d="M16 16v-3a2 2 0 00-4 0"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>Home</span></a></li><li><a href=/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>Archives</span></a></li><li><a href=/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>Search</span></a></li><li><a href=/links/><svg class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 14a3.5 3.5.0 005 0l4-4a3.5 3.5.0 00-5-5l-.5.5"/><path d="M14 10a3.5 3.5.0 00-5 0l-4 4a3.5 3.5.0 005 5l.5-.5"/></svg>
+<span>Links</span></a></li><li class=menu-bottom-section><ol class=menu><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>夜晚模式</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目錄</h2><div class=widget--toc><nav id=TableOfContents><ol><li><a href=#0-install-rke2>0. install RKE2</a><ol><li><a href=#01-下載安裝腳本>0.1. 下載安裝腳本</a></li><li><a href=#02-設定rke2基本餐數>0.2. 設定RKE2基本餐數</a></li><li><a href=#03-安裝rke2>0.3. 安裝rke2</a></li><li><a href=#04-enable-rke2-and-setup-kubeconfig>0.4. enable rke2 and setup kubeconfig</a></li><li><a href=#05-check-pod-status>0.5. check pod status</a></li></ol></li><li><a href=#1-install-helm3>1. install helm3</a><ol><li><a href=#11-check-kubernetes-version>1.1. check kubernetes version</a></li><li><a href=#12-下載與安裝helm>1.2. 下載與安裝helm</a></li></ol></li><li><a href=#2-install-neuvector>2. install NeuVector</a><ol><li><a href=#21-加入neuvector-helm-chart>2.1. 加入neuvector helm chart</a></li><li><a href=#22-調整yaml---part-1replicas-for-test>2.2. 調整yaml - part-1(replicas for test)</a></li><li><a href=#23-調整yaml---part-2cri-for-k3s>2.3. 調整yaml - part-2(CRI for k3s)</a></li><li><a href=#24-建立neuvector-namespace-and-create-neuvector>2.4. 建立NeuVector NameSpace and create neuvector</a></li></ol></li><li><a href=#3-其他>3. 其他</a><ol><li><a href=#31-image-registry>3.1. image registry</a></li><li><a href=#32-response-rule>3.2. Response Rule</a></li><li><a href=#33-cli-reference>3.3. CLI reference</a><ol><li><a href=#331-nginx-install-recon-ng>3.3.1. nginx install recon-ng</a></li><li><a href=#332-nginx-bash>3.3.2. nginx bash</a></li></ol></li></ol></li></ol></nav></div></section></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><header class=article-category><a href=/categories/knowledge-base-category/ style=background-color:#87cefa;color:#fff>Knowledge Base Category</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/p/guide_neuvector/>Guide_NeuVector</a></h2><h3 class=article-subtitle>Guide_NeuVector</h3></div><footer class=article-time><div><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published>Sep 23, 2023</time></div><div><svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>閱讀時間: 8 分鐘</time></div></footer></div></header><section class=article-content><h1 id=neuvector>NeuVector</h1><h2 id=0-install-rke2>0. install RKE2</h2><h3 id=01-下載安裝腳本>0.1. 下載安裝腳本</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>rancher@rms1:~&gt; curl -sfL https://get.rke2.io --output install.sh
+</span></span><span class=line><span class=cl>rancher@rms1:~&gt; chmod +x install.sh
+</span></span></code></pre></td></tr></table></div></div><h3 id=02-設定rke2基本餐數>0.2. 設定RKE2基本餐數</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>rancher@rms1:~&gt; sudo mkdir -p /etc/rancher/rke2/
+</span></span><span class=line><span class=cl>[sudo] root 的密碼：
+</span></span><span class=line><span class=cl>rancher@rms1:~&gt; sudo vim /etc/rancher/rke2/config.yaml
+</span></span><span class=line><span class=cl>rancher@rms1:~&gt; cat /etc/rancher/rke2/config.yaml
+</span></span><span class=line><span class=cl>node-name:
+</span></span><span class=line><span class=cl>  - &#34;rms1&#34;
+</span></span><span class=line><span class=cl>token: my-shared-secret
+</span></span></code></pre></td></tr></table></div></div><h3 id=03-安裝rke2>0.3. 安裝rke2</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-gdscript3 data-lang=gdscript3><span class=line><span class=cl><span class=n>rancher</span><span class=err>@</span><span class=n>rms1</span><span class=p>:</span><span class=o>~&gt;</span> <span class=n>sudo</span> <span class=o>./</span><span class=n>install</span><span class=o>.</span><span class=n>sh</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=n>WARN</span><span class=p>]</span>  <span class=o>/</span><span class=n>usr</span><span class=o>/</span><span class=n>local</span> <span class=n>is</span> <span class=n>read</span><span class=o>-</span><span class=n>only</span> <span class=ow>or</span> <span class=n>a</span> <span class=n>mount</span> <span class=n>point</span><span class=p>;</span> <span class=n>installing</span> <span class=n>to</span> <span class=o>/</span><span class=n>opt</span><span class=o>/</span><span class=n>rke2</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=n>INFO</span><span class=p>]</span>  <span class=n>finding</span> <span class=n>release</span> <span class=k>for</span> <span class=n>channel</span> <span class=n>v1</span><span class=o>.</span><span class=mf>24.6</span><span class=o>+</span><span class=n>rke2r1</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=n>INFO</span><span class=p>]</span>  <span class=n>using</span> <span class=n>v1</span><span class=o>.</span><span class=mf>24.6</span><span class=o>+</span><span class=n>rke2r1</span> <span class=n>as</span> <span class=n>release</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=n>INFO</span><span class=p>]</span>  <span class=n>downloading</span> <span class=n>checksums</span> <span class=n>at</span> <span class=n>https</span><span class=p>:</span><span class=o>//</span><span class=n>github</span><span class=o>.</span><span class=n>com</span><span class=o>/</span><span class=n>rancher</span><span class=o>/</span><span class=n>rke2</span><span class=o>/</span><span class=n>releases</span><span class=o>/</span><span class=n>download</span><span class=o>/</span><span class=n>v1</span><span class=o>.</span><span class=mf>24.6</span><span class=o>+</span><span class=n>rke2r1</span><span class=o>/</span><span class=n>sha256sum</span><span class=o>-</span><span class=n>amd64</span><span class=o>.</span><span class=n>txt</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=n>INFO</span><span class=p>]</span>  <span class=n>downloading</span> <span class=n>tarball</span> <span class=n>at</span> <span class=n>https</span><span class=p>:</span><span class=o>//</span><span class=n>github</span><span class=o>.</span><span class=n>com</span><span class=o>/</span><span class=n>rancher</span><span class=o>/</span><span class=n>rke2</span><span class=o>/</span><span class=n>releases</span><span class=o>/</span><span class=n>download</span><span class=o>/</span><span class=n>v1</span><span class=o>.</span><span class=mf>24.6</span><span class=o>+</span><span class=n>rke2r1</span><span class=o>/</span><span class=n>rke2</span><span class=o>.</span><span class=n>linux</span><span class=o>-</span><span class=n>amd64</span><span class=o>.</span><span class=n>tar</span><span class=o>.</span><span class=n>gz</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=n>INFO</span><span class=p>]</span>  <span class=n>verifying</span> <span class=n>tarball</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=n>INFO</span><span class=p>]</span>  <span class=n>unpacking</span> <span class=n>tarball</span> <span class=n>file</span> <span class=n>to</span> <span class=o>/</span><span class=n>opt</span><span class=o>/</span><span class=n>rke2</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=n>INFO</span><span class=p>]</span>  <span class=n>updating</span> <span class=n>tarball</span> <span class=n>contents</span> <span class=n>to</span> <span class=n>reflect</span> <span class=n>install</span> <span class=n>path</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=n>INFO</span><span class=p>]</span>  <span class=n>moving</span> <span class=n>systemd</span> <span class=n>units</span> <span class=n>to</span> <span class=o>/</span><span class=n>etc</span><span class=o>/</span><span class=n>systemd</span><span class=o>/</span><span class=n>system</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=n>INFO</span><span class=p>]</span>  <span class=n>install</span> <span class=n>complete</span><span class=p>;</span> <span class=n>you</span> <span class=n>may</span> <span class=n>want</span> <span class=n>to</span> <span class=n>run</span><span class=p>:</span>  <span class=k>export</span> <span class=n>PATH</span><span class=o>=$</span><span class=n>PATH</span><span class=p>:</span><span class=o>/</span><span class=n>opt</span><span class=o>/</span><span class=n>rke2</span><span class=o>/</span><span class=n>bin</span>
+</span></span><span class=line><span class=cl><span class=n>rancher</span><span class=err>@</span><span class=n>rms1</span><span class=p>:</span><span class=o>~&gt;</span> <span class=k>export</span> <span class=n>PATH</span><span class=o>=$</span><span class=n>PATH</span><span class=p>:</span><span class=o>/</span><span class=n>opt</span><span class=o>/</span><span class=n>rke2</span><span class=o>/</span><span class=n>bin</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=04-enable-rke2-and-setup-kubeconfig>0.4. enable rke2 and setup kubeconfig</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-gdscript3 data-lang=gdscript3><span class=line><span class=cl><span class=n>rancher</span><span class=err>@</span><span class=n>rms1</span><span class=p>:</span><span class=o>~&gt;</span> <span class=n>sudo</span> <span class=n>systemctl</span> <span class=n>enable</span> <span class=n>rke2</span><span class=o>-</span><span class=n>server</span>
+</span></span><span class=line><span class=cl><span class=n>Created</span> <span class=n>symlink</span> <span class=o>/</span><span class=n>etc</span><span class=o>/</span><span class=n>systemd</span><span class=o>/</span><span class=n>system</span><span class=o>/</span><span class=n>multi</span><span class=o>-</span><span class=n>user</span><span class=o>.</span><span class=n>target</span><span class=o>.</span><span class=n>wants</span><span class=o>/</span><span class=n>rke2</span><span class=o>-</span><span class=n>server</span><span class=o>.</span><span class=n>service</span> <span class=err>→</span> <span class=o>/</span><span class=n>etc</span><span class=o>/</span><span class=n>systemd</span><span class=o>/</span><span class=n>system</span><span class=o>/</span><span class=n>rke2</span><span class=o>-</span><span class=n>server</span><span class=o>.</span><span class=n>service</span><span class=o>.</span>
+</span></span><span class=line><span class=cl><span class=n>rancher</span><span class=err>@</span><span class=n>rms1</span><span class=p>:</span><span class=o>~&gt;</span> <span class=n>sudo</span> <span class=n>systemctl</span> <span class=n>start</span> <span class=n>rke2</span><span class=o>-</span><span class=n>server</span>
+</span></span><span class=line><span class=cl><span class=n>rancher</span><span class=err>@</span><span class=n>rms1</span><span class=p>:</span><span class=o>~&gt;</span> <span class=n>mkdir</span> <span class=o>.</span><span class=n>kube</span>
+</span></span><span class=line><span class=cl><span class=n>rancher</span><span class=err>@</span><span class=n>rms1</span><span class=p>:</span><span class=o>~&gt;</span> <span class=n>sudo</span> <span class=n>cp</span> <span class=o>/</span><span class=n>etc</span><span class=o>/</span><span class=n>rancher</span><span class=o>/</span><span class=n>rke2</span><span class=o>/</span><span class=n>rke2</span><span class=o>.</span><span class=n>yaml</span> <span class=o>.</span><span class=n>kube</span><span class=o>/</span><span class=n>config</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=n>sudo</span><span class=p>]</span> <span class=n>root</span> <span class=err>的密碼：</span>
+</span></span><span class=line><span class=cl><span class=n>rancher</span><span class=err>@</span><span class=n>rms1</span><span class=p>:</span><span class=o>~&gt;</span> <span class=n>sudo</span> <span class=n>chown</span> <span class=n>rancher</span> <span class=o>.</span><span class=n>kube</span><span class=o>/</span><span class=n>config</span>
+</span></span><span class=line><span class=cl><span class=n>rancher</span><span class=err>@</span><span class=n>rms1</span><span class=p>:</span><span class=o>~&gt;</span> <span class=n>sudo</span> <span class=n>cp</span> <span class=o>/</span><span class=k>var</span><span class=o>/</span><span class=n>lib</span><span class=o>/</span><span class=n>rancher</span><span class=o>/</span><span class=n>rke2</span><span class=o>/</span><span class=n>bin</span><span class=o>/</span><span class=n>kubectl</span> <span class=o>/</span><span class=n>usr</span><span class=o>/</span><span class=n>local</span><span class=o>/</span><span class=n>bin</span><span class=o>/</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=05-check-pod-status>0.5. check pod status</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>rancher@rms1:~&gt; kubectl get po
+</span></span><span class=line><span class=cl>No resources found in default namespace.
+</span></span><span class=line><span class=cl>rancher@rms1:~&gt; kubectl get po -A
+</span></span><span class=line><span class=cl>NAMESPACE     NAME                                                    READY   STATUS      RESTARTS   AGE
+</span></span><span class=line><span class=cl>kube-system   cloud-controller-manager-rms1                         1/1     Running     0          15m
+</span></span><span class=line><span class=cl>kube-system   etcd-rms1                                             1/1     Running     0          15m
+</span></span><span class=line><span class=cl>kube-system   helm-install-rke2-canal-6bpd4                           0/1     Completed   0          15m
+</span></span><span class=line><span class=cl>kube-system   helm-install-rke2-coredns-mjflj                         0/1     Completed   0          15m
+</span></span><span class=line><span class=cl>kube-system   helm-install-rke2-ingress-nginx-76r2c                   0/1     Completed   0          15m
+</span></span><span class=line><span class=cl>kube-system   helm-install-rke2-metrics-server-wkc4k                  0/1     Completed   0          15m
+</span></span><span class=line><span class=cl>kube-system   kube-apiserver-rms1                                   1/1     Running     0          15m
+</span></span><span class=line><span class=cl>kube-system   kube-controller-manager-rms1                          1/1     Running     0          15m
+</span></span><span class=line><span class=cl>kube-system   kube-proxy-rms1                                       1/1     Running     0          15m
+</span></span><span class=line><span class=cl>kube-system   kube-scheduler-rms1                                   1/1     Running     0          15m
+</span></span><span class=line><span class=cl>kube-system   rke2-canal-8x56p                                        2/2     Running     0          15m
+</span></span><span class=line><span class=cl>kube-system   rke2-coredns-rke2-coredns-545d64676-zlnk9               1/1     Running     0          15m
+</span></span><span class=line><span class=cl>kube-system   rke2-coredns-rke2-coredns-autoscaler-5dd676f5c7-zrdbb   1/1     Running     0          15m
+</span></span><span class=line><span class=cl>kube-system   rke2-ingress-nginx-controller-xhxr6                     1/1     Running     0          14m
+</span></span><span class=line><span class=cl>kube-system   rke2-metrics-server-6564db4569-542hx                    1/1     Running     0          14m
+</span></span></code></pre></td></tr></table></div></div><h2 id=1-install-helm3>1. install helm3</h2><h3 id=11-check-kubernetes-version>1.1. check kubernetes version</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>rancher@rms1:~&gt; kubectl get no 
+</span></span><span class=line><span class=cl>NAME   STATUS   ROLES                       AGE   VERSION
+</span></span><span class=line><span class=cl>rms1   Ready    control-plane,etcd,master   37h   v1.24.6+rke2r1
+</span></span></code></pre></td></tr></table></div></div><h3 id=12-下載與安裝helm>1.2. 下載與安裝helm</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-gdscript3 data-lang=gdscript3><span class=line><span class=cl><span class=n>rancher</span><span class=err>@</span><span class=n>rms1</span><span class=p>:</span><span class=o>~&gt;</span> <span class=n>wget</span> <span class=n>https</span><span class=p>:</span><span class=o>//</span><span class=n>get</span><span class=o>.</span><span class=n>helm</span><span class=o>.</span><span class=n>sh</span><span class=o>/</span><span class=n>helm</span><span class=o>-</span><span class=n>v3</span><span class=o>.</span><span class=mf>9.4</span><span class=o>-</span><span class=n>linux</span><span class=o>-</span><span class=n>amd64</span><span class=o>.</span><span class=n>tar</span><span class=o>.</span><span class=n>gz</span>
+</span></span><span class=line><span class=cl><span class=o>--</span><span class=mi>2022</span><span class=o>-</span><span class=mi>10</span><span class=o>-</span><span class=mi>16</span> <span class=mi>12</span><span class=p>:</span><span class=mi>34</span><span class=p>:</span><span class=mi>56</span><span class=o>--</span>  <span class=n>https</span><span class=p>:</span><span class=o>//</span><span class=n>get</span><span class=o>.</span><span class=n>helm</span><span class=o>.</span><span class=n>sh</span><span class=o>/</span><span class=n>helm</span><span class=o>-</span><span class=n>v3</span><span class=o>.</span><span class=mf>9.4</span><span class=o>-</span><span class=n>linux</span><span class=o>-</span><span class=n>amd64</span><span class=o>.</span><span class=n>tar</span><span class=o>.</span><span class=n>gz</span>
+</span></span><span class=line><span class=cl><span class=n>Resolving</span> <span class=n>get</span><span class=o>.</span><span class=n>helm</span><span class=o>.</span><span class=n>sh</span> <span class=p>(</span><span class=n>get</span><span class=o>.</span><span class=n>helm</span><span class=o>.</span><span class=n>sh</span><span class=p>)</span><span class=o>...</span> <span class=mf>152.199</span><span class=o>.</span><span class=mf>39.108</span><span class=p>,</span> <span class=mi>2606</span><span class=p>:</span><span class=mi>2800</span><span class=p>:</span><span class=mi>247</span><span class=p>:</span><span class=mi>1</span><span class=n>cb7</span><span class=p>:</span><span class=mi>261</span><span class=n>b</span><span class=p>:</span><span class=mi>1</span><span class=n>f9c</span><span class=p>:</span><span class=mi>2074</span><span class=p>:</span><span class=mi>3</span><span class=n>c</span>
+</span></span><span class=line><span class=cl><span class=n>Connecting</span> <span class=n>to</span> <span class=n>get</span><span class=o>.</span><span class=n>helm</span><span class=o>.</span><span class=n>sh</span> <span class=p>(</span><span class=n>get</span><span class=o>.</span><span class=n>helm</span><span class=o>.</span><span class=n>sh</span><span class=p>)</span><span class=o>|</span><span class=mf>152.199</span><span class=o>.</span><span class=mf>39.108</span><span class=o>|</span><span class=p>:</span><span class=mf>443.</span><span class=o>..</span> <span class=n>connected</span><span class=o>.</span>
+</span></span><span class=line><span class=cl><span class=n>HTTP</span> <span class=n>request</span> <span class=n>sent</span><span class=p>,</span> <span class=n>awaiting</span> <span class=n>response</span><span class=o>...</span> <span class=mi>200</span> <span class=n>OK</span>
+</span></span><span class=line><span class=cl><span class=n>Length</span><span class=p>:</span> <span class=mi>14026634</span> <span class=p>(</span><span class=mi>13</span><span class=n>M</span><span class=p>)</span> <span class=p>[</span><span class=n>application</span><span class=o>/</span><span class=n>x</span><span class=o>-</span><span class=n>tar</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=n>Saving</span> <span class=n>to</span><span class=p>:</span> <span class=err>‘</span><span class=n>helm</span><span class=o>-</span><span class=n>v3</span><span class=o>.</span><span class=mf>9.4</span><span class=o>-</span><span class=n>linux</span><span class=o>-</span><span class=n>amd64</span><span class=o>.</span><span class=n>tar</span><span class=o>.</span><span class=n>gz</span><span class=err>’</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>helm</span><span class=o>-</span><span class=n>v3</span><span class=o>.</span><span class=mf>9.4</span><span class=o>-</span><span class=n>linux</span><span class=o>-</span><span class=n>amd64</span><span class=o>.</span><span class=n>tar</span> <span class=mi>100</span><span class=o>%</span><span class=p>[</span><span class=o>========================================&gt;</span><span class=p>]</span>  <span class=mf>13.38</span><span class=n>M</span>  <span class=mf>7.86</span><span class=n>MB</span><span class=o>/</span><span class=n>s</span>    <span class=ow>in</span> <span class=mf>1.7</span><span class=n>s</span>    
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=mi>2022</span><span class=o>-</span><span class=mi>10</span><span class=o>-</span><span class=mi>16</span> <span class=mi>12</span><span class=p>:</span><span class=mi>34</span><span class=p>:</span><span class=mi>59</span> <span class=p>(</span><span class=mf>7.86</span> <span class=n>MB</span><span class=o>/</span><span class=n>s</span><span class=p>)</span> <span class=o>-</span> <span class=err>‘</span><span class=n>helm</span><span class=o>-</span><span class=n>v3</span><span class=o>.</span><span class=mf>9.4</span><span class=o>-</span><span class=n>linux</span><span class=o>-</span><span class=n>amd64</span><span class=o>.</span><span class=n>tar</span><span class=o>.</span><span class=n>gz</span><span class=err>’</span> <span class=n>saved</span> <span class=p>[</span><span class=mi>14026634</span><span class=o>/</span><span class=mi>14026634</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>rancher</span><span class=err>@</span><span class=n>rms1</span><span class=p>:</span><span class=o>~&gt;</span> <span class=n>tar</span> <span class=n>zxvf</span> <span class=n>helm</span><span class=o>-</span><span class=n>v3</span><span class=o>.</span><span class=mf>9.4</span><span class=o>-</span><span class=n>linux</span><span class=o>-</span><span class=n>amd64</span><span class=o>.</span><span class=n>tar</span><span class=o>.</span><span class=n>gz</span> 
+</span></span><span class=line><span class=cl><span class=n>linux</span><span class=o>-</span><span class=n>amd64</span><span class=o>/</span>
+</span></span><span class=line><span class=cl><span class=n>linux</span><span class=o>-</span><span class=n>amd64</span><span class=o>/</span><span class=n>helm</span>
+</span></span><span class=line><span class=cl><span class=n>linux</span><span class=o>-</span><span class=n>amd64</span><span class=o>/</span><span class=n>LICENSE</span>
+</span></span><span class=line><span class=cl><span class=n>linux</span><span class=o>-</span><span class=n>amd64</span><span class=o>/</span><span class=n>README</span><span class=o>.</span><span class=n>md</span>
+</span></span><span class=line><span class=cl><span class=n>rancher</span><span class=err>@</span><span class=n>rms1</span><span class=p>:</span><span class=o>~&gt;</span> <span class=n>sudo</span> <span class=n>cp</span> <span class=n>linux</span><span class=o>-</span><span class=n>amd64</span><span class=o>/</span><span class=n>helm</span> <span class=o>/</span><span class=n>usr</span><span class=o>/</span><span class=n>local</span><span class=o>/</span><span class=n>bin</span><span class=o>/</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=n>sudo</span><span class=p>]</span> <span class=n>password</span> <span class=k>for</span> <span class=n>root</span><span class=p>:</span> 
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>rancher</span><span class=err>@</span><span class=n>rms1</span><span class=p>:</span><span class=o>~&gt;</span> <span class=n>helm</span> <span class=o>--</span><span class=n>help</span>
+</span></span><span class=line><span class=cl><span class=n>The</span> <span class=n>Kubernetes</span> <span class=n>package</span> <span class=n>manager</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>Common</span> <span class=n>actions</span> <span class=k>for</span> <span class=n>Helm</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=o>-</span> <span class=n>helm</span> <span class=n>search</span><span class=p>:</span>    <span class=n>search</span> <span class=k>for</span> <span class=n>charts</span>
+</span></span><span class=line><span class=cl><span class=o>-</span> <span class=n>helm</span> <span class=n>pull</span><span class=p>:</span>      <span class=n>download</span> <span class=n>a</span> <span class=n>chart</span> <span class=n>to</span> <span class=n>your</span> <span class=n>local</span> <span class=n>directory</span> <span class=n>to</span> <span class=n>view</span>
+</span></span><span class=line><span class=cl><span class=o>-</span> <span class=n>helm</span> <span class=n>install</span><span class=p>:</span>   <span class=n>upload</span> <span class=n>the</span> <span class=n>chart</span> <span class=n>to</span> <span class=n>Kubernetes</span>
+</span></span><span class=line><span class=cl><span class=o>-</span> <span class=n>helm</span> <span class=n>list</span><span class=p>:</span>      <span class=n>list</span> <span class=n>releases</span> <span class=n>of</span> <span class=n>charts</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=o>...</span>
+</span></span><span class=line><span class=cl><span class=o>...</span>
+</span></span><span class=line><span class=cl><span class=o>...</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=2-install-neuvector>2. install NeuVector</h2><h3 id=21-加入neuvector-helm-chart>2.1. 加入neuvector helm chart</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>rancher@rms1:~&gt; helm repo add neuvector https://neuvector.github.io/neuvector-helm/
+</span></span><span class=line><span class=cl>&#34;neuvector&#34; has been added to your repositories
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>rancher@rms1:~&gt; helm search repo neuvector/core
+</span></span><span class=line><span class=cl>NAME          	CHART VERSION	APP VERSION	DESCRIPTION                             
+</span></span><span class=line><span class=cl>neuvector/core	2.2.3        	5.0.3      	Helm chart for NeuVector&#39;s core services
+</span></span><span class=line><span class=cl>rancher@rms1:~&gt; helm search repo neuvector/core -l
+</span></span><span class=line><span class=cl>NAME          	CHART VERSION	APP VERSION	DESCRIPTION                                       
+</span></span><span class=line><span class=cl>neuvector/core	2.2.3        	5.0.3      	Helm chart for NeuVector&#39;s core services          
+</span></span><span class=line><span class=cl>neuvector/core	2.2.2        	5.0.2      	Helm chart for NeuVector&#39;s core services          
+</span></span><span class=line><span class=cl>neuvector/core	2.2.1        	5.0.1      	Helm chart for NeuVector&#39;s core services          
+</span></span><span class=line><span class=cl>neuvector/core	2.2.0        	5.0.0      	Helm chart for NeuVector&#39;s core services          
+</span></span><span class=line><span class=cl>neuvector/core	1.9.2        	4.4.4-s2   	Helm chart for NeuVector&#39;s core services          
+</span></span><span class=line><span class=cl>neuvector/core	1.9.1        	4.4.4      	Helm chart for NeuVector&#39;s core services          
+</span></span><span class=line><span class=cl>neuvector/core	1.9.0        	4.4.4      	Helm chart for NeuVector&#39;s core services          
+</span></span><span class=line><span class=cl>neuvector/core	1.8.9        	4.4.3      	Helm chart for NeuVector&#39;s core services          
+</span></span><span class=line><span class=cl>neuvector/core	1.8.8        	4.4.2      	Helm chart for NeuVector&#39;s core services          
+</span></span><span class=line><span class=cl>neuvector/core	1.8.7        	4.4.1      	Helm chart for NeuVector&#39;s core services          
+</span></span><span class=line><span class=cl>neuvector/core	1.8.6        	4.4.0      	Helm chart for NeuVector&#39;s core services          
+</span></span><span class=line><span class=cl>neuvector/core	1.8.5        	4.3.2      	Helm chart for NeuVector&#39;s core services          
+</span></span><span class=line><span class=cl>neuvector/core	1.8.4        	4.3.2      	Helm chart for NeuVector&#39;s core services          
+</span></span><span class=line><span class=cl>neuvector/core	1.8.3        	4.3.2      	Helm chart for NeuVector&#39;s core services          
+</span></span><span class=line><span class=cl>neuvector/core	1.8.2        	4.3.1      	Helm chart for NeuVector&#39;s core services          
+</span></span><span class=line><span class=cl>neuvector/core	1.8.0        	4.3.0      	Helm chart for NeuVector&#39;s core services          
+</span></span><span class=line><span class=cl>neuvector/core	1.7.7        	4.2.2      	Helm chart for NeuVector&#39;s core services          
+</span></span><span class=line><span class=cl>neuvector/core	1.7.6        	4.2.2      	Helm chart for NeuVector&#39;s core services          
+</span></span><span class=line><span class=cl>neuvector/core	1.7.5        	4.2.0      	Helm chart for NeuVector&#39;s core services          
+</span></span><span class=line><span class=cl>neuvector/core	1.7.2        	4.2.0      	Helm chart for NeuVector&#39;s core services          
+</span></span><span class=line><span class=cl>neuvector/core	1.7.1        	4.2.0      	Helm chart for NeuVector&#39;s core services          
+</span></span><span class=line><span class=cl>neuvector/core	1.7.0        	4.0.0      	Helm chart for NeuVector&#39;s core services          
+</span></span><span class=line><span class=cl>neuvector/core	1.6.9        	4.0.0      	Helm chart for NeuVector&#39;s core services          
+</span></span><span class=line><span class=cl>neuvector/core	1.6.8        	4.0.0      	Helm chart for NeuVector&#39;s core services          
+</span></span><span class=line><span class=cl>neuvector/core	1.6.7        	4.0.0      	Helm chart for NeuVector&#39;s core services          
+</span></span><span class=line><span class=cl>neuvector/core	1.6.6        	4.0.0      	Helm chart for NeuVector&#39;s core services          
+</span></span><span class=line><span class=cl>neuvector/core	1.6.5        	4.0.0      	Helm chart for NeuVector&#39;s core services          
+</span></span><span class=line><span class=cl>neuvector/core	1.6.4        	4.0.0      	Helm chart for NeuVector&#39;s core services          
+</span></span><span class=line><span class=cl>neuvector/core	1.6.1        	4.0.0      	NeuVector Full Lifecycle Container Security Pla...
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>rancher@rms1:~&gt; helm show values neuvector/core --version 2.2.3 &gt; neuvector-values.yaml
+</span></span></code></pre></td></tr></table></div></div><h3 id=22-調整yaml---part-1replicas-for-test>2.2. 調整yaml - part-1(replicas for test)</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>controller:
+</span></span><span class=line><span class=cl>...
+</span></span><span class=line><span class=cl>  replicas: 1
+</span></span><span class=line><span class=cl>...
+</span></span><span class=line><span class=cl>...
+</span></span><span class=line><span class=cl>...
+</span></span><span class=line><span class=cl>  scanner:
+</span></span><span class=line><span class=cl>    enabled: true
+</span></span><span class=line><span class=cl>    replicas: 1
+</span></span><span class=line><span class=cl>...
+</span></span><span class=line><span class=cl>...
+</span></span></code></pre></td></tr></table></div></div><h3 id=23-調整yaml---part-2cri-for-k3s>2.3. 調整yaml - part-2(CRI for k3s)</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>k3s:
+</span></span><span class=line><span class=cl>  enabled: true
+</span></span></code></pre></td></tr></table></div></div><h3 id=24-建立neuvector-namespace-and-create-neuvector>2.4. 建立NeuVector NameSpace and create neuvector</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>rancher@rms1:~&gt; kubectl create ns neuvector
+</span></span><span class=line><span class=cl>namespace/neuvector created
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>rancher@rms1:~&gt; helm install neuvector neuvector/core --version 2.2.3 --namespace neuvector --values neuvector-values.yaml
+</span></span><span class=line><span class=cl>NAME: neuvector
+</span></span><span class=line><span class=cl>LAST DEPLOYED: Sun Oct 16 13:10:22 2022
+</span></span><span class=line><span class=cl>NAMESPACE: neuvector
+</span></span><span class=line><span class=cl>STATUS: deployed
+</span></span><span class=line><span class=cl>REVISION: 1
+</span></span><span class=line><span class=cl>TEST SUITE: None
+</span></span><span class=line><span class=cl>NOTES:
+</span></span><span class=line><span class=cl>Get the NeuVector URL by running these commands:
+</span></span><span class=line><span class=cl>  NODE_PORT=$(kubectl get --namespace neuvector -o jsonpath=&#34;{.spec.ports[0].nodePort}&#34; services neuvector-service-webui)
+</span></span><span class=line><span class=cl>  NODE_IP=$(kubectl get nodes --namespace neuvector -o jsonpath=&#34;{.items[0].status.addresses[0].address}&#34;)
+</span></span><span class=line><span class=cl>  echo https://$NODE_IP:$NODE_PORT
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>rancher@rms1:~&gt; kubectl -n neuvector get po 
+</span></span><span class=line><span class=cl>NAME                                        READY   STATUS    RESTARTS   AGE
+</span></span><span class=line><span class=cl>neuvector-controller-pod-6cf58c7894-hvvlw   1/1     Running   0          42s
+</span></span><span class=line><span class=cl>neuvector-enforcer-pod-rpzqg                1/1     Running   0          42s
+</span></span><span class=line><span class=cl>neuvector-manager-pod-8488cb586c-87q9n      1/1     Running   0          42s
+</span></span><span class=line><span class=cl>neuvector-scanner-pod-7d6bc8f775-pfwkk      1/1     Running   0          42s
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>rancher@rms1:~&gt; kubectl -n neuvector get svc
+</span></span><span class=line><span class=cl>NAME                              TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)                         AGE
+</span></span><span class=line><span class=cl>neuvector-service-webui           NodePort    10.43.189.243   &lt;none&gt;        8443:30805/TCP                  66s
+</span></span><span class=line><span class=cl>neuvector-svc-admission-webhook   ClusterIP   10.43.103.17    &lt;none&gt;        443/TCP                         67s
+</span></span><span class=line><span class=cl>neuvector-svc-controller          ClusterIP   None            &lt;none&gt;        18300/TCP,18301/TCP,18301/UDP   67s
+</span></span><span class=line><span class=cl>neuvector-svc-crd-webhook         ClusterIP   10.43.185.195   &lt;none&gt;        443/TCP                         66s
+</span></span></code></pre></td></tr></table></div></div><h2 id=3-其他>3. 其他</h2><h3 id=31-image-registry>3.1. image registry</h3><ol><li>Name: Nginx</li><li>Registry: <a class=link href=https://registry.hub.docker.com/ target=_blank rel=noopener>https://registry.hub.docker.com/</a></li><li>Filter: nginx:stable</li></ol><h3 id=32-response-rule>3.2. Response Rule</h3><ol><li>Category: <code>Security Event</code></li><li>Group: <code>nv.default</code></li><li>Criteria: <code>name:Process.Profile.Violation</code></li><li>Action: <code>Quarantine</code></li><li>Status: <code>Enabled</code></li></ol><h3 id=33-cli-reference>3.3. CLI reference</h3><h4 id=331-nginx-install-recon-ng>3.3.1. nginx install recon-ng</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=nx>rancher</span><span class=err>@</span><span class=nx>rms1</span><span class=p>:~&gt;</span> <span class=nx>kubectl</span> <span class=nx>create</span> <span class=nx>deploy</span> <span class=nx>web</span> <span class=o>--</span><span class=nx>image</span><span class=p>=</span><span class=nx>nginx</span> <span class=o>--</span><span class=nx>port</span><span class=p>=</span><span class=mi>80</span> <span class=o>--</span><span class=nx>replicas</span><span class=p>=</span><span class=mi>1</span>
+</span></span><span class=line><span class=cl><span class=nx>deployment</span><span class=p>.</span><span class=nx>apps</span><span class=o>/</span><span class=nx>web</span> <span class=nx>created</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>rancher</span><span class=err>@</span><span class=nx>rms1</span><span class=p>:~&gt;</span> <span class=nx>kubectl</span> <span class=nx>get</span> <span class=nx>po</span> 
+</span></span><span class=line><span class=cl><span class=nx>NAME</span>                  <span class=nx>READY</span>   <span class=nx>STATUS</span>    <span class=nx>RESTARTS</span>   <span class=nx>AGE</span>
+</span></span><span class=line><span class=cl><span class=nx>web</span><span class=o>-</span><span class=nx>cff6559d7</span><span class=o>-</span><span class=nx>jddwt</span>   <span class=mi>1</span><span class=o>/</span><span class=mi>1</span>     <span class=nx>Running</span>   <span class=mi>0</span>          <span class=mi>8</span><span class=nx>s</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>rancher</span><span class=err>@</span><span class=nx>rms1</span><span class=p>:~&gt;</span> <span class=nx>kubectl</span> <span class=nx>exec</span> <span class=o>-</span><span class=nx>it</span> <span class=nx>web</span><span class=o>-</span><span class=nx>cff6559d7</span><span class=o>-</span><span class=nx>jddwt</span> <span class=o>--</span> <span class=o>/</span><span class=nx>bin</span><span class=o>/</span><span class=nx>bash</span>
+</span></span><span class=line><span class=cl><span class=nx>root</span><span class=err>@</span><span class=nx>web</span><span class=o>-</span><span class=nx>cff6559d7</span><span class=o>-</span><span class=nx>jddwt</span><span class=p>:</span><span class=o>/</span><span class=err>#</span> <span class=nx>apt</span> <span class=nx>update</span>
+</span></span><span class=line><span class=cl><span class=nx>Get</span><span class=p>:</span><span class=mi>1</span> <span class=nx>http</span><span class=p>:</span><span class=c1>//deb.debian.org/debian bullseye InRelease [116 kB]</span>
+</span></span><span class=line><span class=cl><span class=nx>Get</span><span class=p>:</span><span class=mi>2</span> <span class=nx>http</span><span class=p>:</span><span class=c1>//deb.debian.org/debian-security bullseye-security InRelease [48.4 kB]</span>
+</span></span><span class=line><span class=cl><span class=nx>Get</span><span class=p>:</span><span class=mi>3</span> <span class=nx>http</span><span class=p>:</span><span class=c1>//deb.debian.org/debian bullseye-updates InRelease [44.1 kB]</span>
+</span></span><span class=line><span class=cl><span class=nx>Get</span><span class=p>:</span><span class=mi>4</span> <span class=nx>http</span><span class=p>:</span><span class=c1>//deb.debian.org/debian bullseye/main amd64 Packages [8184 kB]</span>
+</span></span><span class=line><span class=cl><span class=nx>Get</span><span class=p>:</span><span class=mi>5</span> <span class=nx>http</span><span class=p>:</span><span class=c1>//deb.debian.org/debian-security bullseye-security/main amd64 Packages [189 kB]                  </span>
+</span></span><span class=line><span class=cl><span class=nx>Get</span><span class=p>:</span><span class=mi>6</span> <span class=nx>http</span><span class=p>:</span><span class=c1>//deb.debian.org/debian bullseye-updates/main amd64 Packages [6340 B]                            </span>
+</span></span><span class=line><span class=cl><span class=nx>Fetched</span> <span class=mi>8588</span> <span class=nx>kB</span> <span class=nx>in</span> <span class=mi>8</span><span class=nf>s</span> <span class=p>(</span><span class=mi>1050</span> <span class=nx>kB</span><span class=o>/</span><span class=nx>s</span><span class=p>)</span>                                                                           
+</span></span><span class=line><span class=cl><span class=nx>Reading</span> <span class=kn>package</span> <span class=nx>lists</span><span class=o>...</span> <span class=nx>Done</span>
+</span></span><span class=line><span class=cl><span class=nx>Building</span> <span class=nx>dependency</span> <span class=nx>tree</span><span class=o>...</span> <span class=nx>Done</span>
+</span></span><span class=line><span class=cl><span class=nx>Reading</span> <span class=nx>state</span> <span class=nx>information</span><span class=o>...</span> <span class=nx>Done</span>
+</span></span><span class=line><span class=cl><span class=mi>1</span> <span class=kn>package</span> <span class=nx>can</span> <span class=nx>be</span> <span class=nx>upgraded</span><span class=p>.</span> <span class=nx>Run</span> <span class=err>&#39;</span><span class=nx>apt</span> <span class=nx>list</span> <span class=o>--</span><span class=nx>upgradable</span><span class=err>&#39;</span> <span class=nx>to</span> <span class=nx>see</span> <span class=nx>it</span><span class=p>.</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>root</span><span class=err>@</span><span class=nx>web</span><span class=o>-</span><span class=nx>cff6559d7</span><span class=o>-</span><span class=nx>jddwt</span><span class=p>:</span><span class=o>/</span><span class=err>#</span> <span class=nx>apt</span> <span class=nx>install</span> <span class=nx>recon</span><span class=o>-</span><span class=nx>ng</span>
+</span></span><span class=line><span class=cl><span class=nx>Reading</span> <span class=kn>package</span> <span class=nx>lists</span><span class=o>...</span> <span class=nx>Done</span>
+</span></span><span class=line><span class=cl><span class=nx>Building</span> <span class=nx>dependency</span> <span class=nx>tree</span><span class=o>...</span> <span class=nx>Done</span>
+</span></span><span class=line><span class=cl><span class=nx>Reading</span> <span class=nx>state</span> <span class=nx>information</span><span class=o>...</span> <span class=nx>Done</span>
+</span></span><span class=line><span class=cl><span class=nx>The</span> <span class=nx>following</span> <span class=nx>additional</span> <span class=nx>packages</span> <span class=nx>will</span> <span class=nx>be</span> <span class=nx>installed</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>  <span class=nx>javascript</span><span class=o>-</span><span class=nx>common</span> <span class=nx>libgpm2</span> <span class=nx>libjs</span><span class=o>-</span><span class=nx>jquery</span> <span class=nx>libjs</span><span class=o>-</span><span class=nx>skeleton</span> <span class=nx>libjs</span><span class=o>-</span><span class=nx>sphinxdoc</span> <span class=nx>libjs</span><span class=o>-</span><span class=nx>underscore</span> <span class=nx>libmpdec3</span>
+</span></span><span class=line><span class=cl><span class=o>...</span>
+</span></span><span class=line><span class=cl><span class=o>...</span>
+</span></span><span class=line><span class=cl><span class=o>...</span>
+</span></span><span class=line><span class=cl><span class=mi>0</span> <span class=nx>upgraded</span><span class=p>,</span> <span class=mi>69</span> <span class=nx>newly</span> <span class=nx>installed</span><span class=p>,</span> <span class=mi>0</span> <span class=nx>to</span> <span class=nx>remove</span> <span class=nx>and</span> <span class=mi>1</span> <span class=nx>not</span> <span class=nx>upgraded</span><span class=p>.</span>
+</span></span><span class=line><span class=cl><span class=nx>Need</span> <span class=nx>to</span> <span class=nx>get</span> <span class=mf>13.0</span> <span class=nx>MB</span> <span class=nx>of</span> <span class=nx>archives</span><span class=p>.</span>
+</span></span><span class=line><span class=cl><span class=nx>After</span> <span class=nx>this</span> <span class=nx>operation</span><span class=p>,</span> <span class=mf>55.7</span> <span class=nx>MB</span> <span class=nx>of</span> <span class=nx>additional</span> <span class=nx>disk</span> <span class=nx>space</span> <span class=nx>will</span> <span class=nx>be</span> <span class=nx>used</span><span class=p>.</span>
+</span></span><span class=line><span class=cl><span class=nx>Do</span> <span class=nx>you</span> <span class=nx>want</span> <span class=nx>to</span> <span class=k>continue</span><span class=err>?</span> <span class=p>[</span><span class=nx>Y</span><span class=o>/</span><span class=nx>n</span><span class=p>]</span> <span class=nx>y</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=o>...</span>
+</span></span><span class=line><span class=cl><span class=o>...</span>
+</span></span><span class=line><span class=cl><span class=o>...</span>
+</span></span><span class=line><span class=cl><span class=nx>Setting</span> <span class=nx>up</span> <span class=nx>recon</span><span class=o>-</span><span class=nf>ng</span> <span class=p>(</span><span class=mf>5.1.1</span><span class=o>-</span><span class=mi>3</span><span class=p>)</span> <span class=o>...</span>
+</span></span><span class=line><span class=cl><span class=nx>Processing</span> <span class=nx>triggers</span> <span class=k>for</span> <span class=nx>libc</span><span class=o>-</span><span class=nf>bin</span> <span class=p>(</span><span class=mf>2.31</span><span class=o>-</span><span class=mi>13</span><span class=o>+</span><span class=nx>deb11u4</span><span class=p>)</span> <span class=o>...</span>
+</span></span><span class=line><span class=cl><span class=nx>root</span><span class=err>@</span><span class=nx>web</span><span class=o>-</span><span class=nx>cff6559d7</span><span class=o>-</span><span class=nx>jddwt</span><span class=p>:</span><span class=o>/</span><span class=err>#</span> <span class=nx>recon</span><span class=o>-</span><span class=nx>ng</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=o>*</span><span class=p>]</span> <span class=nx>Version</span> <span class=nx>check</span> <span class=nx>disabled</span><span class=p>.</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nx>_</span><span class=o>/</span><span class=nx>_</span><span class=o>/</span><span class=nx>_</span><span class=o>/</span>    <span class=nx>_</span><span class=o>/</span><span class=nx>_</span><span class=o>/</span><span class=nx>_</span><span class=o>/</span><span class=nx>_</span><span class=o>/</span>    <span class=nx>_</span><span class=o>/</span><span class=nx>_</span><span class=o>/</span><span class=nx>_</span><span class=o>/</span>    <span class=nx>_</span><span class=o>/</span><span class=nx>_</span><span class=o>/</span><span class=nx>_</span><span class=o>/</span>    <span class=nx>_</span><span class=o>/</span>      <span class=nx>_</span><span class=o>/</span>            <span class=nx>_</span><span class=o>/</span>      <span class=nx>_</span><span class=o>/</span>    <span class=nx>_</span><span class=o>/</span><span class=nx>_</span><span class=o>/</span><span class=nx>_</span><span class=o>/</span>
+</span></span><span class=line><span class=cl>   <span class=nx>_</span><span class=o>/</span>    <span class=nx>_</span><span class=o>/</span>  <span class=nx>_</span><span class=o>/</span>        <span class=nx>_</span><span class=o>/</span>        <span class=nx>_</span><span class=o>/</span>      <span class=nx>_</span><span class=o>/</span>  <span class=nx>_</span><span class=o>/</span><span class=nx>_</span><span class=o>/</span>    <span class=nx>_</span><span class=o>/</span>            <span class=nx>_</span><span class=o>/</span><span class=nx>_</span><span class=o>/</span>    <span class=nx>_</span><span class=o>/</span>  <span class=nx>_</span><span class=o>/</span>       
+</span></span><span class=line><span class=cl>  <span class=nx>_</span><span class=o>/</span><span class=nx>_</span><span class=o>/</span><span class=nx>_</span><span class=o>/</span>    <span class=nx>_</span><span class=o>/</span><span class=nx>_</span><span class=o>/</span><span class=nx>_</span><span class=o>/</span>    <span class=nx>_</span><span class=o>/</span>        <span class=nx>_</span><span class=o>/</span>      <span class=nx>_</span><span class=o>/</span>  <span class=nx>_</span><span class=o>/</span>  <span class=nx>_</span><span class=o>/</span>  <span class=nx>_</span><span class=o>/</span>  <span class=nx>_</span><span class=o>/</span><span class=nx>_</span><span class=o>/</span><span class=nx>_</span><span class=o>/</span><span class=nx>_</span><span class=o>/</span>  <span class=nx>_</span><span class=o>/</span>  <span class=nx>_</span><span class=o>/</span>  <span class=nx>_</span><span class=o>/</span>  <span class=nx>_</span><span class=o>/</span>  <span class=nx>_</span><span class=o>/</span><span class=nx>_</span><span class=o>/</span><span class=nx>_</span><span class=o>/</span>
+</span></span><span class=line><span class=cl> <span class=nx>_</span><span class=o>/</span>    <span class=nx>_</span><span class=o>/</span>  <span class=nx>_</span><span class=o>/</span>        <span class=nx>_</span><span class=o>/</span>        <span class=nx>_</span><span class=o>/</span>      <span class=nx>_</span><span class=o>/</span>  <span class=nx>_</span><span class=o>/</span>    <span class=nx>_</span><span class=o>/</span><span class=nx>_</span><span class=o>/</span>            <span class=nx>_</span><span class=o>/</span>    <span class=nx>_</span><span class=o>/</span><span class=nx>_</span><span class=o>/</span>  <span class=nx>_</span><span class=o>/</span>      <span class=nx>_</span><span class=o>/</span> 
+</span></span><span class=line><span class=cl><span class=nx>_</span><span class=o>/</span>    <span class=nx>_</span><span class=o>/</span>  <span class=nx>_</span><span class=o>/</span><span class=nx>_</span><span class=o>/</span><span class=nx>_</span><span class=o>/</span><span class=nx>_</span><span class=o>/</span>    <span class=nx>_</span><span class=o>/</span><span class=nx>_</span><span class=o>/</span><span class=nx>_</span><span class=o>/</span>    <span class=nx>_</span><span class=o>/</span><span class=nx>_</span><span class=o>/</span><span class=nx>_</span><span class=o>/</span>    <span class=nx>_</span><span class=o>/</span>      <span class=nx>_</span><span class=o>/</span>            <span class=nx>_</span><span class=o>/</span>      <span class=nx>_</span><span class=o>/</span>    <span class=nx>_</span><span class=o>/</span><span class=nx>_</span><span class=o>/</span><span class=nx>_</span><span class=o>/</span>    
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>                                          <span class=o>/</span>\
+</span></span><span class=line><span class=cl>                                         <span class=o>/</span> <span class=err>\\</span> <span class=o>/</span>\
+</span></span><span class=line><span class=cl>    <span class=nx>Sponsored</span> <span class=nx>by</span><span class=o>...</span>               <span class=o>/</span><span class=err>\</span>  <span class=o>/</span><span class=err>\</span><span class=o>/</span>  <span class=err>\\</span><span class=nx>V</span>  <span class=err>\</span><span class=o>/</span>\
+</span></span><span class=line><span class=cl>                                 <span class=o>/</span> <span class=err>\\</span><span class=o>/</span> <span class=c1>// \\\\\ \\ \/\</span>
+</span></span><span class=line><span class=cl>                                <span class=c1>// // BLACK HILLS \/ \\</span>
+</span></span><span class=line><span class=cl>                               <span class=nx>www</span><span class=p>.</span><span class=nx>blackhillsinfosec</span><span class=p>.</span><span class=nx>com</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>                  <span class=nx>____</span>   <span class=nx>____</span>   <span class=nx>____</span>   <span class=nx>____</span> <span class=nx>_____</span> <span class=nx>_</span>  <span class=nx>____</span>   <span class=nx>____</span>  <span class=nx>____</span>
+</span></span><span class=line><span class=cl>                 <span class=p>|</span><span class=nx>____</span><span class=p>]</span> <span class=p>|</span> <span class=nx>___</span><span class=o>/</span> <span class=p>|</span><span class=nx>____</span><span class=p>|</span> <span class=p>|</span>       <span class=p>|</span>   <span class=p>|</span> <span class=p>|</span><span class=nx>____</span>  <span class=p>|</span><span class=nx>____</span> <span class=p>|</span>
+</span></span><span class=line><span class=cl>                 <span class=p>|</span>      <span class=p>|</span>   <span class=err>\</span><span class=nx>_</span> <span class=p>|</span>    <span class=p>|</span> <span class=p>|</span><span class=nx>____</span>   <span class=p>|</span>   <span class=p>|</span>  <span class=nx>____</span><span class=p>|</span> <span class=p>|</span><span class=nx>____</span> <span class=p>|</span><span class=nx>____</span>
+</span></span><span class=line><span class=cl>                                   <span class=nx>www</span><span class=p>.</span><span class=nx>practisec</span><span class=p>.</span><span class=nx>com</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>                      <span class=p>[</span><span class=nx>recon</span><span class=o>-</span><span class=nx>ng</span> <span class=nx>v5</span><span class=mf>.1.1</span><span class=p>,</span> <span class=nx>Tim</span> <span class=nf>Tomes</span> <span class=p>(</span><span class=err>@</span><span class=nx>lanmaster53</span><span class=p>)]</span>                       
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=o>*</span><span class=p>]</span> <span class=nx>No</span> <span class=nx>modules</span> <span class=nx>enabled</span><span class=o>/</span><span class=nx>installed</span><span class=p>.</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=nx>recon</span><span class=o>-</span><span class=nx>ng</span><span class=p>][</span><span class=k>default</span><span class=p>]</span> <span class=p>&gt;</span> 
+</span></span></code></pre></td></tr></table></div></div><h4 id=332-nginx-bash>3.3.2. nginx bash</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>rancher@rms1:~&gt; kubectl get po 
+</span></span><span class=line><span class=cl>NAME                  READY   STATUS    RESTARTS   AGE
+</span></span><span class=line><span class=cl>web-cff6559d7-jddwt   1/1     Running   0          5m4s
+</span></span><span class=line><span class=cl>rancher@rms1:~&gt; kubectl exec -it web-cff6559d7-jddwt -- /bin/bash
+</span></span></code></pre></td></tr></table></div></div></section><footer class=article-footer><section class=article-tags><a href=/tags/neuvector/>NeuVector</a>
+<a href=/tags/suse/>SUSE</a>
+<a href=/tags/kubernetes/>Kubernetes</a></section><section class=article-copyright><svg class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
+<span>Licensed under CC BY-NC-SA 4.0</span></section></footer></article><aside class=related-content--wrapper><h2 class=section-title>相關文章</h2><div class=related-content><div class="flex article-list--tile"><article><a href=/p/guide_rke2rancher_install/><div class=article-details><h2 class=article-title>Guide_RKE2&amp;Rancher_install</h2></div></a></article><article><a href=/p/guide_rke2_offline_install/><div class=article-details><h2 class=article-title>Guide_rke2_offline_install</h2></div></a></article><article><a href=/p/nutanix_webinar_%E9%80%9A%E9%81%8Enutanix%E5%AF%A6%E7%8F%BE%E8%B3%87%E6%96%99%E5%BA%AB%E8%88%87devops%E7%9A%84%E8%9E%8D%E5%90%88/><div class=article-details><h2 class=article-title>Nutanix_Webinar_通過Nutanix實現資料庫與DevOps的融合</h2></div></a></article><article><a href=/p/blog-part3/><div class=article-details><h2 class=article-title>製作Blog Part3 (半自動腳本)</h2></div></a></article><article><a href=/p/nutanix-notes/><div class=article-details><h2 class=article-title>Nutanix-Notes</h2></div></a></article></div></div></aside><div class=disqus-container><div id=disqus_thread></div><script>window.disqus_config=function(){},function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById("disqus_thread").innerHTML="Disqus comments not available by default when the website is previewed locally.";return}var t=document,e=t.createElement("script");e.async=!0,e.src="//wangken0129.disqus.com/embed.js",e.setAttribute("data-timestamp",+new Date),(t.head||t.body).appendChild(e)}()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></div><style>.disqus-container{background-color:var(--card-background);border-radius:var(--card-border-radius);box-shadow:var(--shadow-l1);padding:var(--card-padding)}</style><script>window.addEventListener("onColorSchemeChange",e=>{typeof DISQUS=="object"&&DISQUS.reset({reload:!0})})</script><footer class=site-footer><section class=copyright>&copy;
+2023 -
+2025 Ken's blog</section><section class=powerby>使用 <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> 建立<br>主題 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.30.0>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 設計</section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js defer></script><script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>

@@ -1,0 +1,713 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Gigamon on Ken's blog</title><link>https://wangken0129.github.io/tags/gigamon/</link><description>Recent content in Gigamon on Ken's blog</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Sat, 23 Sep 2023 03:50:05 +0800</lastBuildDate><atom:link href="https://wangken0129.github.io/tags/gigamon/index.xml" rel="self" type="application/rss+xml"/><item><title>Gigamon_on_OCP</title><link>https://wangken0129.github.io/p/gigamon_on_ocp/</link><pubDate>Sat, 23 Sep 2023 03:50:05 +0800</pubDate><guid>https://wangken0129.github.io/p/gigamon_on_ocp/</guid><description>&lt;h1 id="gigamon-uct-on-ocp">Gigamon UCT on OCP
+&lt;/h1>&lt;p>&lt;a class="link" href="https://docs.gigamon.com/pdfs/Content/Resources/PDF%20Library/GV-6000-Doc/Universal-Container-Tap-Guide-v60.pdf#page18" target="_blank" rel="noopener"
+>https://docs.gigamon.com/pdfs/Content/Resources/PDF%20Library/GV-6000-Doc/Universal-Container-Tap-Guide-v60.pdf#page18&lt;/a>&lt;/p>
+&lt;p>安裝Gigamon UCT 在RedHat Openshift上，讓Gigamon可以監看Openshift的流量，&lt;/p>
+&lt;p>UCT會透過daemon set的方式安裝在每個Node上面，所以需要修改Project的權限。&lt;/p>
+&lt;h2 id="安裝步驟">安裝步驟
+&lt;/h2>&lt;ol>
+&lt;li>
+&lt;p>create new project , 並加ssc給此project&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">oc new-project
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">oc adm policy add-scc-to-user anyuid -z default
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">oc adm policy add-scc-to-user privileged -n gigamon -z default
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>Gigamon UTC-Controller,修改FM IP、Port (default 443)、External DNS、API等等
+以及image版本,要注意第一個執行目錄會有所不同,可以的話用podman run起來看看&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt"> 10
+&lt;/span>&lt;span class="lnt"> 11
+&lt;/span>&lt;span class="lnt"> 12
+&lt;/span>&lt;span class="lnt"> 13
+&lt;/span>&lt;span class="lnt"> 14
+&lt;/span>&lt;span class="lnt"> 15
+&lt;/span>&lt;span class="lnt"> 16
+&lt;/span>&lt;span class="lnt"> 17
+&lt;/span>&lt;span class="lnt"> 18
+&lt;/span>&lt;span class="lnt"> 19
+&lt;/span>&lt;span class="lnt"> 20
+&lt;/span>&lt;span class="lnt"> 21
+&lt;/span>&lt;span class="lnt"> 22
+&lt;/span>&lt;span class="lnt"> 23
+&lt;/span>&lt;span class="lnt"> 24
+&lt;/span>&lt;span class="lnt"> 25
+&lt;/span>&lt;span class="lnt"> 26
+&lt;/span>&lt;span class="lnt"> 27
+&lt;/span>&lt;span class="lnt"> 28
+&lt;/span>&lt;span class="lnt"> 29
+&lt;/span>&lt;span class="lnt"> 30
+&lt;/span>&lt;span class="lnt"> 31
+&lt;/span>&lt;span class="lnt"> 32
+&lt;/span>&lt;span class="lnt"> 33
+&lt;/span>&lt;span class="lnt"> 34
+&lt;/span>&lt;span class="lnt"> 35
+&lt;/span>&lt;span class="lnt"> 36
+&lt;/span>&lt;span class="lnt"> 37
+&lt;/span>&lt;span class="lnt"> 38
+&lt;/span>&lt;span class="lnt"> 39
+&lt;/span>&lt;span class="lnt"> 40
+&lt;/span>&lt;span class="lnt"> 41
+&lt;/span>&lt;span class="lnt"> 42
+&lt;/span>&lt;span class="lnt"> 43
+&lt;/span>&lt;span class="lnt"> 44
+&lt;/span>&lt;span class="lnt"> 45
+&lt;/span>&lt;span class="lnt"> 46
+&lt;/span>&lt;span class="lnt"> 47
+&lt;/span>&lt;span class="lnt"> 48
+&lt;/span>&lt;span class="lnt"> 49
+&lt;/span>&lt;span class="lnt"> 50
+&lt;/span>&lt;span class="lnt"> 51
+&lt;/span>&lt;span class="lnt"> 52
+&lt;/span>&lt;span class="lnt"> 53
+&lt;/span>&lt;span class="lnt"> 54
+&lt;/span>&lt;span class="lnt"> 55
+&lt;/span>&lt;span class="lnt"> 56
+&lt;/span>&lt;span class="lnt"> 57
+&lt;/span>&lt;span class="lnt"> 58
+&lt;/span>&lt;span class="lnt"> 59
+&lt;/span>&lt;span class="lnt"> 60
+&lt;/span>&lt;span class="lnt"> 61
+&lt;/span>&lt;span class="lnt"> 62
+&lt;/span>&lt;span class="lnt"> 63
+&lt;/span>&lt;span class="lnt"> 64
+&lt;/span>&lt;span class="lnt"> 65
+&lt;/span>&lt;span class="lnt"> 66
+&lt;/span>&lt;span class="lnt"> 67
+&lt;/span>&lt;span class="lnt"> 68
+&lt;/span>&lt;span class="lnt"> 69
+&lt;/span>&lt;span class="lnt"> 70
+&lt;/span>&lt;span class="lnt"> 71
+&lt;/span>&lt;span class="lnt"> 72
+&lt;/span>&lt;span class="lnt"> 73
+&lt;/span>&lt;span class="lnt"> 74
+&lt;/span>&lt;span class="lnt"> 75
+&lt;/span>&lt;span class="lnt"> 76
+&lt;/span>&lt;span class="lnt"> 77
+&lt;/span>&lt;span class="lnt"> 78
+&lt;/span>&lt;span class="lnt"> 79
+&lt;/span>&lt;span class="lnt"> 80
+&lt;/span>&lt;span class="lnt"> 81
+&lt;/span>&lt;span class="lnt"> 82
+&lt;/span>&lt;span class="lnt"> 83
+&lt;/span>&lt;span class="lnt"> 84
+&lt;/span>&lt;span class="lnt"> 85
+&lt;/span>&lt;span class="lnt"> 86
+&lt;/span>&lt;span class="lnt"> 87
+&lt;/span>&lt;span class="lnt"> 88
+&lt;/span>&lt;span class="lnt"> 89
+&lt;/span>&lt;span class="lnt"> 90
+&lt;/span>&lt;span class="lnt"> 91
+&lt;/span>&lt;span class="lnt"> 92
+&lt;/span>&lt;span class="lnt"> 93
+&lt;/span>&lt;span class="lnt"> 94
+&lt;/span>&lt;span class="lnt"> 95
+&lt;/span>&lt;span class="lnt"> 96
+&lt;/span>&lt;span class="lnt"> 97
+&lt;/span>&lt;span class="lnt"> 98
+&lt;/span>&lt;span class="lnt"> 99
+&lt;/span>&lt;span class="lnt">100
+&lt;/span>&lt;span class="lnt">101
+&lt;/span>&lt;span class="lnt">102
+&lt;/span>&lt;span class="lnt">103
+&lt;/span>&lt;span class="lnt">104
+&lt;/span>&lt;span class="lnt">105
+&lt;/span>&lt;span class="lnt">106
+&lt;/span>&lt;span class="lnt">107
+&lt;/span>&lt;span class="lnt">108
+&lt;/span>&lt;span class="lnt">109
+&lt;/span>&lt;span class="lnt">110
+&lt;/span>&lt;span class="lnt">111
+&lt;/span>&lt;span class="lnt">112
+&lt;/span>&lt;span class="lnt">113
+&lt;/span>&lt;span class="lnt">114
+&lt;/span>&lt;span class="lnt">115
+&lt;/span>&lt;span class="lnt">116
+&lt;/span>&lt;span class="lnt">117
+&lt;/span>&lt;span class="lnt">118
+&lt;/span>&lt;span class="lnt">119
+&lt;/span>&lt;span class="lnt">120
+&lt;/span>&lt;span class="lnt">121
+&lt;/span>&lt;span class="lnt">122
+&lt;/span>&lt;span class="lnt">123
+&lt;/span>&lt;span class="lnt">124
+&lt;/span>&lt;span class="lnt">125
+&lt;/span>&lt;span class="lnt">126
+&lt;/span>&lt;span class="lnt">127
+&lt;/span>&lt;span class="lnt">128
+&lt;/span>&lt;span class="lnt">129
+&lt;/span>&lt;span class="lnt">130
+&lt;/span>&lt;span class="lnt">131
+&lt;/span>&lt;span class="lnt">132
+&lt;/span>&lt;span class="lnt">133
+&lt;/span>&lt;span class="lnt">134
+&lt;/span>&lt;span class="lnt">135
+&lt;/span>&lt;span class="lnt">136
+&lt;/span>&lt;span class="lnt">137
+&lt;/span>&lt;span class="lnt">138
+&lt;/span>&lt;span class="lnt">139
+&lt;/span>&lt;span class="lnt">140
+&lt;/span>&lt;span class="lnt">141
+&lt;/span>&lt;span class="lnt">142
+&lt;/span>&lt;span class="lnt">143
+&lt;/span>&lt;span class="lnt">144
+&lt;/span>&lt;span class="lnt">145
+&lt;/span>&lt;span class="lnt">146
+&lt;/span>&lt;span class="lnt">147
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">[ocpadmin@Bastion gigamon]$ cat uct-controller.yaml
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># Copyright 2020 Gigamon Inc.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">##################################################################################################
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># UCT service
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">##################################################################################################
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">apiVersion: v1
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kind: Service
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">metadata:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> name: gigamon-uct-cntlr-service
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> labels:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> app: uct-cntlr
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> service: gigamon-uct-cntlr-service
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> # change the namespace tp match your namespace
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> namespace: gigamon
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">spec:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> ports:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> - port: 8443
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> protocol: TCP
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> name: uct-rest
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> targetPort: 8443
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> - port: 42042
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> protocol: TCP
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> name: uct-stats
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> targetPort: 42042
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> selector:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> app: uct-cntlr
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">---
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">apiVersion: apps/v1
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kind: Deployment
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">metadata:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> name: uct-cntlr-v1
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> # change the namespace tp match your namespace
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> namespace: gigamon
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> labels:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> app: uct-cntlr
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> version: v1
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">spec:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> replicas: 1
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> selector:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> matchLabels:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> app: uct-cntlr
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> version: v1
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> template:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> metadata:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> labels:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> app: uct-cntlr
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> version: v1
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> spec:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> # this below serviceAccountName should match with the ServiceAccount
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> # name under ClusterRoleBinding section.It is recommended to use
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> # a non default name as customers may use name of their choice.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> # non default serviceAccountName should be created using the kubectl.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> # kubectl create serviceaccount &amp;lt;non default name&amp;gt; -n &amp;lt;namespace&amp;gt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> serviceAccountName: default
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> containers:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> - name: uct-cntlr
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> image: gigamon/uct-controller:6.2.00-374893
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> # Usage:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> # /uct-cntlr
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> # &amp;lt;FM IP&amp;gt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> # &amp;lt;FM REST Svc Port&amp;gt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> # &amp;lt;UCT-Cntlr REST SVC Port&amp;gt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> # &amp;lt;mTLS Mode: 1(ON)|0(OFF))
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> # &amp;lt;Cert Path&amp;gt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> # &amp;lt;Cert file&amp;gt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> # &amp;lt;Pvt Key&amp;gt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> # &amp;lt;CA-Root&amp;gt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> command:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> - /uct-controller
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> - &amp;#34;192.168.85.197&amp;#34;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> - &amp;#39;443&amp;#39;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> - &amp;#39;8443&amp;#39;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> - &amp;#39;0&amp;#39;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> - &amp;#34;/etc/gcbcerts&amp;#34;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> - &amp;#34;gcb-cert.pem&amp;#34;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> - &amp;#34;gcb-pvt-key.pem&amp;#34;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> - &amp;#34;gcb-ca-root-cert.pem&amp;#34;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> #command: [/giga_setup_init]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> imagePullPolicy: Always
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> ports:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> - containerPort: 8443
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> - containerPort: 42042
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> env:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> # Service name.Shoudl match name specified in metadata section above.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> - name: UCT_CNTLR_SERVICE_NAME
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> value: &amp;#34;gigamon-uct-cntlr-service&amp;#34;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> # External LB balancer IP, for controller (FM) to connect to uct-cntlr
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> - name: UCT_CNTLR_EXT_IP_DNS
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> value: &amp;#34;gigamon-uct.ocp.dynasafelab.local&amp;#34;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> # K8S cluster end-point (typically, master nodes with default port of 6443)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> # example: kubectl cluster-info cmd should give this value
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> - name: K8S_CLUSTER_ENDPOINT
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> value: &amp;#34;https://api.ocp.dynasafelab.local:6443&amp;#34;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> # This value is upto user to specify. Will accept any value
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> - name: FM_FQDN
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> value: &amp;#34;fm.dynasafelab.local&amp;#34;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> # Namespace of pod - gets from metadata
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> - name: UCT_CNTLR_POD_NAMESPACE
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> valueFrom:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> fieldRef:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> fieldPath: metadata.namespace
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> # This value is to enable inventory collection through yaml file.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> # true means enable, false or any other value means disable
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> - name: UCT_CNTLR_INVENTORY_COLLECTION_ENABLE
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> value: &amp;#34;false&amp;#34;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> # We are specifying HOME dir as /pod-data to work with SCC restrictions
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> - name: HOME
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> value: &amp;#34;/pod-data&amp;#34;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> # For No mTLS Case, Volume Mount is Optional.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> volumeMounts:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> - mountPath: /etc/gcbcerts
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> name: pki-path
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> - mountPath: /pod-data
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> name: shared-data
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> volumes:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> - emptyDir: {}
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> name: shared-data
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> - emptyDir: {}
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> name: pki-path
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> imagePullSecrets:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> - name: gig-dock-regkey
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">---
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kind: ClusterRole
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">apiVersion: rbac.authorization.k8s.io/v1
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">metadata:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> name: pods-list
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">rules:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">- apiGroups: [&amp;#34;&amp;#34;]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> resources: [&amp;#34;pods&amp;#34;,&amp;#34;services&amp;#34;, &amp;#34;nodes&amp;#34;]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> verbs: [&amp;#34;get&amp;#34;,&amp;#34;watch&amp;#34;,&amp;#34;list&amp;#34;]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">- apiGroups: [&amp;#34;apps&amp;#34;]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> resources: [&amp;#34;deployments&amp;#34;]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> verbs: [&amp;#34;list&amp;#34;]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">---
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kind: ClusterRoleBinding
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">apiVersion: rbac.authorization.k8s.io/v1
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">metadata:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> name: pods-list
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">subjects:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">- kind: ServiceAccount
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> name: default
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> #change the below namespace as per the requirement
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> namespace: gigamon
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">roleRef:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> kind: ClusterRole
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> name: pods-list
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> apiGroup: rbac.authorization.k8s.io
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>Gigamon UTC-Tap , 注意此為Daemonset 所以一定要加scc不然會過不了
+我把原文件的SecurityContext刪除,改用scc
+修改service的名稱 、image版本&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;span class="lnt">46
+&lt;/span>&lt;span class="lnt">47
+&lt;/span>&lt;span class="lnt">48
+&lt;/span>&lt;span class="lnt">49
+&lt;/span>&lt;span class="lnt">50
+&lt;/span>&lt;span class="lnt">51
+&lt;/span>&lt;span class="lnt">52
+&lt;/span>&lt;span class="lnt">53
+&lt;/span>&lt;span class="lnt">54
+&lt;/span>&lt;span class="lnt">55
+&lt;/span>&lt;span class="lnt">56
+&lt;/span>&lt;span class="lnt">57
+&lt;/span>&lt;span class="lnt">58
+&lt;/span>&lt;span class="lnt">59
+&lt;/span>&lt;span class="lnt">60
+&lt;/span>&lt;span class="lnt">61
+&lt;/span>&lt;span class="lnt">62
+&lt;/span>&lt;span class="lnt">63
+&lt;/span>&lt;span class="lnt">64
+&lt;/span>&lt;span class="lnt">65
+&lt;/span>&lt;span class="lnt">66
+&lt;/span>&lt;span class="lnt">67
+&lt;/span>&lt;span class="lnt">68
+&lt;/span>&lt;span class="lnt">69
+&lt;/span>&lt;span class="lnt">70
+&lt;/span>&lt;span class="lnt">71
+&lt;/span>&lt;span class="lnt">72
+&lt;/span>&lt;span class="lnt">73
+&lt;/span>&lt;span class="lnt">74
+&lt;/span>&lt;span class="lnt">75
+&lt;/span>&lt;span class="lnt">76
+&lt;/span>&lt;span class="lnt">77
+&lt;/span>&lt;span class="lnt">78
+&lt;/span>&lt;span class="lnt">79
+&lt;/span>&lt;span class="lnt">80
+&lt;/span>&lt;span class="lnt">81
+&lt;/span>&lt;span class="lnt">82
+&lt;/span>&lt;span class="lnt">83
+&lt;/span>&lt;span class="lnt">84
+&lt;/span>&lt;span class="lnt">85
+&lt;/span>&lt;span class="lnt">86
+&lt;/span>&lt;span class="lnt">87
+&lt;/span>&lt;span class="lnt">88
+&lt;/span>&lt;span class="lnt">89
+&lt;/span>&lt;span class="lnt">90
+&lt;/span>&lt;span class="lnt">91
+&lt;/span>&lt;span class="lnt">92
+&lt;/span>&lt;span class="lnt">93
+&lt;/span>&lt;span class="lnt">94
+&lt;/span>&lt;span class="lnt">95
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="p">[&lt;/span>&lt;span class="n">ocpadmin&lt;/span>&lt;span class="err">@&lt;/span>&lt;span class="n">Bastion&lt;/span> &lt;span class="n">gigamon&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="o">$&lt;/span> &lt;span class="n">cat&lt;/span> &lt;span class="n">uct&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">tap&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">yaml&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">apiVersion&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">apps&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">v1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">kind&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">DaemonSet&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">metadata&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">name&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">gigamon&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">uct&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">labels&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">app&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">gigamon&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">uct&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">version&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">v1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">spec&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">selector&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">matchLabels&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">app&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">gigamon&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">uct&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">version&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">v1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">template&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">metadata&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">labels&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">app&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">gigamon&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">uct&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">version&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">v1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">spec&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">restartPolicy&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">Always&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">hostPID&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="bp">true&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">hostNetwork&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="bp">true&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">terminationGracePeriodSeconds&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">30&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">securityContext&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">{}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">containers&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">-&lt;/span> &lt;span class="n">resources&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">limits&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">cpu&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s1">&amp;#39;1&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">memory&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">512&lt;/span>&lt;span class="n">Mi&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">requests&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">cpu&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s1">&amp;#39;1&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">memory&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">512&lt;/span>&lt;span class="n">Mi&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">name&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">gigamon&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">uct&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">command&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">-&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="n">uctapp&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">uct&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">-&lt;/span> &lt;span class="s1">&amp;#39;1&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">-&lt;/span> &lt;span class="s1">&amp;#39;1&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">-&lt;/span> &lt;span class="s1">&amp;#39;3&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">-&lt;/span> &lt;span class="s1">&amp;#39;0&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">-&lt;/span> &lt;span class="s1">&amp;#39;55&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">env&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">-&lt;/span> &lt;span class="n">name&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">LD_LIBRARY_PATH&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">value&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="n">usr&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">lib64&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">-&lt;/span> &lt;span class="n">name&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">UCT_DEBUG_MODE&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">value&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s1">&amp;#39;0x0A000004&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">-&lt;/span> &lt;span class="n">name&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">UCT_SERVICE_NAME&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">value&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">UCT_HTTP_SERVICE&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">-&lt;/span> &lt;span class="n">name&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">UCT_CNTLR_SVC_DNS&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">value&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">gigamon&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">uct&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">cntlr&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">service&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">-&lt;/span> &lt;span class="n">name&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">UCT_CNTLR_REST_SVC_PORT&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">value&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s1">&amp;#39;8443&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">-&lt;/span> &lt;span class="n">name&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">UCT_WORKERNODE_NAME&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">valueFrom&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">fieldRef&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">apiVersion&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">v1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">fieldPath&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">spec&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">nodeName&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">-&lt;/span> &lt;span class="n">name&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">UCT_POD_NAMESPACE&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">valueFrom&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">fieldRef&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">apiVersion&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">v1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">fieldPath&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">metadata&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">namespace&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">-&lt;/span> &lt;span class="n">name&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">UCT_POD_IP&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">valueFrom&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">fieldRef&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">apiVersion&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">v1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">fieldPath&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">status&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">podIP&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">-&lt;/span> &lt;span class="n">name&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">UCT_NOKIA_SCP_VTAP&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">value&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s1">&amp;#39;0&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">ports&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">-&lt;/span> &lt;span class="n">hostPort&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">9443&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">containerPort&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">9443&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">protocol&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">TCP&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">imagePullPolicy&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">IfNotPresent&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">volumeMounts&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">-&lt;/span> &lt;span class="n">name&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">socket&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">mountPath&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="k">var&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">run&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">containerd&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">containerd&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">sock&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">-&lt;/span> &lt;span class="n">name&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">shared&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">data&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">mountPath&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="n">pod&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">data&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">mountPropagation&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">None&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">-&lt;/span> &lt;span class="n">name&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">map&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">mountPath&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="n">sys&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">fs&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">bpf&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">terminationMessagePolicy&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="ne">File&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">image&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s1">&amp;#39;gigamon/uct-tap:6.2.00-374893&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">volumes&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">-&lt;/span> &lt;span class="n">name&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">socket&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">hostPath&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">path&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="k">var&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">run&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">containerd&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">containerd&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">sock&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">type&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s1">&amp;#39;&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">-&lt;/span> &lt;span class="n">name&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">map&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">hostPath&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">path&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="n">sys&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">fs&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">bpf&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">type&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s1">&amp;#39;&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">-&lt;/span> &lt;span class="n">name&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">shared&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">data&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">emptyDir&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">{}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">dnsPolicy&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">ClusterFirstWithHostNet&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>UTC-Controller Routes , 此處因爲service endpoint走的是 8443, 所以加上edge的tls方式&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">[ocpadmin@Bastion gigamon]$ cat cntrl-route.yml
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">apiVersion: route.openshift.io/v1
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kind: Route
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">metadata:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> name: gigamon-uct-cntlr-service
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> namespace: gigamon
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">spec:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> host: gigamon-uct.apps.ocp.dynasafelab.local
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> port:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> targetPort: 8443
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> to:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> kind: Service
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> name: gigamon-uct-cntlr-service
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> tls:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> termination: edge
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>最後oc apply -f 上述的yaml檔案&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">[ocpadmin@Bastion gigamon]$ oc apply -f uct-controller.yaml
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">[ocpadmin@Bastion gigamon]$ oc apply -f cntrl-route.yml
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">[ocpadmin@Bastion gigamon]$ oc apply -f uct-tap.yaml
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;/ol></description></item><item><title>Gigamon_on_Nutanix</title><link>https://wangken0129.github.io/p/gigamon_on_nutanix/</link><pubDate>Sat, 23 Sep 2023 03:47:05 +0800</pubDate><guid>https://wangken0129.github.io/p/gigamon_on_nutanix/</guid><description>&lt;h1 id="gigamon-on-nutanix">Gigamon On Nutanix
+&lt;/h1>&lt;h2 id="參考連結">參考連結
+&lt;/h2>&lt;p>&lt;a class="link" href="https://docs.gigamon.com/pdfs/Content/Resources/PDF%20Library/GV-6100-Doc/GigaVUE-Cloud-Suite-Nutanix-GigaVUE-V-Series-2-Guide-v61.pdf" target="_blank" rel="noopener"
+>https://docs.gigamon.com/pdfs/Content/Resources/PDF%20Library/GV-6100-Doc/GigaVUE-Cloud-Suite-Nutanix-GigaVUE-V-Series-2-Guide-v61.pdf&lt;/a>
+&lt;a class="link" href="https://community.gigamon.com/gigamoncp/s/article/Deploying-Gigamon-Cloud-Suite-for-pervasive-visibility-on-Nutanix-underlay-using-native-service-chaining-6-1" target="_blank" rel="noopener"
+>https://community.gigamon.com/gigamoncp/s/article/Deploying-Gigamon-Cloud-Suite-for-pervasive-visibility-on-Nutanix-underlay-using-native-service-chaining-6-1&lt;/a>&lt;/p>
+&lt;p>AHV Networking&lt;/p>
+&lt;p>&lt;a class="link" href="https://www.nutanixbible.com/5a-book-of-ahv-architecture.html" target="_blank" rel="noopener"
+>https://www.nutanixbible.com/5a-book-of-ahv-architecture.html&lt;/a>
+&lt;a class="link" href="https://hyperhci.com/2019/11/20/nutanix-ahv-networking-advanced-features/" target="_blank" rel="noopener"
+>https://hyperhci.com/2019/11/20/nutanix-ahv-networking-advanced-features/&lt;/a>&lt;/p>
+&lt;p>Fortinet
+&lt;a class="link" href="https://docs.fortinet.com/document/fortigate/6.4.0/new-features/932284/nutanix-service-chaining-6-4-5" target="_blank" rel="noopener"
+>https://docs.fortinet.com/document/fortigate/6.4.0/new-features/932284/nutanix-service-chaining-6-4-5&lt;/a>&lt;/p>
+&lt;h2 id="架構圖">架構圖
+&lt;/h2>&lt;p>利用Nutanix的Flow Service Chaining 將流量導入到Gigamon vSeries
+由GigaVUE-FM來控管要出去的流量,再從vSeries把流量導到資安設備 or Wireshark&lt;/p>
+&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/rtaImage-20230519101724044.png"
+loading="lazy"
+alt="1.png"
+>&lt;/p>
+&lt;h2 id="port-requrements">Port Requrements
+&lt;/h2>&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/rtaImage.png"
+loading="lazy"
+alt="2.png"
+>&lt;/p>
+&lt;h1 id="資訊">資訊
+&lt;/h1>&lt;ol>
+&lt;li>Gigamon FM
+https://172.16.101.160 admin / netfos123A!!&lt;/li>
+&lt;/ol>
+&lt;h2 id="monitoring-mode">Monitoring Mode
+&lt;/h2>&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230519154853485.png"
+loading="lazy"
+alt="image-20230519154853485"
+>&lt;/p>
+&lt;h2 id="依照手冊建立fm">依照手冊建立FM
+&lt;/h2>&lt;h2 id="建立vseries">建立vSeries
+&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">需注意Management跟Data Lan都要使用DHCP
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">也就是IPAM的子網
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230519154627097.png"
+loading="lazy"
+alt="image-20230519154627097"
+>&lt;/p>
+&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230519163320235.png"
+loading="lazy"
+alt="image-20230519163320235"
+>&lt;/p>
+&lt;h2 id="tcpdump">tcpdump
+&lt;/h2>&lt;ol>
+&lt;li>
+&lt;p>建立ubuntu VM&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>安裝&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="n">https&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="o">//&lt;/span>&lt;span class="n">community&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">gigamon&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">com&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">gigamoncp&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">article&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">Deploying&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">Gigamon&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">Cloud&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">Suite&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="k">for&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">AWS&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">Behind&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">GWLB&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">to&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">Gain&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">Cross&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">Account&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">Visibility&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="mi">6&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="mi">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Once&lt;/span> &lt;span class="n">this&lt;/span> &lt;span class="n">session&lt;/span> &lt;span class="n">is&lt;/span> &lt;span class="n">successful&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">login&lt;/span> &lt;span class="n">to&lt;/span> &lt;span class="n">an&lt;/span> &lt;span class="n">Ubuntu&lt;/span> &lt;span class="n">instance&lt;/span> &lt;span class="n">being&lt;/span> &lt;span class="n">used&lt;/span> &lt;span class="n">as&lt;/span> &lt;span class="n">tools&lt;/span> &lt;span class="n">VM&lt;/span>&lt;span class="o">.&lt;/span> &lt;span class="n">User&lt;/span> &lt;span class="n">can&lt;/span> &lt;span class="n">input&lt;/span> &lt;span class="n">the&lt;/span> &lt;span class="n">following&lt;/span> &lt;span class="n">commands&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Install&lt;/span> &lt;span class="n">TCPDump&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">sudo&lt;/span> &lt;span class="n">snap&lt;/span> &lt;span class="n">install&lt;/span> &lt;span class="n">tcpdump&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Retrieve&lt;/span> &lt;span class="n">traffic&lt;/span> &lt;span class="n">being&lt;/span> &lt;span class="n">sent&lt;/span> &lt;span class="n">by&lt;/span> &lt;span class="n">the&lt;/span> &lt;span class="n">VSeries&lt;/span> &lt;span class="n">node&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">tcpdump&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">i&lt;/span> &lt;span class="n">eth0&lt;/span> &lt;span class="n">port&lt;/span> &lt;span class="mi">4789&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">To&lt;/span> &lt;span class="n">capture&lt;/span> &lt;span class="n">traffic&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="n">a&lt;/span> &lt;span class="n">PCAP&lt;/span> &lt;span class="n">file&lt;/span> &lt;span class="n">instead&lt;/span> &lt;span class="n">of&lt;/span> &lt;span class="n">being&lt;/span> &lt;span class="n">displayed&lt;/span> &lt;span class="n">on&lt;/span> &lt;span class="n">terminal&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">sudo&lt;/span> &lt;span class="n">tcpdump&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">i&lt;/span> &lt;span class="n">eth0&lt;/span> &lt;span class="n">port&lt;/span> &lt;span class="mi">4789&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">w&lt;/span> &lt;span class="n">test&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">pcap&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">(&lt;/span>&lt;span class="n">Optional&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">Download&lt;/span> &lt;span class="n">captured&lt;/span> &lt;span class="n">pcap&lt;/span> &lt;span class="n">to&lt;/span> &lt;span class="n">a&lt;/span> &lt;span class="n">local&lt;/span> &lt;span class="n">Linux&lt;/span> &lt;span class="n">workstation&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">scp&lt;/span> &lt;span class="n">test&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">pcap&lt;/span> &lt;span class="n">user&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">name&lt;/span>&lt;span class="err">@&lt;/span>&lt;span class="mf">11.22&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="mf">33.44&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">Downloads&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">The&lt;/span> &lt;span class="n">traffic&lt;/span> &lt;span class="n">being&lt;/span> &lt;span class="n">retrieve&lt;/span> &lt;span class="n">is&lt;/span> &lt;span class="n">VXLAN&lt;/span> &lt;span class="n">encapsulated&lt;/span>&lt;span class="o">.&lt;/span> &lt;span class="n">To&lt;/span> &lt;span class="n">de&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">capsulate&lt;/span> &lt;span class="n">the&lt;/span> &lt;span class="n">traffic&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Add&lt;/span> &lt;span class="n">a&lt;/span> &lt;span class="n">VXLAN&lt;/span> &lt;span class="n">interface&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">sudo&lt;/span> &lt;span class="n">ip&lt;/span> &lt;span class="n">link&lt;/span> &lt;span class="n">add&lt;/span> &lt;span class="n">vxlan0&lt;/span> &lt;span class="n">type&lt;/span> &lt;span class="n">vxlan&lt;/span> &lt;span class="n">id&lt;/span> &lt;span class="mi">112&lt;/span> &lt;span class="n">group&lt;/span> &lt;span class="mf">239.1&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="mf">1.1&lt;/span> &lt;span class="n">dev&lt;/span> &lt;span class="n">eth0&lt;/span> &lt;span class="n">dstport&lt;/span> &lt;span class="mi">4789&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">The&lt;/span> &lt;span class="n">ID&lt;/span> &lt;span class="n">needs&lt;/span> &lt;span class="n">to&lt;/span> &lt;span class="n">match&lt;/span> &lt;span class="n">the&lt;/span> &lt;span class="n">VXLAN&lt;/span> &lt;span class="n">ID&lt;/span> &lt;span class="n">provided&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="n">the&lt;/span> &lt;span class="n">tunnel&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Bring&lt;/span> &lt;span class="n">up&lt;/span> &lt;span class="n">the&lt;/span> &lt;span class="n">VXLAN&lt;/span> &lt;span class="n">port&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">sudo&lt;/span> &lt;span class="n">ip&lt;/span> &lt;span class="n">link&lt;/span> &lt;span class="n">set&lt;/span> &lt;span class="n">vxlan0&lt;/span> &lt;span class="n">up&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Capture&lt;/span> &lt;span class="n">the&lt;/span> &lt;span class="n">decapsulated&lt;/span> &lt;span class="n">packets&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">sudo&lt;/span> &lt;span class="n">tcpdump&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">ni&lt;/span> &lt;span class="n">vxlan0&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">By&lt;/span> &lt;span class="n">following&lt;/span> &lt;span class="n">above&lt;/span> &lt;span class="n">steps&lt;/span> &lt;span class="mi">9&lt;/span> &lt;span class="ow">and&lt;/span> &lt;span class="mi">10&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">user&lt;/span> &lt;span class="n">can&lt;/span> &lt;span class="n">view&lt;/span> &lt;span class="n">the&lt;/span> &lt;span class="n">intended&lt;/span> &lt;span class="n">traffic&lt;/span> &lt;span class="n">from&lt;/span> &lt;span class="n">the&lt;/span> &lt;span class="n">source&lt;/span> &lt;span class="n">VMs&lt;/span> &lt;span class="n">as&lt;/span> &lt;span class="n">defined&lt;/span> &lt;span class="n">by&lt;/span> &lt;span class="n">the&lt;/span> &lt;span class="n">policies&lt;/span> &lt;span class="n">under&lt;/span> &lt;span class="n">the&lt;/span> &lt;span class="n">map&lt;/span>&lt;span class="o">.&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;/ol>
+&lt;h2 id="wireshark">Wireshark
+&lt;/h2>&lt;p>設定要監控的流量
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230523161447891.png"
+loading="lazy"
+alt="image-20230523161447891"
+>&lt;/p>
+&lt;p>在FM調整tunnel 的 VxLan Network Identifier及Destination L4 Port
+為 4789
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230523161059697.png"
+loading="lazy"
+alt="image-20230523161059697"
+>&lt;/p>
+&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230523155647640.png"
+loading="lazy"
+alt="image-20230523155647640"
+>&lt;/p>
+&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230523155914647.png"
+loading="lazy"
+>&lt;/p>
+&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230523161239239.png"
+loading="lazy"
+alt="image-20230523161239239"
+>&lt;/p>
+&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230523160553714.png"
+loading="lazy"
+alt="image-20230523160553714"
+>&lt;/p></description></item></channel></rss>

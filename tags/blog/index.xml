@@ -1,0 +1,1735 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Blog on Ken's blog</title><link>https://wangken0129.github.io/tags/blog/</link><description>Recent content in Blog on Ken's blog</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Sat, 23 Sep 2023 15:47:05 +0800</lastBuildDate><atom:link href="https://wangken0129.github.io/tags/blog/index.xml" rel="self" type="application/rss+xml"/><item><title>製作Blog Part3 (半自動腳本)</title><link>https://wangken0129.github.io/p/blog-part3/</link><pubDate>Sat, 23 Sep 2023 15:47:05 +0800</pubDate><guid>https://wangken0129.github.io/p/blog-part3/</guid><description>&lt;h1 id="製作blog-part3">製作Blog Part3
+&lt;/h1>&lt;p>&lt;strong>工欲善其事，必先利其器&lt;/strong>&lt;/p>
+&lt;p>我依照我目前的使用情境寫了三個Shell Script，&lt;/p>
+&lt;p>來達到半自動上傳筆記到Github的效果，&lt;/p>
+&lt;p>為何是半自動呢? 因為寫筆記時覺得還要特別加上Hugo的Front Matter有點麻煩，&lt;/p>
+&lt;p>所以用後製的方式來撰寫Front Matter，而Script執行過程會有交互式的問答，&lt;/p>
+&lt;p>如此一來就可以順便填入Date、Tags、Category等參數，&lt;/p>
+&lt;p>而有時候也會有只執行其中一個腳本的時候，所以分了三個來寫。&lt;/p>
+&lt;h2 id="半自動上傳筆記到github">半自動上傳筆記到Github
+&lt;/h2>&lt;h3 id="資料夾結構">資料夾結構
+&lt;/h3>&lt;p>我的資料夾會依照不同的廠牌or產品來分類，&lt;/p>
+&lt;p>所以每個廠牌資料夾內都會有個Notes的資料夾，&lt;/p>
+&lt;p>目前總共分為SUSE、Redhat、Nutanix等三個資料夾，&lt;/p>
+&lt;p>例如：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">wangken@wangken-MAC Desktop % tree -L &lt;span class="m">1&lt;/span> RedHat
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">RedHat
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">├── Certification
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">├── Courses
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">├── Document
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">├── Notes
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">├── iso
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>再來會有個工作目錄是Pull下來Repository的上層資料夾，&lt;/p>
+&lt;p>會在上面執行腳本。&lt;/p>
+&lt;p>工作目錄：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">wangken@wangken-MAC myblog % &lt;span class="nb">pwd&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">/Users/wangken/myblog
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">wangken@wangken-MAC myblog % ls -l
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">total &lt;span class="m">32&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-rwxr-xr-x@ &lt;span class="m">1&lt;/span> wangken staff &lt;span class="m">4342&lt;/span> &lt;span class="m">9&lt;/span> &lt;span class="m">23&lt;/span> 17:35 cp_to_blog.sh
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-rwxr-xr-x@ &lt;span class="m">1&lt;/span> wangken staff &lt;span class="m">499&lt;/span> &lt;span class="m">9&lt;/span> &lt;span class="m">23&lt;/span> 17:44 deploy-blog.sh
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-rwxr-xr-x &lt;span class="m">1&lt;/span> wangken staff &lt;span class="m">457&lt;/span> &lt;span class="m">9&lt;/span> &lt;span class="m">19&lt;/span> 15:20 gitpush.sh
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">drwxr-xr-x &lt;span class="m">16&lt;/span> wangken staff &lt;span class="m">512&lt;/span> &lt;span class="m">9&lt;/span> &lt;span class="m">21&lt;/span> 10:26 hugo-blog
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="script-1-複製到工作目錄">Script 1 複製到工作目錄
+&lt;/h3>&lt;p>這個稍微有點戎長，但也是讓我在腳本執行時看得比較清楚一點&lt;/p>
+&lt;p>主要內容為：&lt;/p>
+&lt;ol>
+&lt;li>定義廠牌筆記的資料夾路徑&lt;/li>
+&lt;li>選擇廠牌的資料夾為何&lt;/li>
+&lt;li>尋找該資料夾內的.md檔案&lt;/li>
+&lt;li>利用該檔案的名稱建立文章的資料夾在工作目錄上&lt;/li>
+&lt;li>輸入Front Matter的參數 ( Category、Tags )&lt;/li>
+&lt;li>建立含Front Matter的預設index.md在文章的資料夾內&lt;/li>
+&lt;li>將筆記的內容貼到index.md的下方&lt;/li>
+&lt;/ol>
+&lt;p>cp_to_blog.sh&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt"> 10
+&lt;/span>&lt;span class="lnt"> 11
+&lt;/span>&lt;span class="lnt"> 12
+&lt;/span>&lt;span class="lnt"> 13
+&lt;/span>&lt;span class="lnt"> 14
+&lt;/span>&lt;span class="lnt"> 15
+&lt;/span>&lt;span class="lnt"> 16
+&lt;/span>&lt;span class="lnt"> 17
+&lt;/span>&lt;span class="lnt"> 18
+&lt;/span>&lt;span class="lnt"> 19
+&lt;/span>&lt;span class="lnt"> 20
+&lt;/span>&lt;span class="lnt"> 21
+&lt;/span>&lt;span class="lnt"> 22
+&lt;/span>&lt;span class="lnt"> 23
+&lt;/span>&lt;span class="lnt"> 24
+&lt;/span>&lt;span class="lnt"> 25
+&lt;/span>&lt;span class="lnt"> 26
+&lt;/span>&lt;span class="lnt"> 27
+&lt;/span>&lt;span class="lnt"> 28
+&lt;/span>&lt;span class="lnt"> 29
+&lt;/span>&lt;span class="lnt"> 30
+&lt;/span>&lt;span class="lnt"> 31
+&lt;/span>&lt;span class="lnt"> 32
+&lt;/span>&lt;span class="lnt"> 33
+&lt;/span>&lt;span class="lnt"> 34
+&lt;/span>&lt;span class="lnt"> 35
+&lt;/span>&lt;span class="lnt"> 36
+&lt;/span>&lt;span class="lnt"> 37
+&lt;/span>&lt;span class="lnt"> 38
+&lt;/span>&lt;span class="lnt"> 39
+&lt;/span>&lt;span class="lnt"> 40
+&lt;/span>&lt;span class="lnt"> 41
+&lt;/span>&lt;span class="lnt"> 42
+&lt;/span>&lt;span class="lnt"> 43
+&lt;/span>&lt;span class="lnt"> 44
+&lt;/span>&lt;span class="lnt"> 45
+&lt;/span>&lt;span class="lnt"> 46
+&lt;/span>&lt;span class="lnt"> 47
+&lt;/span>&lt;span class="lnt"> 48
+&lt;/span>&lt;span class="lnt"> 49
+&lt;/span>&lt;span class="lnt"> 50
+&lt;/span>&lt;span class="lnt"> 51
+&lt;/span>&lt;span class="lnt"> 52
+&lt;/span>&lt;span class="lnt"> 53
+&lt;/span>&lt;span class="lnt"> 54
+&lt;/span>&lt;span class="lnt"> 55
+&lt;/span>&lt;span class="lnt"> 56
+&lt;/span>&lt;span class="lnt"> 57
+&lt;/span>&lt;span class="lnt"> 58
+&lt;/span>&lt;span class="lnt"> 59
+&lt;/span>&lt;span class="lnt"> 60
+&lt;/span>&lt;span class="lnt"> 61
+&lt;/span>&lt;span class="lnt"> 62
+&lt;/span>&lt;span class="lnt"> 63
+&lt;/span>&lt;span class="lnt"> 64
+&lt;/span>&lt;span class="lnt"> 65
+&lt;/span>&lt;span class="lnt"> 66
+&lt;/span>&lt;span class="lnt"> 67
+&lt;/span>&lt;span class="lnt"> 68
+&lt;/span>&lt;span class="lnt"> 69
+&lt;/span>&lt;span class="lnt"> 70
+&lt;/span>&lt;span class="lnt"> 71
+&lt;/span>&lt;span class="lnt"> 72
+&lt;/span>&lt;span class="lnt"> 73
+&lt;/span>&lt;span class="lnt"> 74
+&lt;/span>&lt;span class="lnt"> 75
+&lt;/span>&lt;span class="lnt"> 76
+&lt;/span>&lt;span class="lnt"> 77
+&lt;/span>&lt;span class="lnt"> 78
+&lt;/span>&lt;span class="lnt"> 79
+&lt;/span>&lt;span class="lnt"> 80
+&lt;/span>&lt;span class="lnt"> 81
+&lt;/span>&lt;span class="lnt"> 82
+&lt;/span>&lt;span class="lnt"> 83
+&lt;/span>&lt;span class="lnt"> 84
+&lt;/span>&lt;span class="lnt"> 85
+&lt;/span>&lt;span class="lnt"> 86
+&lt;/span>&lt;span class="lnt"> 87
+&lt;/span>&lt;span class="lnt"> 88
+&lt;/span>&lt;span class="lnt"> 89
+&lt;/span>&lt;span class="lnt"> 90
+&lt;/span>&lt;span class="lnt"> 91
+&lt;/span>&lt;span class="lnt"> 92
+&lt;/span>&lt;span class="lnt"> 93
+&lt;/span>&lt;span class="lnt"> 94
+&lt;/span>&lt;span class="lnt"> 95
+&lt;/span>&lt;span class="lnt"> 96
+&lt;/span>&lt;span class="lnt"> 97
+&lt;/span>&lt;span class="lnt"> 98
+&lt;/span>&lt;span class="lnt"> 99
+&lt;/span>&lt;span class="lnt">100
+&lt;/span>&lt;span class="lnt">101
+&lt;/span>&lt;span class="lnt">102
+&lt;/span>&lt;span class="lnt">103
+&lt;/span>&lt;span class="lnt">104
+&lt;/span>&lt;span class="lnt">105
+&lt;/span>&lt;span class="lnt">106
+&lt;/span>&lt;span class="lnt">107
+&lt;/span>&lt;span class="lnt">108
+&lt;/span>&lt;span class="lnt">109
+&lt;/span>&lt;span class="lnt">110
+&lt;/span>&lt;span class="lnt">111
+&lt;/span>&lt;span class="lnt">112
+&lt;/span>&lt;span class="lnt">113
+&lt;/span>&lt;span class="lnt">114
+&lt;/span>&lt;span class="lnt">115
+&lt;/span>&lt;span class="lnt">116
+&lt;/span>&lt;span class="lnt">117
+&lt;/span>&lt;span class="lnt">118
+&lt;/span>&lt;span class="lnt">119
+&lt;/span>&lt;span class="lnt">120
+&lt;/span>&lt;span class="lnt">121
+&lt;/span>&lt;span class="lnt">122
+&lt;/span>&lt;span class="lnt">123
+&lt;/span>&lt;span class="lnt">124
+&lt;/span>&lt;span class="lnt">125
+&lt;/span>&lt;span class="lnt">126
+&lt;/span>&lt;span class="lnt">127
+&lt;/span>&lt;span class="lnt">128
+&lt;/span>&lt;span class="lnt">129
+&lt;/span>&lt;span class="lnt">130
+&lt;/span>&lt;span class="lnt">131
+&lt;/span>&lt;span class="lnt">132
+&lt;/span>&lt;span class="lnt">133
+&lt;/span>&lt;span class="lnt">134
+&lt;/span>&lt;span class="lnt">135
+&lt;/span>&lt;span class="lnt">136
+&lt;/span>&lt;span class="lnt">137
+&lt;/span>&lt;span class="lnt">138
+&lt;/span>&lt;span class="lnt">139
+&lt;/span>&lt;span class="lnt">140
+&lt;/span>&lt;span class="lnt">141
+&lt;/span>&lt;span class="lnt">142
+&lt;/span>&lt;span class="lnt">143
+&lt;/span>&lt;span class="lnt">144
+&lt;/span>&lt;span class="lnt">145
+&lt;/span>&lt;span class="lnt">146
+&lt;/span>&lt;span class="lnt">147
+&lt;/span>&lt;span class="lnt">148
+&lt;/span>&lt;span class="lnt">149
+&lt;/span>&lt;span class="lnt">150
+&lt;/span>&lt;span class="lnt">151
+&lt;/span>&lt;span class="lnt">152
+&lt;/span>&lt;span class="lnt">153
+&lt;/span>&lt;span class="lnt">154
+&lt;/span>&lt;span class="lnt">155
+&lt;/span>&lt;span class="lnt">156
+&lt;/span>&lt;span class="lnt">157
+&lt;/span>&lt;span class="lnt">158
+&lt;/span>&lt;span class="lnt">159
+&lt;/span>&lt;span class="lnt">160
+&lt;/span>&lt;span class="lnt">161
+&lt;/span>&lt;span class="lnt">162
+&lt;/span>&lt;span class="lnt">163
+&lt;/span>&lt;span class="lnt">164
+&lt;/span>&lt;span class="lnt">165
+&lt;/span>&lt;span class="lnt">166
+&lt;/span>&lt;span class="lnt">167
+&lt;/span>&lt;span class="lnt">168
+&lt;/span>&lt;span class="lnt">169
+&lt;/span>&lt;span class="lnt">170
+&lt;/span>&lt;span class="lnt">171
+&lt;/span>&lt;span class="lnt">172
+&lt;/span>&lt;span class="lnt">173
+&lt;/span>&lt;span class="lnt">174
+&lt;/span>&lt;span class="lnt">175
+&lt;/span>&lt;span class="lnt">176
+&lt;/span>&lt;span class="lnt">177
+&lt;/span>&lt;span class="lnt">178
+&lt;/span>&lt;span class="lnt">179
+&lt;/span>&lt;span class="lnt">180
+&lt;/span>&lt;span class="lnt">181
+&lt;/span>&lt;span class="lnt">182
+&lt;/span>&lt;span class="lnt">183
+&lt;/span>&lt;span class="lnt">184
+&lt;/span>&lt;span class="lnt">185
+&lt;/span>&lt;span class="lnt">186
+&lt;/span>&lt;span class="lnt">187
+&lt;/span>&lt;span class="lnt">188
+&lt;/span>&lt;span class="lnt">189
+&lt;/span>&lt;span class="lnt">190
+&lt;/span>&lt;span class="lnt">191
+&lt;/span>&lt;span class="lnt">192
+&lt;/span>&lt;span class="lnt">193
+&lt;/span>&lt;span class="lnt">194
+&lt;/span>&lt;span class="lnt">195
+&lt;/span>&lt;span class="lnt">196
+&lt;/span>&lt;span class="lnt">197
+&lt;/span>&lt;span class="lnt">198
+&lt;/span>&lt;span class="lnt">199
+&lt;/span>&lt;span class="lnt">200
+&lt;/span>&lt;span class="lnt">201
+&lt;/span>&lt;span class="lnt">202
+&lt;/span>&lt;span class="lnt">203
+&lt;/span>&lt;span class="lnt">204
+&lt;/span>&lt;span class="lnt">205
+&lt;/span>&lt;span class="lnt">206
+&lt;/span>&lt;span class="lnt">207
+&lt;/span>&lt;span class="lnt">208
+&lt;/span>&lt;span class="lnt">209
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#!/bin/bash
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># If a command fails then the deploy stops&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">set&lt;/span> -e
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Define Path&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">blog_path&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;/Users/wangken/myblog/hugo-blog/content/post/&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">ntnx_path&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;/Users/wangken/Desktop/Nutanix/Notes&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">redhat_path&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;/Users/wangken/Desktop/RedHat/Notes/*&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">suse_path&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;/Users/wangken/Desktop/SUSE/Notes&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Enter product to identify notes path&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;Choose product to identify notes path&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">pdtype&lt;/span>&lt;span class="o">=(&lt;/span>&lt;span class="s2">&amp;#34;suse&amp;#34;&lt;/span> &lt;span class="s2">&amp;#34;redhat&amp;#34;&lt;/span> &lt;span class="s2">&amp;#34;nutanix&amp;#34;&lt;/span> &lt;span class="s2">&amp;#34;Quit&amp;#34;&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">select&lt;/span> &lt;span class="nb">type&lt;/span> in &lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="si">${&lt;/span>&lt;span class="nv">pdtype&lt;/span>&lt;span class="p">[@]&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="k">do&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">case&lt;/span> &lt;span class="nv">$type&lt;/span> in
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;suse&amp;#34;&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">pd&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;suse&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">break&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">;;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;redhat&amp;#34;&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">pd&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;redhat&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">break&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">;;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;nutanix&amp;#34;&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">pd&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;nutanix&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">break&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">;;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;Quit&amp;#34;&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;end selection&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">exit&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">;;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> *&lt;span class="o">)&lt;/span> &lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;invalid option &lt;/span>&lt;span class="nv">$REPLY&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="p">;;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">esac&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">done&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;choosing &lt;/span>&lt;span class="nv">$pd&lt;/span>&lt;span class="s2"> to use &amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;--------------------&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;--------------------&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sleep 0.5
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Check if name input with error&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># And process the next step&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">if&lt;/span> &lt;span class="o">[[&lt;/span> &lt;span class="nv">$pd&lt;/span> !&lt;span class="o">=&lt;/span> &lt;span class="s1">&amp;#39;suse&amp;#39;&lt;/span> &lt;span class="o">&amp;amp;&amp;amp;&lt;/span> &lt;span class="nv">$pd&lt;/span> !&lt;span class="o">=&lt;/span> &lt;span class="s1">&amp;#39;rhel&amp;#39;&lt;/span> &lt;span class="o">&amp;amp;&amp;amp;&lt;/span> &lt;span class="nv">$pd&lt;/span> !&lt;span class="o">=&lt;/span> &lt;span class="s1">&amp;#39;nutanix&amp;#39;&lt;/span> &lt;span class="o">&amp;amp;&amp;amp;&lt;/span> &lt;span class="nv">$pd&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="s1">&amp;#39;&amp;#39;&lt;/span> &lt;span class="o">]]&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="k">then&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;Please check again &amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">elif&lt;/span> &lt;span class="o">[[&lt;/span> &lt;span class="nv">$pd&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="s1">&amp;#39;suse&amp;#39;&lt;/span> &lt;span class="o">&amp;amp;&amp;amp;&lt;/span> &lt;span class="nv">$pd&lt;/span> !&lt;span class="o">=&lt;/span> &lt;span class="s2">&amp;#34;&amp;#34;&lt;/span> &lt;span class="o">]]&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="k">then&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;Check OK&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;--------------------&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;--------------------&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;Notes directory is &lt;/span>&lt;span class="nv">$suse_path&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sleep 0.5
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;--------------------&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;--------------------&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;Select md file to blog&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sleep 0.5
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">#Select notes path .md file to blog&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">files&lt;/span>&lt;span class="o">=(&lt;/span>&lt;span class="nv">$suse_path&lt;/span>/*.md&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">elif&lt;/span> &lt;span class="o">[[&lt;/span> &lt;span class="nv">$pd&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="s1">&amp;#39;redhat&amp;#39;&lt;/span> &lt;span class="o">&amp;amp;&amp;amp;&lt;/span> &lt;span class="nv">$pd&lt;/span> !&lt;span class="o">=&lt;/span> &lt;span class="s2">&amp;#34;&amp;#34;&lt;/span> &lt;span class="o">]]&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="k">then&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;Check OK&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;--------------------&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;--------------------&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;Notes directory is &lt;/span>&lt;span class="nv">$redhat_path&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sleep 0.5
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;--------------------&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;--------------------&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;Select md file to blog&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sleep 0.5
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">#Select notes path .md file to blog&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">files&lt;/span>&lt;span class="o">=(&lt;/span>&lt;span class="nv">$redhat_path&lt;/span>/*.md&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">elif&lt;/span> &lt;span class="o">[[&lt;/span> &lt;span class="nv">$pd&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="s1">&amp;#39;nutanix&amp;#39;&lt;/span> &lt;span class="o">&amp;amp;&amp;amp;&lt;/span> &lt;span class="nv">$pd&lt;/span> !&lt;span class="o">=&lt;/span> &lt;span class="s2">&amp;#34;&amp;#34;&lt;/span> &lt;span class="o">]]&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="k">then&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;Check OK&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;--------------------&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;--------------------&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;Notes directory is &lt;/span>&lt;span class="nv">$ntnx_path&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sleep 0.5
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;--------------------&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;--------------------&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;Select md file to blog&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sleep 0.5
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">#Select notes path .md file to blog&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">files&lt;/span>&lt;span class="o">=(&lt;/span>&lt;span class="nv">$ntnx_path&lt;/span>/*.md&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># End loop&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">fi&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">PS3&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;Select file to blog, or 0 to exit: &amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">select&lt;/span> file in &lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="si">${&lt;/span>&lt;span class="nv">files&lt;/span>&lt;span class="p">[@]&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="k">do&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="o">[[&lt;/span> &lt;span class="nv">$REPLY&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="s2">&amp;#34;0&amp;#34;&lt;/span> &lt;span class="o">]]&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="k">then&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">echo&lt;/span> &lt;span class="s1">&amp;#39;Bye!&amp;#39;&lt;/span> &amp;gt;&lt;span class="p">&amp;amp;&lt;/span>&lt;span class="m">2&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">exit&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">elif&lt;/span> &lt;span class="o">[[&lt;/span> -z &lt;span class="nv">$file&lt;/span> &lt;span class="o">]]&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="k">then&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">echo&lt;/span> &lt;span class="s1">&amp;#39;Invalid choice, try again&amp;#39;&lt;/span> &amp;gt;&lt;span class="p">&amp;amp;&lt;/span>&lt;span class="m">2&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">else&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">break&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">fi&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">done&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Using file name to path_name &lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">path_name&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="k">$(&lt;/span>basename &lt;span class="nv">$file&lt;/span> .md&lt;span class="k">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;Choosing &lt;/span>&lt;span class="nv">$path_name&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;-------------------&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34; &amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Create blog post directory&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;Create blog post directory using &lt;/span>&lt;span class="nv">$path_name&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;-------------------&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34; &amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">mkdir -p &lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="nv">$blog_path&lt;/span>&lt;span class="s2">/&lt;/span>&lt;span class="nv">$path_name&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span> &lt;span class="o">&amp;amp;&amp;amp;&lt;/span> &lt;span class="nv">post_path&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="nv">$_&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="nv">$post_path&lt;/span>&lt;span class="s2"> has been created&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;-------------------&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34; &amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;Input Front Matter Attribute&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;-------------------&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34; &amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sleep 0.5
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Front Matter attribute&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># date&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">now&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="k">$(&lt;/span>date -u +&lt;span class="s2">&amp;#34;%Y-%m-%dT%T+08:00&amp;#34;&lt;/span>&lt;span class="k">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># category&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">categories&lt;/span>&lt;span class="o">=(&lt;/span>&lt;span class="s2">&amp;#34;Lab Category&amp;#34;&lt;/span> &lt;span class="s2">&amp;#34;Knowledge Base Category&amp;#34;&lt;/span> &lt;span class="s2">&amp;#34;Quit&amp;#34;&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">select&lt;/span> &lt;span class="nb">type&lt;/span> in &lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="si">${&lt;/span>&lt;span class="nv">categories&lt;/span>&lt;span class="p">[@]&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="k">do&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">case&lt;/span> &lt;span class="nv">$type&lt;/span> in
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;Lab Category&amp;#34;&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">category&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;Lab Category&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">break&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">;;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;Knowledge Base Category&amp;#34;&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">category&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;Knowledge Base Category&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">break&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">;;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;Quit&amp;#34;&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;end selection&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">exit&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">;;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> *&lt;span class="o">)&lt;/span> &lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;invalid option &lt;/span>&lt;span class="nv">$REPLY&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="p">;;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">esac&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">done&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;choosing &lt;/span>&lt;span class="nv">$category&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;-------------------&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;-------------------&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34; &amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># tag1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">read&lt;/span> -p &lt;span class="s2">&amp;#34;Input main tag: &amp;#34;&lt;/span> tag
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;-------------------&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;-------------------&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34; &amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># tag2&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">read&lt;/span> -p &lt;span class="s2">&amp;#34;Input second tag: &amp;#34;&lt;/span> tag2
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;-------------------&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;-------------------&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34; &amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># tag3&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">read&lt;/span> -p &lt;span class="s2">&amp;#34;Input third tag: &amp;#34;&lt;/span> tag3
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;-------------------&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;-------------------&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34; &amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Generate default index.md&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;Generate Default Front Matter In &lt;/span>&lt;span class="nv">$post_path&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;-------------------&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;-------------------&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sleep 0.5
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">cat &amp;gt; &lt;span class="nv">$post_path&lt;/span>/index.md &lt;span class="s">&amp;lt;&amp;lt;EOF
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s">---
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s">title: $path_name
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s">description: $path_name
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s">slug: $path_name
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s">date: $now
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s">categories:
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s"> - $category
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s">tags:
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s"> - $tag
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s"> - $tag2
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s"> - $tag3
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s">weight: 1 # You can add weight to some posts to override the default sorting (date descending)
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s">---
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s">EOF&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34; &amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;Copy &lt;/span>&lt;span class="nv">$file&lt;/span>&lt;span class="s2"> to &lt;/span>&lt;span class="nv">$post_path&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">cat &lt;span class="nv">$file&lt;/span> &amp;gt;&amp;gt; &lt;span class="nv">$post_path&lt;/span>/index.md
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34; &amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;-------------------&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;-------------------&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;End of the create index.md&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34; &amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sleep &lt;span class="m">1&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="script-2-上傳到github">Script 2 上傳到Github
+&lt;/h3>&lt;p>主要內容為：&lt;/p>
+&lt;ol>
+&lt;li>進入工作目錄&lt;/li>
+&lt;li>新增改變的內容到git ( git add )&lt;/li>
+&lt;li>確認改變的項目並加入訊息 ( git commit )&lt;/li>
+&lt;li>推送到Github的Master branch ( git push )&lt;/li>
+&lt;/ol>
+&lt;p>gitpush.sh&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#!/bin/sh
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># If a command fails then the deploy stops&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">set&lt;/span> -e
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">printf&lt;/span> &lt;span class="s2">&amp;#34;\033[0;32mDeploying updates to GitHub...\033[0m\n&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Build the project.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># hugo # if using a theme, replace with `hugo -t &amp;lt;YOURTHEME&amp;gt;`&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Go To Public folder&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">cd&lt;/span> hugo-blog
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Add changes to git.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git add .
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Commit changes.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">msg&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s2">&amp;#34;rebuilding site &lt;/span>&lt;span class="k">$(&lt;/span>date&lt;span class="k">)&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">if&lt;/span> &lt;span class="o">[&lt;/span> -n &lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="nv">$*&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span> &lt;span class="o">]&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="k">then&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">msg&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="nv">$*&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">fi&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git commit -m &lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="nv">$msg&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Push source and build repos.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git push origin master
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># come back zero&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">cd&lt;/span> ..
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="script-3-結合script-12">Script 3 結合Script 1&amp;amp;2
+&lt;/h3>&lt;p>主要內容為：&lt;/p>
+&lt;ol>
+&lt;li>定義前面兩個Script作為變數&lt;/li>
+&lt;li>詢問是否要複製筆記 ( 執行Script 1 )&lt;/li>
+&lt;li>若回答y (yes)，會再問一次，回答n (no)，則進行下一步&lt;/li>
+&lt;li>詢問是否執行推送到Github上 ( 執行Script 2 )&lt;/li>
+&lt;/ol>
+&lt;p>deploy-blog.sh&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#!/bin/bash
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">#Define Script&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">cp&lt;/span>&lt;span class="o">=&lt;/span>/Users/wangken/myblog/cp_to_blog.sh
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">push&lt;/span>&lt;span class="o">=&lt;/span>/Users/wangken/myblog/gitpush.sh
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Ask for copy or not&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">while&lt;/span> true&lt;span class="p">;&lt;/span> &lt;span class="k">do&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">read&lt;/span> -p &lt;span class="s2">&amp;#34;Do you want to copy md file? (y/n) &amp;#34;&lt;/span> yn1
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">case&lt;/span> &lt;span class="nv">$yn1&lt;/span> in
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">[&lt;/span>Yy&lt;span class="o">]&lt;/span>* &lt;span class="o">)&lt;/span> &lt;span class="nv">$cp&lt;/span>&lt;span class="p">;;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">[&lt;/span>Nn&lt;span class="o">]&lt;/span>* &lt;span class="o">)&lt;/span> break&lt;span class="p">;;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> * &lt;span class="o">)&lt;/span> &lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;Please answer yes or no.&amp;#34;&lt;/span>&lt;span class="p">;;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">esac&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">done&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Ask for Push or not&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">while&lt;/span> true&lt;span class="p">;&lt;/span> &lt;span class="k">do&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">read&lt;/span> -p &lt;span class="s2">&amp;#34;Do you want to push to github? (y/n) &amp;#34;&lt;/span> yn2
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">case&lt;/span> &lt;span class="nv">$yn2&lt;/span> in
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">[&lt;/span>Yy&lt;span class="o">]&lt;/span>* &lt;span class="o">)&lt;/span> &lt;span class="nv">$push&lt;/span>&lt;span class="p">;&lt;/span> break&lt;span class="p">;;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">[&lt;/span>Nn&lt;span class="o">]&lt;/span>* &lt;span class="o">)&lt;/span> break&lt;span class="p">;;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> * &lt;span class="o">)&lt;/span> &lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;Please answer yes or no.&amp;#34;&lt;/span>&lt;span class="p">;;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">esac&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">done&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="執行結果截圖">執行結果截圖
+&lt;/h3>&lt;p>執行deply-blog.sh ，詢問廠牌後會用前面定義好的筆記資料夾來搜尋筆記&lt;/p>
+&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230923174928576.png"
+loading="lazy"
+alt="image-20230923174928576"
+>&lt;/p>
+&lt;p>填寫參數後選擇自動上傳到github (y)&lt;/p>
+&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230923174957203.png"
+loading="lazy"
+alt="image-20230923174957203"
+>&lt;/p>
+&lt;p>確認 index.md 前面已自動加入了Front Matter&lt;/p>
+&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230923175024090.png"
+loading="lazy"
+alt="image-20230923175024090"
+>&lt;/p>
+&lt;p>以上就是我半自動化讓筆記上傳到Github的過程，再加上原先Hugo Stack的範本，&lt;/p>
+&lt;p>讓部落格網站可以自動更新文章，如有其他建議歡迎不吝指教，謝謝。&lt;/p></description></item><item><title>製作Blog Part2</title><link>https://wangken0129.github.io/p/blog-part2/</link><pubDate>Wed, 20 Sep 2023 08:15:00 +0800</pubDate><guid>https://wangken0129.github.io/p/blog-part2/</guid><description>&lt;h1 id="製作blog-part2">製作Blog Part2
+&lt;/h1>&lt;p>前篇寫了 Typora + Picgo + NAS 的筆記製作過程，&lt;/p>
+&lt;p>接下來要將做的筆記用Hugo + Github Page + Stack Theme 的方式做成一個靜態網站。&lt;/p>
+&lt;h2 id="預先準備">預先準備
+&lt;/h2>&lt;ol>
+&lt;li>
+&lt;p>&lt;strong>Homebrew&lt;/strong>&lt;/p>
+&lt;p>Homebrew 安裝參考：https://brew.sh&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Git&lt;/strong>&lt;/p>
+&lt;p>Git 安裝參考：&lt;a class="link" href="https://git-scm.com/book/zh-tw/v2/%e9%96%8b%e5%a7%8b-Git-%e5%ae%89%e8%a3%9d%e6%95%99%e5%ad%b8" target="_blank" rel="noopener"
+>https://git-scm.com/book/zh-tw/v2/開始-Git-安裝教學&lt;/a>&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;h2 id="hugo">Hugo
+&lt;/h2>&lt;h3 id="簡介">簡介
+&lt;/h3>&lt;p>Hugo是一個由Go語言開發的靜態網頁產生器，&lt;/p>
+&lt;p>老實說跟另一個叫Hexo的產生器比起來，Hexo的主題、中文文件比較多，&lt;/p>
+&lt;p>以部落格的好看性來說應該是Hexo較優，而且是由台灣人開發出來的，&lt;/p>
+&lt;p>但Hexo的安裝可能還要考慮Node.js的相依性等，我在安裝時遇到了一些問題懶得去解決，&lt;/p>
+&lt;p>所以最後就選擇Hugo，相對來說安裝上就簡單很多，反正簡單、好用就好，&lt;/p>
+&lt;p>可以參考下方的主題來選擇自己要的產生器。&lt;/p>
+&lt;p>Hugo主題: &lt;a class="link" href="https://themes.gohugo.io/tags/blog" target="_blank" rel="noopener"
+>https://themes.gohugo.io/tags/blog&lt;/a>&lt;/p>
+&lt;p>Hexo主題: &lt;a class="link" href="https://hexo.io/themes/index.html" target="_blank" rel="noopener"
+>https://hexo.io/themes/index.html&lt;/a>&lt;/p>
+&lt;h3 id="install-hugo">Install Hugo
+&lt;/h3>&lt;p>官方文件：https://gohugo.io/installation/macos/&lt;/p>
+&lt;ol>
+&lt;li>
+&lt;p>確認Homebrew版本，推薦Mac用戶都要安裝這個套件軟體&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">wangken@wangken-MAC ~ % brew -v
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Homebrew 4.1.11
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>透過Homebrew安裝Hugo，裝好後確認hugo版本&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">wangken@wangken-MAC ~ % brew install hugo
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">wangken@wangken-MAC ~ % hugo version
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">hugo v0.118.2-da7983ac4b94d97d776d7c2405040de97e95c03d+extended darwin/arm64 BuildDate=2023-08-31T11:23:51Z VendorInfo=brew
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>( Option ) 升級 hugo 版本跟部落格版本，遇到版本支援問題時會需要升級 ( 2024-12-13 更新 )&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="n">wangken&lt;/span>&lt;span class="err">@&lt;/span>&lt;span class="n">wangken&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">MAC&lt;/span> &lt;span class="n">myblog&lt;/span> &lt;span class="o">%&lt;/span> &lt;span class="n">brew&lt;/span> &lt;span class="n">upgrade&lt;/span> &lt;span class="n">hugo&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Running&lt;/span> &lt;span class="err">`&lt;/span>&lt;span class="n">brew&lt;/span> &lt;span class="n">update&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="n">auto&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">update&lt;/span>&lt;span class="err">`&lt;/span>&lt;span class="o">...&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">==&amp;gt;&lt;/span> &lt;span class="n">Downloading&lt;/span> &lt;span class="n">https&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="o">//&lt;/span>&lt;span class="n">ghcr&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">io&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">v2&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">homebrew&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">portable&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">ruby&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">portable&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">ruby&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">blobs&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">sha256&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">303&lt;/span>&lt;span class="n">bed4c7fc431a685db3c3c151d873740114adbdccd23762ea2d1e39ea78f47&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">######################################################################### 100.0%&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">==&amp;gt;&lt;/span> &lt;span class="n">Pouring&lt;/span> &lt;span class="n">portable&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">ruby&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="mf">3.3&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="mf">6.&lt;/span>&lt;span class="n">arm64_big_sur&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">bottle&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">tar&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">gz&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">==&amp;gt;&lt;/span> &lt;span class="n">Auto&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">updated&lt;/span> &lt;span class="n">Homebrew&lt;/span>&lt;span class="o">!&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">You&lt;/span> &lt;span class="n">have&lt;/span> &lt;span class="mi">56&lt;/span> &lt;span class="n">outdated&lt;/span> &lt;span class="n">formulae&lt;/span> &lt;span class="ow">and&lt;/span> &lt;span class="mi">1&lt;/span> &lt;span class="n">outdated&lt;/span> &lt;span class="n">cask&lt;/span> &lt;span class="n">installed&lt;/span>&lt;span class="o">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">==&amp;gt;&lt;/span> &lt;span class="n">Migrating&lt;/span> &lt;span class="n">formula&lt;/span> &lt;span class="n">python&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">certifi&lt;/span> &lt;span class="n">to&lt;/span> &lt;span class="n">certifi&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">==&amp;gt;&lt;/span> &lt;span class="n">Unlinking&lt;/span> &lt;span class="n">python&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">certifi&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">==&amp;gt;&lt;/span> &lt;span class="n">Moving&lt;/span> &lt;span class="n">python&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">certifi&lt;/span> &lt;span class="n">versions&lt;/span> &lt;span class="n">to&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="n">opt&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">homebrew&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">Cellar&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">certifi&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">==&amp;gt;&lt;/span> &lt;span class="n">Relinking&lt;/span> &lt;span class="n">certifi&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">...&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">wangken&lt;/span>&lt;span class="err">@&lt;/span>&lt;span class="n">wangken&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">MAC&lt;/span> &lt;span class="n">myblog&lt;/span> &lt;span class="o">%&lt;/span> &lt;span class="n">hugo&lt;/span> &lt;span class="n">version&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">hugo&lt;/span> &lt;span class="n">v0&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="mf">139.4&lt;/span>&lt;span class="o">+&lt;/span>&lt;span class="n">extended&lt;/span>&lt;span class="o">+&lt;/span>&lt;span class="n">withdeploy&lt;/span> &lt;span class="n">darwin&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">arm64&lt;/span> &lt;span class="n">BuildDate&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">2024&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="mi">12&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="mi">09&lt;/span>&lt;span class="n">T17&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">45&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">23&lt;/span>&lt;span class="n">Z&lt;/span> &lt;span class="n">VendorInfo&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">brew&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">模板升級&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">wangken&lt;/span>&lt;span class="err">@&lt;/span>&lt;span class="n">wangken&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">MAC&lt;/span> &lt;span class="n">hugo&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">blog&lt;/span> &lt;span class="o">%&lt;/span> &lt;span class="n">hugo&lt;/span> &lt;span class="n">mod&lt;/span> &lt;span class="n">get&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">u&lt;/span> &lt;span class="n">github&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">com&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">CaiJimmy&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">hugo&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">theme&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">stack&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">v3&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">WARN&lt;/span> &lt;span class="n">deprecated&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">site&lt;/span> &lt;span class="n">config&lt;/span> &lt;span class="n">key&lt;/span> &lt;span class="n">paginate&lt;/span> &lt;span class="n">was&lt;/span> &lt;span class="n">deprecated&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="n">Hugo&lt;/span> &lt;span class="n">v0&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="mf">128.0&lt;/span> &lt;span class="ow">and&lt;/span> &lt;span class="n">will&lt;/span> &lt;span class="n">be&lt;/span> &lt;span class="n">removed&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="n">a&lt;/span> &lt;span class="n">future&lt;/span> &lt;span class="n">release&lt;/span>&lt;span class="o">.&lt;/span> &lt;span class="n">Use&lt;/span> &lt;span class="n">pagination&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">pagerSize&lt;/span> &lt;span class="n">instead&lt;/span>&lt;span class="o">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">hugo&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">downloading&lt;/span> &lt;span class="n">modules&lt;/span> &lt;span class="err">…&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">hugo&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">collected&lt;/span> &lt;span class="n">modules&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="mi">3638&lt;/span> &lt;span class="n">ms&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">go&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">downloading&lt;/span> &lt;span class="n">github&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">com&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">CaiJimmy&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">hugo&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">theme&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">stack&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">v3&lt;/span> &lt;span class="n">v3&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="mf">29.0&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">go&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">downloading&lt;/span> &lt;span class="n">github&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">com&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">CaiJimmy&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">hugo&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">theme&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">stack&lt;/span> &lt;span class="n">v2&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="mf">6.0&lt;/span>&lt;span class="o">+&lt;/span>&lt;span class="n">incompatible&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">go&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">upgraded&lt;/span> &lt;span class="n">github&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">com&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">CaiJimmy&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">hugo&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">theme&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">stack&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">v3&lt;/span> &lt;span class="n">v3&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="mf">21.0&lt;/span> &lt;span class="o">=&amp;gt;&lt;/span> &lt;span class="n">v3&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="mf">29.0&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">wangken&lt;/span>&lt;span class="err">@&lt;/span>&lt;span class="n">wangken&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">MAC&lt;/span> &lt;span class="n">hugo&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">blog&lt;/span> &lt;span class="o">%&lt;/span> &lt;span class="n">hugo&lt;/span> &lt;span class="n">mod&lt;/span> &lt;span class="n">tidy&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">WARN&lt;/span> &lt;span class="n">deprecated&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">site&lt;/span> &lt;span class="n">config&lt;/span> &lt;span class="n">key&lt;/span> &lt;span class="n">paginate&lt;/span> &lt;span class="n">was&lt;/span> &lt;span class="n">deprecated&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="n">Hugo&lt;/span> &lt;span class="n">v0&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="mf">128.0&lt;/span> &lt;span class="ow">and&lt;/span> &lt;span class="n">will&lt;/span> &lt;span class="n">be&lt;/span> &lt;span class="n">removed&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="n">a&lt;/span> &lt;span class="n">future&lt;/span> &lt;span class="n">release&lt;/span>&lt;span class="o">.&lt;/span> &lt;span class="n">Use&lt;/span> &lt;span class="n">pagination&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">pagerSize&lt;/span> &lt;span class="n">instead&lt;/span>&lt;span class="o">.&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>遇到的錯誤訊息 ( 在 Github 的 Action 內，Build 的時候發生錯誤，只能等原模板的作者更新，或自行修改 ）&lt;/p>
+&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2024/12/image-20241213092834099.png"
+loading="lazy"
+alt="image-20241213092834099"
+>&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;h3 id="test-hugo">Test Hugo
+&lt;/h3>&lt;ol>
+&lt;li>
+&lt;p>開啟終端機，新增一個hugo的網站目錄&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">wangken@wangken-MAC ~ % hugo new site test-hugo
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Congratulations! Your new Hugo site was created in /Users/wangken/test-hugo.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Just a few more steps...
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">1. Change the current directory to /Users/wangken/test-hugo.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2. Create or install a theme:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> - Create a new theme with the command &amp;#34;hugo new theme &amp;lt;THEMENAME&amp;gt;&amp;#34;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> - Install a theme from https://themes.gohugo.io/
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">3. Edit hugo.toml, setting the &amp;#34;theme&amp;#34; property to the theme name.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">4. Create new content with the command &amp;#34;hugo new content &amp;lt;SECTIONNAME&amp;gt;/&amp;lt;FILENAME&amp;gt;.&amp;lt;FORMAT&amp;gt;&amp;#34;.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">5. Start the embedded web server with the command &amp;#34;hugo server --buildDrafts&amp;#34;.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">See documentation at https://gohugo.io/.
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>cd進入專案目錄 test-hugo&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">wangken@wangken-MAC ~ % cd test-hugo
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">wangken@wangken-MAC test-hugo % ls -l
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">total 8
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">drwxr-xr-x 3 wangken staff 96 9 20 12:05 archetypes
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">drwxr-xr-x 2 wangken staff 64 9 20 12:05 assets
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">drwxr-xr-x 2 wangken staff 64 9 20 12:05 content
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">drwxr-xr-x 2 wangken staff 64 9 20 12:05 data
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-rw-r--r-- 1 wangken staff 83 9 20 12:05 hugo.toml
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">drwxr-xr-x 2 wangken staff 64 9 20 12:05 i18n
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">drwxr-xr-x 2 wangken staff 64 9 20 12:05 layouts
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">drwxr-xr-x 2 wangken staff 64 9 20 12:05 static
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">drwxr-xr-x 2 wangken staff 64 9 20 12:05 themes
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>啟動hugo，輸入hugo serve&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">wangken@wangken-MAC test-hugo % hugo serve
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Watching for changes in /Users/wangken/test-hugo/{archetypes,assets,content,data,i18n,layouts,static}
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Watching for config changes in /Users/wangken/test-hugo/hugo.toml
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Start building sites …
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">hugo v0.118.2-da7983ac4b94d97d776d7c2405040de97e95c03d+extended darwin/arm64 BuildDate=2023-08-31T11:23:51Z VendorInfo=brew
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">WARN found no layout file for &amp;#34;html&amp;#34; for kind &amp;#34;taxonomy&amp;#34;: You should create a template file which matches Hugo Layouts Lookup Rules for this combination.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">WARN found no layout file for &amp;#34;html&amp;#34; for kind &amp;#34;home&amp;#34;: You should create a template file which matches Hugo Layouts Lookup Rules for this combination.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> | EN
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-------------------+-----
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Pages | 3
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Paginator pages | 0
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Non-page files | 0
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Static files | 0
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Processed images | 0
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Aliases | 0
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Sitemaps | 1
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Cleaned | 0
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Built in 6 ms
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Environment: &amp;#34;development&amp;#34;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Serving pages from memory
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Running in Fast Render Mode. For full rebuilds on change: hugo server --disableFastRender
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Web Server is available at http://localhost:1313/ (bind address 127.0.0.1)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Press Ctrl+C to stop
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>將 http://localhost:1313 貼到瀏覽器上，確認有顯示出 &lt;strong>Page Not Found&lt;/strong>&lt;/p>
+&lt;p>表示Hugo運作正常，會顯示這個訊息是因為Hugo會需要主題來運作，而且也沒有任何的文章發布&lt;/p>
+&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230920121219994.png"
+loading="lazy"
+alt="image-20230920121219994"
+>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>終端機輸入Control+C 結束hugo網站，到此hugo的安裝就完成了，&lt;/p>
+&lt;p>後續我會直接套用Stack主題的模板，如要其他模板可以參考其他文章來建立。&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;h2 id="github-pages">Github Pages
+&lt;/h2>&lt;h3 id="申請github帳號">申請Github帳號
+&lt;/h3>&lt;ol>
+&lt;li>
+&lt;p>進入Github官網，點右上角的Sign up，接著輸入必要的資訊即可&lt;/p>
+&lt;p>&lt;a class="link" href="https://github.com/" target="_blank" rel="noopener"
+>https://github.com/&lt;/a>&lt;/p>
+&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230920111615527.png"
+loading="lazy"
+alt="image-20230920111615527"
+>&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;h3 id="套用模板與基本設定">套用模板與基本設定
+&lt;/h3>&lt;ol>
+&lt;li>
+&lt;p>點開Stack 主題模板的連結，下方有說明可以參考&lt;/p>
+&lt;p>&lt;a class="link" href="https://github.com/CaiJimmy/hugo-theme-stack-starter" target="_blank" rel="noopener"
+>https://github.com/CaiJimmy/hugo-theme-stack-starter&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>點擊 Use this template &amp;ndash;&amp;gt; Create a new repository&lt;/p>
+&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230920122233724.png"
+loading="lazy"
+alt="image-20230920122233724"
+>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>在Repository name的地方要輸入 『 github帳號.github.io 』，&lt;/p>
+&lt;p>這樣github page的連結才會是根網站像 &lt;a class="link" href="https://wangken0129.github.io" target="_blank" rel="noopener"
+>https://wangken0129.github.io&lt;/a>&lt;/p>
+&lt;p>如果輸入其他名稱連結會變成 &lt;a class="link" href="https://wangken0129.github.io/" target="_blank" rel="noopener"
+>https://wangken0129.github.io/&lt;/a>其他名稱&lt;/p>
+&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230920122343907.png"
+loading="lazy"
+alt="image-20230920122343907"
+>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>匯入完成後會看到有兩個branch，&lt;strong>master&lt;/strong>跟&lt;strong>gh-pages&lt;/strong>，&lt;/p>
+&lt;p>其他兩個是如果上一步驟有勾選 Include all branches就會複製過來&lt;/p>
+&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230920145122008.png"
+loading="lazy"
+alt="image-20230920145122008"
+>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>複製過來後原文件說明是可以直接在綠色 Code地方新增一個codespace，這是可以直接在github上面直接去編輯配置文件&lt;/p>
+&lt;p>但為了後續管理文件方便，我選擇回到筆電終端機上建立一個資料夾來當作工作目錄。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>再來要設定好 github page 所用的branch，最點選右邊的Settings &amp;ndash;&amp;gt; Pages&lt;/p>
+&lt;p>根據下圖的設定，Branch那邊要選擇 &lt;strong>gh-pages&lt;/strong>&lt;/p>
+&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230920150015698.png"
+loading="lazy"
+alt="image-20230920150015698"
+>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>接下來可以在github上先新增一個token，用來在筆電上跟github做溝通，&lt;/p>
+&lt;p>點選右上角的圓圈&amp;ndash;&amp;gt; Settings&lt;/p>
+&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230920150444875.png"
+loading="lazy"
+alt="image-20230920150444875"
+>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>拉到最下面有個Developer settings&lt;/p>
+&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230920150654570.png"
+loading="lazy"
+alt="image-20230920150654570"
+>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Personal access tokens &amp;ndash;&amp;gt; Tokens (classic) 新增一組Token，&lt;/p>
+&lt;p>這組Token請小心保存，而且只會出現一次，可以根據需求設定到期時間、名稱等&lt;/p>
+&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230920150749028.png"
+loading="lazy"
+alt="image-20230920150749028"
+>&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;h3 id="設定模板">設定模板
+&lt;/h3>&lt;ol>
+&lt;li>
+&lt;p>回到剛剛的Github Repository上面，點選 Code &amp;ndash;&amp;gt; SSH 並複製下方那串SSH&lt;/p>
+&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230920151123036.png"
+loading="lazy"
+alt="image-20230920151123036"
+>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>開啟筆電終端機，新增一個資料夾作為工作目錄，並進入此資料夾&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">wangken@wangken-MAC ~ % mkdir workspace
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">wangken@wangken-MAC ~ % &lt;span class="nb">cd&lt;/span> workspace
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">wangken@wangken-MAC workspace %
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>git 登入，最後面使用 authentication token，就是上面複製的token&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">wangken@wangken-MAC workspace % gh auth login
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">? What account &lt;span class="k">do&lt;/span> you want to log into? GitHub.com
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">? You&lt;span class="err">&amp;#39;&lt;/span>re already logged into github.com. Do you want to re-authenticate? Yes
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">? What is your preferred protocol &lt;span class="k">for&lt;/span> Git operations? HTTPS
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">? Authenticate Git with your GitHub credentials? Yes
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">? How would you like to authenticate GitHub CLI? &lt;span class="o">[&lt;/span>Use arrows to move, &lt;span class="nb">type&lt;/span> to filter&lt;span class="o">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Login with a web browser
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&amp;gt; Paste an authentication token
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>用git初始化工作目錄，並用 -b 指定branch為master&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">wangken@wangken-MAC workspace % git init -b master
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">已初始化空的 Git 版本庫於 /Users/wangken/workspace/.git/
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>git 新增遠端Github的Repository，並用 git remote -v 確認&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">wangken@wangken-MAC workspace % git remote add origin git@github.com:wangken0129/wangken0129.github.io.git
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">wangken@wangken-MAC workspace % git remote -v
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">origin git@github.com:wangken0129/wangken0129.github.io.git &lt;span class="o">(&lt;/span>fetch&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">origin git@github.com:wangken0129/wangken0129.github.io.git &lt;span class="o">(&lt;/span>push&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>將遠端的branch 拉下來，此時就會看到github上有的資料夾以及檔案&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">wangken@wangken-MAC workspace % git pull git@github.com:wangken0129/wangken0129.github.io.git
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">remote: Enumerating objects: 247, &lt;span class="k">done&lt;/span>.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">remote: Counting objects: 100% &lt;span class="o">(&lt;/span>247/247&lt;span class="o">)&lt;/span>, &lt;span class="k">done&lt;/span>.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">remote: Compressing objects: 100% &lt;span class="o">(&lt;/span>128/128&lt;span class="o">)&lt;/span>, &lt;span class="k">done&lt;/span>.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">remote: Total &lt;span class="m">247&lt;/span> &lt;span class="o">(&lt;/span>delta 109&lt;span class="o">)&lt;/span>, reused &lt;span class="m">195&lt;/span> &lt;span class="o">(&lt;/span>delta 68&lt;span class="o">)&lt;/span>, pack-reused &lt;span class="m">0&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">接收物件中: 100% &lt;span class="o">(&lt;/span>247/247&lt;span class="o">)&lt;/span>, 141.87 KiB &lt;span class="p">|&lt;/span> 470.00 KiB/s, 完成.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">處理 delta 中: 100% &lt;span class="o">(&lt;/span>109/109&lt;span class="o">)&lt;/span>, 完成.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">來自 github.com:wangken0129/wangken0129.github.io
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> * branch HEAD -&amp;gt; FETCH_HEAD
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> wangken@wangken-MAC workspace % ls -l
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">total &lt;span class="m">32&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-rw-r--r-- &lt;span class="m">1&lt;/span> wangken staff &lt;span class="m">1066&lt;/span> &lt;span class="m">9&lt;/span> &lt;span class="m">20&lt;/span> 15:16 LICENSE
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-rw-r--r-- &lt;span class="m">1&lt;/span> wangken staff &lt;span class="m">2874&lt;/span> &lt;span class="m">9&lt;/span> &lt;span class="m">20&lt;/span> 15:16 README.md
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">drwxr-xr-x &lt;span class="m">4&lt;/span> wangken staff &lt;span class="m">128&lt;/span> &lt;span class="m">9&lt;/span> &lt;span class="m">20&lt;/span> 15:16 assets
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">drwxr-xr-x &lt;span class="m">3&lt;/span> wangken staff &lt;span class="m">96&lt;/span> &lt;span class="m">9&lt;/span> &lt;span class="m">20&lt;/span> 15:16 config
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">drwxr-xr-x &lt;span class="m">6&lt;/span> wangken staff &lt;span class="m">192&lt;/span> &lt;span class="m">9&lt;/span> &lt;span class="m">20&lt;/span> 15:16 content
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-rw-r--r-- &lt;span class="m">1&lt;/span> wangken staff &lt;span class="m">130&lt;/span> &lt;span class="m">9&lt;/span> &lt;span class="m">20&lt;/span> 15:16 go.mod
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-rw-r--r-- &lt;span class="m">1&lt;/span> wangken staff &lt;span class="m">199&lt;/span> &lt;span class="m">9&lt;/span> &lt;span class="m">20&lt;/span> 15:16 go.sum
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">drwxr-xr-x &lt;span class="m">3&lt;/span> wangken staff &lt;span class="m">96&lt;/span> &lt;span class="m">9&lt;/span> &lt;span class="m">20&lt;/span> 15:16 static
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>在config/_default/config.toml內的有幾項需要先設定&lt;/p>
+&lt;p>baseurl = ”https://Github帳號名稱.github.io“&lt;/p>
+&lt;p>title = &amp;ldquo;自定義&amp;rdquo;&lt;/p>
+&lt;p>defaultContentLanguage = &amp;ldquo;zh-tw&amp;rdquo;&lt;/p>
+&lt;p>disqusShortname = &amp;ldquo;disqus建立的Shortname&amp;rdquo; (這是部落格底下的留言板功能，可先忽略)&lt;/p>
+&lt;p>可以去官網註冊帳號，並建立一個Site，官網： &lt;a class="link" href="https://disqus.com/profile/signup/intent/" target="_blank" rel="noopener"
+>https://disqus.com/profile/signup/intent/&lt;/a>&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">wangken@wangken-MAC workspace % vi config/_default/config.toml
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Change baseurl before deploy&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">baseurl&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s2">&amp;#34;https://wangken0129.github.io&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">languageCode&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s2">&amp;#34;en-us&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">paginate&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="m">5&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">title&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s2">&amp;#34;Ken&amp;#39;s blog&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Theme i18n support&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Available values: en, fr, id, ja, ko, pt-br, zh-cn, zh-tw, es, de, nl, it, th, el, uk, ar&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">defaultContentLanguage&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s2">&amp;#34;zh-tw&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Set hasCJKLanguage to true if DefaultContentLanguage is in [zh-cn ja ko]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># This will make .Summary and .WordCount behave correctly for CJK languages.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">hasCJKLanguage&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nb">false&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Change it to your Disqus shortname before using&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">disqusShortname&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s2">&amp;#34;wangken0129&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>基本設定這些就可以建立網站了，後續的一些設定可以參考官方文件，幾乎都可以在config/_default 目錄底下去設定&lt;/p>
+&lt;p>Stack主題的官方文件：https://stack.jimmycai.com/&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>後續如果有文章想新增的話，根據此主題的架構要新增目錄在content/post裡面&lt;/p>
+&lt;p>並依照下方的目錄結構去新增，並且md檔案前面會需要加上front matter&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 文章結構，每篇都會有index.md&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">content
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">└── post
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> └── my-first-post
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> ├── index.md
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> ├── image1.png
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> └── image2.png
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># front matter範例，以此文章為範例，放在md檔案最上面前後都要加 ```&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb">```&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 文章標題&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">title: 製作Blog Part2
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 文章描述&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">description: Hugo + Github Page + Stack Theme
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># slug&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">slug: blog-part2
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 時間，固定格式UTC+08:00&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">date: 2023-09-20T07:15:00+08:00
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 文章分類&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">categories:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> - Knowledge Base Category
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 文章標籤&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">tags:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> - Blog
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> - KB
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">weight: &lt;span class="m">1&lt;/span> &lt;span class="c1"># You can add weight to some posts to override the default sorting (date descending)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb">```&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>設定完成後即可push到github上面，指令如下：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">git add .
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git commit -m &amp;#34;msg&amp;#34;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git push --set-upstream origin master
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>成功push後可以點進Github 上的Repository &amp;ndash;&amp;gt; Actions&lt;/p>
+&lt;p>套用此模板的好處之一，就是已經自動幫你建立好workflows，&lt;/p>
+&lt;p>只要在電腦編輯好後再push上去，有任何更動都會幫你套用到網站&lt;/p>
+&lt;p>同時也會自動更新主題的一些Bug&lt;/p>
+&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230920154906316.png"
+loading="lazy"
+alt="image-20230920154906316"
+>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>連線確認網站OK&lt;/p>
+&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230920160059559.png"
+loading="lazy"
+alt="image-20230920160059559"
+>&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;h2 id="後記">後記
+&lt;/h2>&lt;p>完成部落格的設定後，再來就要把之前做的筆記套用Front Matter放上來跟之後的撰寫了，&lt;/p>
+&lt;p>針對Hugo的一些配置檔的調整，我會使用Visual Studio Code來做編輯跟調整，&lt;/p>
+&lt;p>因為針對.toml檔案的編輯還是比較友善，&lt;/p>
+&lt;p>像下方的params.toml，我有去修改[sidebar]下方的值，&lt;/p>
+&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230920163349713.png"
+loading="lazy"
+alt="image-20230920163349713"
+>&lt;/p>
+&lt;p>其他筆記的撰寫我就還是用Typora，左邊可以分為檔案的目錄檢視，&lt;/p>
+&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230920163708312.png"
+loading="lazy"
+alt="image-20230920163708312"
+>&lt;/p>
+&lt;p>或是切換到大綱檢視，分為文章裡面的大小標題等等，&lt;/p>
+&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230920163841527.png"
+loading="lazy"
+alt="image-20230920163841527"
+>&lt;/p>
+&lt;p>最後因為會頻繁地做git push的動作，所以我也參考網路的Script來自動化的push，&lt;/p>
+&lt;p>希望最後是能變成從寫完後就全部都自動化，有的話再寫上來分享。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#!/bin/sh
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">#Put this script outside the workspace folder&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># If a command fails then the deploy stops&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">set&lt;/span> -e
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">printf&lt;/span> &lt;span class="s2">&amp;#34;\033[0;32mDeploying updates to GitHub...\033[0m\n&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Go To workspace folder&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">cd&lt;/span> workspace
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Add changes to git.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git add .
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Commit changes.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">msg&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s2">&amp;#34;rebuilding site &lt;/span>&lt;span class="k">$(&lt;/span>date&lt;span class="k">)&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">if&lt;/span> &lt;span class="o">[&lt;/span> -n &lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="nv">$*&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span> &lt;span class="o">]&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="k">then&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">msg&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="nv">$*&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">fi&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git commit -m &lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="nv">$msg&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Push source and build repos.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git push origin master
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># come back&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">cd&lt;/span> ..
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div></description></item><item><title>製作Blog Part1</title><link>https://wangken0129.github.io/p/blog-part1/</link><pubDate>Tue, 19 Sep 2023 07:10:00 +0800</pubDate><guid>https://wangken0129.github.io/p/blog-part1/</guid><description>&lt;h1 id="製作blog-part1">製作Blog Part1
+&lt;/h1>&lt;p>把過程記錄下來，未來若有更換電腦還可以照著操作復原回來。&lt;/p>
+&lt;p>原本我只有使用Typora做本地紀錄，有需要再上傳Github或是匯出成 PDF or Word 分享給別人，&lt;/p>
+&lt;p>後來覺得有時候要用手機查看不太方便，有嘗試使用Notion因為還有手機App可使用，&lt;/p>
+&lt;p>但是匯入文件的時候出現不少問題故作罷，幾經測試，覺得Github Page+Hugo看起來是比較簡單好上手。&lt;/p>
+&lt;p>Part1 是Typora作為筆記軟體，並用Picgo上傳圖片到自架的NAS當作圖床空間。&lt;/p>
+&lt;p>Part2 是透過Hugo + Github Page來做靜態網站，以存放Typora的筆記。&lt;/p>
+&lt;p>Part3 是自動化腳本。&lt;/p>
+&lt;h2 id="typora">Typora
+&lt;/h2>&lt;p>我使用Typora作為我的Markdown筆記軟體，操作簡單而且可以匯出很多格式。&lt;/p>
+&lt;h3 id="install-typora">Install Typora
+&lt;/h3>&lt;p>從官網下載下來安裝即可&lt;/p>
+&lt;p>官網: &lt;a class="link" href="https://typora.io/" target="_blank" rel="noopener"
+>https://typora.io/&lt;/a>&lt;/p>
+&lt;h3 id="setting-typora">Setting Typora
+&lt;/h3>&lt;p>有三個步驟:&lt;/p>
+&lt;ol>
+&lt;li>
+&lt;p>輸入授權 or 破解(?)&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>針對圖片的存放設定，一開始我是使用如下圖的設定，&lt;/p>
+&lt;p>複製圖片至Typora時會存放到上層路徑的assets資料夾，後來因為方便性改為上傳到自架的NAS上作為圖床。
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230919115931790.png"
+loading="lazy"
+alt="image-20230919115931790"
+>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>外觀配置，官網有很多主題可以使用，只要把下載下來的主題複製到主題資料夾即可。&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230919125343105.png"
+loading="lazy"
+alt="image-20230919125343105"
+>&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;p>完成後就可以開始使用Typora了。&lt;/p>
+&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230919143435523.png"
+loading="lazy"
+alt="image-20230919143435523"
+>&lt;/p>
+&lt;h2 id="nas自架圖床">NAS自架圖床
+&lt;/h2>&lt;p>這步驟如果沒有NAS或是使用其他圖床空間可以省略，&lt;/p>
+&lt;p>會使用NAS自架圖床也是剛好有NAS，而且Imgur前陣子在大掃除，&lt;/p>
+&lt;p>其他的圖床空間也難免會有大掃除或是停止的狀況，自架也只建議小型的Blog使用，&lt;/p>
+&lt;p>如果有大量的圖片需求，還是建議用雲端的像Amazon S3等等。&lt;/p>
+&lt;p>&lt;em>NAS設定 DDNS OR DNS 還有憑證網路上有很多參考文件此處就不多加贅述，此處使用的是Synology DDNS 憑證自動更新&lt;/em>&lt;/p>
+&lt;h3 id="web-station-install">Web Station Install
+&lt;/h3>&lt;ol>
+&lt;li>新增共用資料夾 /www/wwwroot/blog/images
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230919130918428.png"
+loading="lazy"
+alt="image-20230919130918428"
+>&lt;/li>
+&lt;li>建議再新增一個使用者設定權限專門使用此資料夾
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230919131239449.png"
+loading="lazy"
+alt="image-20230919131239449"
+>&lt;/li>
+&lt;li>安裝Web Station&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230919130741842.png"
+loading="lazy"
+alt="image-20230919130741842"
+>&lt;/li>
+&lt;li>網頁服務 &amp;ndash;&amp;gt; 新增靜態網站，指定主目錄為剛剛新增的資料夾
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230919131023338.png"
+loading="lazy"
+alt="image-20230919131023338"
+>&lt;/li>
+&lt;li>新增網頁入口，對應剛剛新增的網頁服務，並設定好Port號，建議使用HTTPS
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230919132005169.png"
+loading="lazy"
+alt="image-20230919132005169"
+>&lt;/li>
+&lt;li>丟一張圖片到 /www/wwwroot/blog/images
+用網頁連線測試看是否可以讀取
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230919131936400.png"
+loading="lazy"
+alt="image-20230919131936400"
+>&lt;/li>
+&lt;/ol>
+&lt;h3 id="ftp-設定">FTP 設定
+&lt;/h3>&lt;ol>
+&lt;li>開啟FTP服務，設定FTPS、Port號，安全性考量不勾選FTP
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230919132202926.png"
+loading="lazy"
+alt="image-20230919132202926"
+>&lt;/li>
+&lt;li>設定指定使用者根目錄，安全考量不啟用匿名登入
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230919132448501.png"
+loading="lazy"
+alt="image-20230919132448501"
+>&lt;/li>
+&lt;/ol>
+&lt;h2 id="picgo">Picgo
+&lt;/h2>&lt;p>配置文件&lt;/p>
+&lt;p>參考原文: &lt;a class="link" href="https://zhuanlan.zhihu.com/p/382702959" target="_blank" rel="noopener"
+>https://zhuanlan.zhihu.com/p/382702959&lt;/a>&lt;/p>
+&lt;p>Picgo: &lt;a class="link" href="https://picgo.github.io/PicGo-Core-Doc/zh/guide/config.html" target="_blank" rel="noopener"
+>https://picgo.github.io/PicGo-Core-Doc/zh/guide/config.html&lt;/a>&lt;/p>
+&lt;p>ftp-uploader: &lt;a class="link" href="https://github.com/imba97/picgo-plugin-ftp-uploader/tree/master" target="_blank" rel="noopener"
+>https://github.com/imba97/picgo-plugin-ftp-uploader/tree/master&lt;/a>&lt;/p>
+&lt;p>ftp-basic: &lt;a class="link" href="https://www.npmjs.com/package/basic-ftp" target="_blank" rel="noopener"
+>https://www.npmjs.com/package/basic-ftp&lt;/a>&lt;/p>
+&lt;h3 id="install-picgo">Install Picgo
+&lt;/h3>&lt;ol>
+&lt;li>
+&lt;p>首先要先安裝Node.js，下載安裝或是用brew install node&lt;/p>
+&lt;p>&lt;a class="link" href="https://nodejs.org/en/download" target="_blank" rel="noopener"
+>https://nodejs.org/en/download&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>安裝好後確認版本&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">wangken@wangken-MAC ~ % npm -v
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">9.6.7
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">wangken@wangken-MAC ~ % node -v
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">v18.17.1
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>使用npm安裝Picgo&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">wangken@wangken-MAC ~ % npm install picgo -g
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">wangken@wangken-MAC ~ % picgo -v
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">1.5.6
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">wangken@wangken-MAC ~ % picgo --help
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Usage: picgo &lt;span class="o">[&lt;/span>options&lt;span class="o">]&lt;/span> &lt;span class="o">[&lt;/span>command&lt;span class="o">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Options:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> -v, --version output the version number
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> -d, --debug debug mode
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> -s, --silent silent mode
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> -c, --config &amp;lt;path&amp;gt; &lt;span class="nb">set&lt;/span> config path
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> -p, --proxy &amp;lt;url&amp;gt; &lt;span class="nb">set&lt;/span> proxy &lt;span class="k">for&lt;/span> uploading
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> -h, --help display &lt;span class="nb">help&lt;/span> &lt;span class="k">for&lt;/span> &lt;span class="nb">command&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Commands:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> install&lt;span class="p">|&lt;/span>add &lt;span class="o">[&lt;/span>options&lt;span class="o">]&lt;/span> &amp;lt;plugins...&amp;gt; install picgo plugin
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> uninstall&lt;span class="p">|&lt;/span>rm &amp;lt;plugins...&amp;gt; uninstall picgo plugin
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> update &lt;span class="o">[&lt;/span>options&lt;span class="o">]&lt;/span> &amp;lt;plugins...&amp;gt; update picgo plugin
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> set&lt;span class="p">|&lt;/span>config &amp;lt;module&amp;gt; &lt;span class="o">[&lt;/span>name&lt;span class="o">]&lt;/span> configure config of picgo modules
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> upload&lt;span class="p">|&lt;/span>u &lt;span class="o">[&lt;/span>input...&lt;span class="o">]&lt;/span> upload, go go go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> use &lt;span class="o">[&lt;/span>module&lt;span class="o">]&lt;/span> use modules of picgo
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> init &lt;span class="o">[&lt;/span>options&lt;span class="o">]&lt;/span> &amp;lt;template&amp;gt; &lt;span class="o">[&lt;/span>project&lt;span class="o">]&lt;/span> create picgo plugin&lt;span class="err">&amp;#39;&lt;/span>s development templates
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> i18n &lt;span class="o">[&lt;/span>lang&lt;span class="o">]&lt;/span> change picgo language
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">help&lt;/span> &lt;span class="o">[&lt;/span>command&lt;span class="o">]&lt;/span> display &lt;span class="nb">help&lt;/span> &lt;span class="k">for&lt;/span> &lt;span class="nb">command&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>安裝好後再新增ftp-uploader&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="n">wangken&lt;/span>&lt;span class="err">@&lt;/span>&lt;span class="n">wangken&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">MAC&lt;/span> &lt;span class="o">~&lt;/span> &lt;span class="o">%&lt;/span> &lt;span class="n">picgo&lt;/span> &lt;span class="n">install&lt;/span> &lt;span class="n">picgo&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">plugin&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">ftp&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">uploader&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># added 3 packages in 1s&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># [PicGo SUCCESS]: 插件安装成功&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;/ol>
+&lt;h3 id="setting-picgo">Setting Picgo
+&lt;/h3>&lt;ol>
+&lt;li>
+&lt;p>修改Picgo配置文件，預設在~/.picgo/config.json&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">wangken@wangken-MAC ~ % picgo &lt;span class="nb">set&lt;/span> uploader
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">? Choose a&lt;span class="o">(&lt;/span>n&lt;span class="o">)&lt;/span> uploader ftp-uploader
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">? imba97 kenkenny
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">? D:/ftpUploaderConfig.json /Users/wangken/.picgo/ftpUploaderConfig.json
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">[&lt;/span>PicGo SUCCESS&lt;span class="o">]&lt;/span>: Configure config successfully!
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">wangken@wangken-MAC ~ % cat ~/.picgo/config.json
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;picBed&amp;#34;&lt;/span>: &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;uploader&amp;#34;&lt;/span>: &lt;span class="s2">&amp;#34;ftp-uploader&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;current&amp;#34;&lt;/span>: &lt;span class="s2">&amp;#34;ftp-uploader&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;ftp-uploader&amp;#34;&lt;/span>: &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;site&amp;#34;&lt;/span>: &lt;span class="s2">&amp;#34;kenkenny&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;configFile&amp;#34;&lt;/span>: &lt;span class="s2">&amp;#34;/Users/wangken/.picgo/ftpUploaderConfig.json&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>,
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;picgoPlugins&amp;#34;&lt;/span>: &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;picgo-plugin-ftp-uploader&amp;#34;&lt;/span>: &lt;span class="nb">true&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>%
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>新增~/.picgo/ftpUploaderConfig.json
+這裡我多了一個secure的選項，安裝好後預設是沒有這個參數
+因為我是使用FTPS，所以後面的配置檔案也要新增secure的參數，其餘請自行修改NAS對應的路徑及連結&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-json" data-lang="json">&lt;span class="line">&lt;span class="cl">&lt;span class="err">wangken@wangken-MAC&lt;/span> &lt;span class="err">.picgo&lt;/span> &lt;span class="err">%&lt;/span> &lt;span class="err">cat&lt;/span> &lt;span class="err">ftpUploaderConfig.json&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;kenkenny&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;url&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;https://nas.domain:xxxx&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;path&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;/images/{year}/{month}/{fullName}&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;uploadPath&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;/wwwroot/blog/images/{year}/{month}/{fullName}&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;host&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;nas.domain&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;port&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="err">portnumber&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;username&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;ftp-user&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;password&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;ftp-user-password&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;secure&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="kc">true&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>修改 ~/.picgo/node_modules/picgo-plugin-ftp-uploader/dist/index.js&lt;/p>
+&lt;p>在await client.access的地方新增 &lt;strong>secure: config.secure&lt;/strong>&lt;/p>
+&lt;p>詳細配置可以Google &amp;ldquo;ftp-basic&amp;rdquo; 就會有文件可以參考了&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">wangken@wangken-MAC dist % vim index.js
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> await client.access({
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> host: config.host,
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> port: config.port,
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> user: config.username,
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> password: config.password,
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> secure: config.secure
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> });
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>以上配置完成，不用重開機直接進入Typora修改圖片上傳的設定&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;h2 id="驗證typora--picgo--nas">驗證Typora + Picgo + NAS
+&lt;/h2>&lt;ol>
+&lt;li>
+&lt;p>首先修改Typora的圖片設定，改為自訂命令，輸入 picgo upload
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230919141634956.png"
+loading="lazy"
+alt="image-20230919141634956"
+>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>接著新增一個md檔案，複製一張圖片進去即可看到圖片上傳成功&lt;/p>
+&lt;p>Typora: 點擊圖片即可看到上傳後的路徑&lt;/p>
+&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230919142209291.png"
+loading="lazy"
+alt="image-20230919142209291"
+>&lt;/p>
+&lt;p>NAS: 點選連結或是進入NAS的File Station確認圖片
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230919142323495.png"
+loading="lazy"
+alt="image-20230919142323495"
+>&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;p>以上就是Typora+Picgo上傳圖片到NAS上的設定，下一篇再來進入部落格的製作。&lt;/p></description></item></channel></rss>

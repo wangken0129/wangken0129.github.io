@@ -1,0 +1,706 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Nvidia on Ken's blog</title><link>https://wangken0129.github.io/tags/nvidia/</link><description>Recent content in Nvidia on Ken's blog</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Sat, 23 Sep 2023 03:16:38 +0800</lastBuildDate><atom:link href="https://wangken0129.github.io/tags/nvidia/index.xml" rel="self" type="application/rss+xml"/><item><title>Nvdia_on_Nutanix</title><link>https://wangken0129.github.io/p/nvidia_on_nutanix/</link><pubDate>Sat, 23 Sep 2023 03:16:38 +0800</pubDate><guid>https://wangken0129.github.io/p/nvidia_on_nutanix/</guid><description>&lt;h1 id="nivida-on-nutanix-ahv">Nivida On Nutanix AHV
+&lt;/h1>&lt;p>主要測試NVIDIA vGPU是否可在Nutanix AHV上安裝及運作，&lt;/p>
+&lt;p>要使用 vGPU 則需要先安裝License Server，VM上的vGPU才可正常使用，&lt;/p>
+&lt;p>vGPU相關的License Server、Host Driver、GuestOS Driver都有相依性，安裝前要先去對應，&lt;/p>
+&lt;p>以下方法已在客戶端驗證可安裝使用。&lt;/p>
+&lt;h2 id="參考資料">參考資料
+&lt;/h2>&lt;ol>
+&lt;li>Nutanix vGPU 說明&amp;amp;troubleshooting
+&lt;a class="link" href="https://portal.nutanix.com/page/documents/solutions/details?targetId=TN-2046-vGPU-on-Nutanix:TN-2046-vGPU-on-Nutanix" target="_blank" rel="noopener"
+>https://portal.nutanix.com/page/documents/solutions/details?targetId=TN-2046-vGPU-on-Nutanix:TN-2046-vGPU-on-Nutanix&lt;/a>&lt;/li>
+&lt;li>Nvidia License Server Requirement
+&lt;a class="link" href="https://docs.nvidia.com/license-system/latest/nvidia-license-system-faq/index.html" target="_blank" rel="noopener"
+>https://docs.nvidia.com/license-system/latest/nvidia-license-system-faq/index.html&lt;/a>&lt;/li>
+&lt;li>Nvidia License Server User Guide
+&lt;a class="link" href="https://docs.nvidia.com/license-system/latest/nvidia-license-system-user-guide/index.html#registering-dls-administrator-user" target="_blank" rel="noopener"
+>https://docs.nvidia.com/license-system/latest/nvidia-license-system-user-guide/index.html#registering-dls-administrator-user&lt;/a>&lt;/li>
+&lt;li>AHV Install Nvidia Driver
+&lt;a class="link" href="https://portal.nutanix.com/page/documents/details?targetId=NVIDIA-Grid-Host-Driver-For-AHV-Install-Guide:NVIDIA-Grid-Host-Driver-For-AHV-Install-Guide" target="_blank" rel="noopener"
+>https://portal.nutanix.com/page/documents/details?targetId=NVIDIA-Grid-Host-Driver-For-AHV-Install-Guide:NVIDIA-Grid-Host-Driver-For-AHV-Install-Guide&lt;/a>&lt;/li>
+&lt;li>AHV Create VM with vGPU
+&lt;a class="link" href="https://portal.nutanix.com/page/documents/details?targetId=Web-Console-Guide-Prism:wc-vm-create-acropolis-wc-t.html" target="_blank" rel="noopener"
+>https://portal.nutanix.com/page/documents/details?targetId=Web-Console-Guide-Prism:wc-vm-create-acropolis-wc-t.html&lt;/a>&lt;/li>
+&lt;/ol>
+&lt;h2 id="預先準備">預先準備
+&lt;/h2>&lt;ol>
+&lt;li>下載AHV Driver 要對應Guest OS Driver
+&lt;a class="link" href="https://portal.nutanix.com/page/downloads?product=ahv&amp;amp;bit=NVIDIA" target="_blank" rel="noopener"
+>https://portal.nutanix.com/page/downloads?product=ahv&amp;bit=NVIDIA&lt;/a>
+&lt;a class="link" href="https://ui.licensing.nvidia.com/software" target="_blank" rel="noopener"
+>https://ui.licensing.nvidia.com/software&lt;/a>&lt;/li>
+&lt;li>下載License Server，NLS License Server (DLS 新版就用qcow2或是ovf)
+&lt;a class="link" href="https://ui.licensing.nvidia.com/software" target="_blank" rel="noopener"
+>https://ui.licensing.nvidia.com/software&lt;/a>&lt;/li>
+&lt;li>License Key、Nvida Account&lt;/li>
+&lt;/ol>
+&lt;p>&lt;strong>Compatibility Matrix&lt;/strong>:&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>AOS Version&lt;/th>
+&lt;th>AHV Versiob&lt;/th>
+&lt;th>Nvidia Version&lt;/th>
+&lt;th>&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>AOS 6.5.3 LTS&lt;/td>
+&lt;td>20220304.420&lt;/td>
+&lt;td>15.2&lt;/td>
+&lt;td>Download driver below&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>AOS 6.6.2.5&lt;/td>
+&lt;td>20220304.10057&lt;/td>
+&lt;td>15.0&lt;/td>
+&lt;td>Download driver below&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>AOS 6.5.2.7 LTS&lt;/td>
+&lt;td>20220304.392&lt;/td>
+&lt;td>15.0&lt;/td>
+&lt;td>Download driver below&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>AOS 6.6.2&lt;/td>
+&lt;td>20220304.10055&lt;/td>
+&lt;td>15.0&lt;/td>
+&lt;td>Download driver below&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>AOS 6.5.2.6 LTS&lt;/td>
+&lt;td>20220304.385&lt;/td>
+&lt;td>15.0&lt;/td>
+&lt;td>Download driver below&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>AOS 6.6.0.5&lt;/td>
+&lt;td>20220304.10019&lt;/td>
+&lt;td>13.3&lt;/td>
+&lt;td>Download driver below&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>AOS 6.5.2 LTS&lt;/td>
+&lt;td>20220304.342&lt;/td>
+&lt;td>13.3&lt;/td>
+&lt;td>Download driver below&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>AOS 6.6&lt;/td>
+&lt;td>20220304.10013&lt;/td>
+&lt;td>13.3&lt;/td>
+&lt;td>Download driver below&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>AOS 6.5.1.8 LTS&lt;/td>
+&lt;td>20220304.336&lt;/td>
+&lt;td>13.3&lt;/td>
+&lt;td>Download driver below&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>AOS 5.20.5 LTS&lt;/td>
+&lt;td>20201105.2312&lt;/td>
+&lt;td>13.3&lt;/td>
+&lt;td>Download driver below&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h2 id="license-server-說明">License Server 說明
+&lt;/h2>&lt;p>&lt;em>A VM obtains a license over the network from an NVIDIA vGPU software license server.&lt;/em>&lt;/p>
+&lt;p>&lt;em>The license is “checked out” or “borrowed” when the VM is booted, and returned when the&lt;/em>&lt;/p>
+&lt;p>&lt;em>VM is shut down.&lt;/em>
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230616170317746.png"
+loading="lazy"
+alt="image-20230616170317746"
+>&lt;/p>
+&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230616144254708.png"
+loading="lazy"
+alt="image-20230616144254708"
+>&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="n">Before&lt;/span> &lt;span class="n">proceeding&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">ensure&lt;/span> &lt;span class="n">that&lt;/span> &lt;span class="n">you&lt;/span> &lt;span class="n">have&lt;/span> &lt;span class="n">a&lt;/span> &lt;span class="n">platform&lt;/span> &lt;span class="n">suitable&lt;/span> &lt;span class="k">for&lt;/span> &lt;span class="n">hosting&lt;/span> &lt;span class="n">a&lt;/span> &lt;span class="n">DLS&lt;/span> &lt;span class="n">virtual&lt;/span> &lt;span class="n">appliance&lt;/span> &lt;span class="ow">or&lt;/span> &lt;span class="n">containerized&lt;/span> &lt;span class="n">DLS&lt;/span> &lt;span class="n">software&lt;/span> &lt;span class="n">image&lt;/span>&lt;span class="o">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">-&lt;/span> &lt;span class="n">The&lt;/span> &lt;span class="n">hosting&lt;/span> &lt;span class="n">platform&lt;/span> &lt;span class="n">must&lt;/span> &lt;span class="n">be&lt;/span> &lt;span class="n">a&lt;/span> &lt;span class="n">physical&lt;/span> &lt;span class="n">host&lt;/span> &lt;span class="n">running&lt;/span> &lt;span class="n">a&lt;/span> &lt;span class="n">supported&lt;/span> &lt;span class="n">hypervisor&lt;/span> &lt;span class="ow">or&lt;/span> &lt;span class="n">container&lt;/span> &lt;span class="n">orchestration&lt;/span> &lt;span class="n">platform&lt;/span>&lt;span class="o">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">-&lt;/span> &lt;span class="n">The&lt;/span> &lt;span class="n">minimum&lt;/span> &lt;span class="n">resource&lt;/span> &lt;span class="n">requirements&lt;/span> &lt;span class="k">for&lt;/span> &lt;span class="n">the&lt;/span> &lt;span class="n">VM&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="n">which&lt;/span> &lt;span class="n">the&lt;/span> &lt;span class="n">DLS&lt;/span> &lt;span class="n">virtual&lt;/span> &lt;span class="n">appliance&lt;/span> &lt;span class="ow">or&lt;/span> &lt;span class="n">DLS&lt;/span> &lt;span class="n">container&lt;/span> &lt;span class="n">will&lt;/span> &lt;span class="n">run&lt;/span> &lt;span class="n">is&lt;/span> &lt;span class="n">as&lt;/span> &lt;span class="n">follows&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">-&lt;/span> &lt;span class="n">Number&lt;/span> &lt;span class="n">of&lt;/span> &lt;span class="n">vCPUs&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">4&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">-&lt;/span> &lt;span class="n">RAM&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">8&lt;/span> &lt;span class="n">Gbytes&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">-&lt;/span> &lt;span class="n">Disk&lt;/span> &lt;span class="n">Size&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">10&lt;/span> &lt;span class="n">Gbytes&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">For&lt;/span> &lt;span class="n">additional&lt;/span> &lt;span class="n">guidelines&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">refer&lt;/span> &lt;span class="n">to&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="n">Sizing&lt;/span> &lt;span class="n">Guidelines&lt;/span> &lt;span class="k">for&lt;/span> &lt;span class="n">a&lt;/span> &lt;span class="n">DLS&lt;/span> &lt;span class="n">Appliance&lt;/span>&lt;span class="p">](&lt;/span>&lt;span class="n">https&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="o">//&lt;/span>&lt;span class="n">docs&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">nvidia&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">com&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">license&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">system&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">latest&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">nvidia&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">license&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">system&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">user&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">guide&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">index&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">html&lt;/span>&lt;span class="c1">#dls-virtual-appliance-sizing-guidelines). &lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">-&lt;/span> &lt;span class="n">The&lt;/span> &lt;span class="n">platform&lt;/span> &lt;span class="n">must&lt;/span> &lt;span class="n">have&lt;/span> &lt;span class="n">a&lt;/span> &lt;span class="n">fixed&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">unchanging&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="ne">IP&lt;/span> &lt;span class="n">address&lt;/span>&lt;span class="o">.&lt;/span> &lt;span class="n">The&lt;/span> &lt;span class="ne">IP&lt;/span> &lt;span class="n">address&lt;/span> &lt;span class="n">may&lt;/span> &lt;span class="n">be&lt;/span> &lt;span class="n">assigned&lt;/span> &lt;span class="n">dynamically&lt;/span> &lt;span class="n">by&lt;/span> &lt;span class="n">DHCP&lt;/span> &lt;span class="ow">or&lt;/span> &lt;span class="n">statically&lt;/span> &lt;span class="n">configured&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">but&lt;/span> &lt;span class="n">must&lt;/span> &lt;span class="n">be&lt;/span> &lt;span class="n">constant&lt;/span>&lt;span class="o">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">-&lt;/span> &lt;span class="n">The&lt;/span> &lt;span class="n">platform&lt;/span>&lt;span class="err">’&lt;/span>&lt;span class="n">s&lt;/span> &lt;span class="n">date&lt;/span> &lt;span class="ow">and&lt;/span> &lt;span class="n">time&lt;/span> &lt;span class="n">must&lt;/span> &lt;span class="n">be&lt;/span> &lt;span class="n">set&lt;/span> &lt;span class="n">accurately&lt;/span>&lt;span class="o">.&lt;/span> &lt;span class="n">NTP&lt;/span> &lt;span class="n">is&lt;/span> &lt;span class="n">recommended&lt;/span>&lt;span class="o">.&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="執行步驟">執行步驟
+&lt;/h2>&lt;h3 id="建立nvidia-帳號-並匯入key">建立Nvidia 帳號 並匯入Key
+&lt;/h3>&lt;ol>
+&lt;li>
+&lt;p>在License文件下方點選註冊或是登入
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230718095043423.png"
+loading="lazy"
+alt="image-20230718095043423"
+>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>登入後即可看到License&lt;/p>
+&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/anydesk00015.png"
+loading="lazy"
+alt="anydesk00015"
+>&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;h3 id="安裝license-server">安裝License Server
+&lt;/h3>&lt;ol>
+&lt;li>
+&lt;p>上傳License Server的 qcow2 image&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>開啟vm 設定 4 vpu 8gb ram&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>預設使用者 dls_system 登入 ( nls 3.1.0 預設帳號改為dls_admin / welcome )&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>設定固定IP&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">$ /etc/adminscripts/set-static-ip-cli.sh
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230616153813449.png"
+loading="lazy"
+alt="image-20230616153813449"
+>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>註冊DLS Admin User (Cluster架構只需建立一次)
+連線https://dls-vm-ip
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230616154122814.png"
+loading="lazy"
+alt="image-20230616154122814"
+>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>選擇First time setup，設定dls_admin密碼
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230616154243779.png"
+loading="lazy"
+alt="image-20230616154243779"
+>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>複製secret，並用dls_admin登入&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">79256b19-ffc6-4617-bec3-b62b0696064d
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">密碼: Nutanix/4u
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230616154313559.png"
+loading="lazy"
+alt="image-20230616154313559"
+>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>登入後即可註冊在Nvidia 建立的Service Instance，以及上傳License File
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230616154446654.png"
+loading="lazy"
+alt="image-20230616154446654"
+>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>建立sudo user: rsu_admin
+用dls_admin / welcome or dls_system 登入License Server&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">$ /etc/adminscripts/enable_sudo.sh
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">輸入密碼: Nutanix/4u
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230616171148494.png"
+loading="lazy"
+alt="image-20230616171148494"
+>&lt;/p>
+&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230616171359579.png"
+loading="lazy"
+alt="image-20230616171359579"
+>&lt;/p>
+&lt;ol start="10">
+&lt;li>
+&lt;p>製作HA Cluster ( optional )，依照上述步驟到步驟4再建立一台License Server
+並在Web 上點選Configure high avaliability並輸入另一台的ip
+要先確認防火牆port有通 ，建議同網段&lt;/p>
+&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/nvidia-ha.png"
+loading="lazy"
+alt="截圖 2023-06-16 17.19.07"
+>&lt;/p>
+&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230616175313349.png"
+loading="lazy"
+alt="image-20230616175313349"
+>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Create Cluster
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230616175345183.png"
+loading="lazy"
+alt="image-20230616175345183"
+>&lt;/p>
+&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230616175455856.png"
+loading="lazy"
+alt="image-20230616175455856"
+>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>登入另一台License Server確認 dls_admin 可以登入，資訊同步
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230616175603060.png"
+loading="lazy"
+alt="image-20230616175603060"
+>&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;h3 id="註冊license-server">註冊License Server
+&lt;/h3>&lt;ol>
+&lt;li>
+&lt;p>下載DLS Instance Token 上傳到Nvidia License Portal
+點選SERVICE INSTANCES &amp;gt; Register DLS Instance&lt;/p>
+&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/anydesk00025.png"
+loading="lazy"
+alt="anydesk00025"
+>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>上傳Token
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/anydesk00026.png"
+loading="lazy"
+alt="anydesk00026"
+>&lt;/p>
+&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/anydesk00027.png"
+loading="lazy"
+alt="anydesk00027"
+>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>在Nvidia Portal 建立License Server &amp;gt; CREATE SERVER
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/anydesk00018.png"
+loading="lazy"
+alt="anydesk00018"
+>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>設定名稱、描述
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/anydesk00020.png"
+loading="lazy"
+alt="anydesk00020"
+>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>選擇License
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/anydesk00021.png"
+loading="lazy"
+alt="anydesk00021"
+>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>建立License Server
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/anydesk00022.png"
+loading="lazy"
+alt="anydesk00022"
+>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>建立好後把SERVER INSTANCES 連結到License Server
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/anydesk00043.png"
+loading="lazy"
+alt="anydesk00043"
+>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>連結好後即可下載License File的bin檔
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/anydesk00044.png"
+loading="lazy"
+alt="anydesk00044"
+>&lt;/p>
+&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230718102025826.png"
+loading="lazy"
+alt="image-20230718102025826"
+>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>再將bin檔上傳到地端的License Server
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230616154446654.png"
+loading="lazy"
+alt="image-20230616154446654"
+>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>即可看到License 已可在地端使用
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/anydesk00038.png"
+loading="lazy"
+alt="anydesk00038"
+>&lt;/p>
+&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/anydesk00036.png"
+loading="lazy"
+alt="anydesk00036"
+>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>下載Client Config Token 以利日後GuestOS 使用&lt;/p>
+&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/anydesk00039.png"
+loading="lazy"
+alt="anydesk00039"
+>&lt;/p>
+&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/anydesk00040.png"
+loading="lazy"
+alt="anydesk00040"
+>&lt;/p>
+&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/anydesk00041.png"
+loading="lazy"
+alt="anydesk00041"
+>&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;h3 id="ahv-安裝nvidia-driver">AHV 安裝Nvidia Driver
+&lt;/h3>&lt;ol>
+&lt;li>
+&lt;p>確認AHV有抓到顯卡&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">root@ahv# lspci | grep -i nvidia
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>PE 上看到Hardware有無顯卡&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>上傳lcm_nvidia_5.10.170-2.el7.nutanix.20220304.420-525.105.14.tar.gz 到CVM&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>CVM 執行安裝Driver&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="nx">解壓縮&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">nutanix&lt;/span>&lt;span class="err">@&lt;/span>&lt;span class="nx">cvm&lt;/span>&lt;span class="err">$&lt;/span> &lt;span class="nx">tar&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="nx">xvzf&lt;/span> &lt;span class="nx">lcm_nvidia_version&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">tar&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">gz&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">builds&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="nx">nvidia&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">builds&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="nx">version&lt;/span>&lt;span class="o">/&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">builds&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="nx">nvidia&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">builds&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="nx">version&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="nx">metadata&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">json&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">builds&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="nx">nvidia&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">builds&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="nx">version&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="nx">metadata&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">sign&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">builds&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="nx">nvidia&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">builds&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="nx">version&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="nx">nvidia&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">vgpu&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">version&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">rpm&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">執行安裝&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">nutanix&lt;/span>&lt;span class="err">@&lt;/span>&lt;span class="nx">cvm&lt;/span>&lt;span class="err">$&lt;/span> &lt;span class="nx">install_host_package&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="nx">r&lt;/span> &lt;span class="nx">driver_package_location&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>確認VM可能會關機或是被移轉&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="nx">VMs&lt;/span> &lt;span class="nx">using&lt;/span> &lt;span class="nx">a&lt;/span> &lt;span class="nx">GPU&lt;/span> &lt;span class="nx">must&lt;/span> &lt;span class="nx">be&lt;/span> &lt;span class="nx">powered&lt;/span> &lt;span class="nx">off&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="nx">their&lt;/span> &lt;span class="nx">parent&lt;/span> &lt;span class="nx">host&lt;/span> &lt;span class="nx">is&lt;/span> &lt;span class="nx">affected&lt;/span> &lt;span class="nx">by&lt;/span> &lt;span class="nx">this&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">install&lt;/span>&lt;span class="p">.&lt;/span> &lt;span class="nx">If&lt;/span> &lt;span class="nx">left&lt;/span> &lt;span class="nx">running&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">these&lt;/span> &lt;span class="nx">VMs&lt;/span> &lt;span class="nx">will&lt;/span> &lt;span class="nx">be&lt;/span> &lt;span class="nx">automatically&lt;/span> &lt;span class="nx">powered&lt;/span> &lt;span class="nx">off&lt;/span> &lt;span class="nx">when&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">installation&lt;/span> &lt;span class="nx">begins&lt;/span> &lt;span class="nx">on&lt;/span> &lt;span class="nx">their&lt;/span> &lt;span class="nx">parent&lt;/span> &lt;span class="nx">host&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">and&lt;/span> &lt;span class="nx">powered&lt;/span> &lt;span class="nx">back&lt;/span> &lt;span class="nx">on&lt;/span> &lt;span class="nx">after&lt;/span> &lt;span class="nx">the&lt;/span> &lt;span class="nx">driver&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">install&lt;/span> &lt;span class="nx">is&lt;/span> &lt;span class="nx">completed&lt;/span>&lt;span class="p">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">VMs&lt;/span> &lt;span class="nx">using&lt;/span> &lt;span class="nx">vGPU&lt;/span> &lt;span class="nx">will&lt;/span> &lt;span class="nx">be&lt;/span> &lt;span class="nx">migrated&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="nx">their&lt;/span> &lt;span class="nx">parent&lt;/span> &lt;span class="nx">host&lt;/span> &lt;span class="nx">is&lt;/span> &lt;span class="nx">affected&lt;/span> &lt;span class="nx">by&lt;/span> &lt;span class="nx">this&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">install&lt;/span>&lt;span class="p">.&lt;/span> &lt;span class="nx">However&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">some&lt;/span> &lt;span class="nx">vGPU&lt;/span> &lt;span class="nx">VMs&lt;/span> &lt;span class="nx">might&lt;/span> &lt;span class="nx">be&lt;/span> &lt;span class="nx">automatically&lt;/span> &lt;span class="nx">powered&lt;/span> &lt;span class="nx">off&lt;/span> &lt;span class="nx">due&lt;/span> &lt;span class="nx">to&lt;/span> &lt;span class="nx">lack&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">of&lt;/span> &lt;span class="nx">resource&lt;/span> &lt;span class="nx">when&lt;/span> &lt;span class="nx">installation&lt;/span> &lt;span class="nx">begins&lt;/span> &lt;span class="nx">on&lt;/span> &lt;span class="nx">their&lt;/span> &lt;span class="nx">parent&lt;/span> &lt;span class="nx">host&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">and&lt;/span> &lt;span class="nx">powered&lt;/span> &lt;span class="nx">back&lt;/span> &lt;span class="nx">on&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">after&lt;/span> &lt;span class="nx">the&lt;/span> &lt;span class="nx">driver&lt;/span> &lt;span class="nx">install&lt;/span> &lt;span class="nx">is&lt;/span> &lt;span class="nx">completed&lt;/span>&lt;span class="p">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">Install&lt;/span> &lt;span class="nf">now&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">yes&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="nx">no&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="nx">yes&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">Note&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="nx">If&lt;/span> &lt;span class="nx">a&lt;/span> &lt;span class="nx">host&lt;/span> &lt;span class="nx">already&lt;/span> &lt;span class="nx">has&lt;/span> &lt;span class="nx">the&lt;/span> &lt;span class="nx">same&lt;/span> &lt;span class="nx">version&lt;/span> &lt;span class="nx">vGPU&lt;/span> &lt;span class="nx">driver&lt;/span> &lt;span class="nx">installed&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">the&lt;/span> &lt;span class="nx">install_host_package&lt;/span> &lt;span class="nx">script&lt;/span> &lt;span class="nx">skips&lt;/span> &lt;span class="nx">putting&lt;/span> &lt;span class="nx">that&lt;/span> &lt;span class="nx">host&lt;/span> &lt;span class="nx">in&lt;/span> &lt;span class="nx">maintenance&lt;/span> &lt;span class="nx">mode&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">and&lt;/span> &lt;span class="nx">also&lt;/span> &lt;span class="nx">skips&lt;/span> &lt;span class="nx">the&lt;/span> &lt;span class="nx">restart&lt;/span> &lt;span class="nx">of&lt;/span> &lt;span class="nx">that&lt;/span> &lt;span class="nx">host&lt;/span>&lt;span class="p">.&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>這邊選擇no，在沒有GPU的node上面不用安裝&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="mi">2021&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="mi">05&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="mi">27&lt;/span> &lt;span class="mi">06&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">51&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">52&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="mi">082&lt;/span>&lt;span class="n">Z&lt;/span> &lt;span class="n">INFO&lt;/span> &lt;span class="n">install_host_package&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">70&lt;/span> &lt;span class="n">Waiting&lt;/span> &lt;span class="k">for&lt;/span> &lt;span class="n">download&lt;/span>&lt;span class="o">...&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">2021&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="mi">05&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="mi">27&lt;/span> &lt;span class="mi">06&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">51&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">55&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="mi">269&lt;/span>&lt;span class="n">Z&lt;/span> &lt;span class="n">INFO&lt;/span> &lt;span class="n">install_host_package&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">192&lt;/span> &lt;span class="n">No&lt;/span> &lt;span class="n">supported&lt;/span> &lt;span class="n">GPU&lt;/span> &lt;span class="n">hardware&lt;/span> &lt;span class="n">found&lt;/span> &lt;span class="k">for&lt;/span> &lt;span class="n">host&lt;/span> &lt;span class="mf">1.1&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="mf">1.1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Continue&lt;/span> &lt;span class="n">installing&lt;/span> &lt;span class="n">on&lt;/span> &lt;span class="n">this&lt;/span> &lt;span class="n">node&lt;/span> &lt;span class="n">anyway&lt;/span>&lt;span class="err">?&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Install&lt;/span> &lt;span class="n">now&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">yes&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">no&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">no&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>確認安裝完畢&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">nutanix@cvm$ hostssh &amp;#34;rpm -qa | grep -i nvidia&amp;#34;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">nutanix@cvm$ ncc health_checks hypervisor_checks gpu_driver_installed_check
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">nutanix@cvm$ hostssh nvidia-smi
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;/ol>
+&lt;h3 id="指派vgpu-profile給guest-vm">指派vGPU Profile給Guest VM
+&lt;/h3>&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230616180448664.png"
+loading="lazy"
+alt="image-20230616180448664"
+>&lt;/p>
+&lt;h3 id="guest-vm-安裝driver">Guest VM 安裝Driver
+&lt;/h3>&lt;p>參考 grid-vgpu-user-guide.pdf&lt;/p>
+&lt;p>安裝檔案&lt;/p>
+&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230617151001641.png"
+loading="lazy"
+alt="image-20230617151001641"
+>&lt;/p>
+&lt;h4 id="windows">Windows
+&lt;/h4>&lt;p>安裝Driver，裝完會重開機&lt;/p>
+&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230617150418550.png"
+loading="lazy"
+alt="image-20230617150418550"
+>&lt;/p>
+&lt;p>指定License Server路徑&lt;/p>
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230616181414038.png" alt="image-20230616181414038" style="zoom:50%;" />
+&lt;h4 id="linux">Linux
+&lt;/h4>&lt;p>A-Series的顯卡要裝15.1以上的版本&lt;/p>
+&lt;ol>
+&lt;li>
+&lt;p>ubuntu 安裝方法,裝完重開機&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">＄apt-get install ./nvidia-linux-grid-525_525.105.17_amd64.deb
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>裝完後設定/etc/nvidia/gridd.conf&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">$vi /etc/nvidia/gridd.conf
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># 主要有三項要修改
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">ServerAddress=
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">ServerPort= #新版預設是443
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">FeatureType= #如下方描述
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Description: Set Feature to be enabled
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># Data type: integer
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># Possible values:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># 0 =&amp;gt; for unlicensed state
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># 1 =&amp;gt; for NVIDIA vGPU (Auto Select)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># 2 =&amp;gt; for NVIDIA RTX Virtual Workstation
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># 4 =&amp;gt; for NVIDIA Virtual Compute Server
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>把Client_Configuration_Token放到 /etc/nvidia/ClientConfigToken/
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230718103324873.png"
+loading="lazy"
+alt="image-20230718103324873"
+>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>重啟nvidia-gridd 服務,確認有抓到License&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">$ service nvidia-gridd restart
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">$ service nvidia-gridd status
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;/ol>
+&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230617150712476.png"
+loading="lazy"
+alt="image-20230617150712476"
+>&lt;/p>
+&lt;h2 id="troubleshoot">Troubleshoot
+&lt;/h2>&lt;ol>
+&lt;li>
+&lt;p>產Log report給Nvidia Support (&lt;a class="link" href="mailto:enterprisesupport@nvidia.com" >enterprisesupport@nvidia.com&lt;/a>)&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">SSH to your AHV Host
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Run: nvidia-bug-report.sh
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">This will generate the file named: nvidia-bug-report.log.gz
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">It will be placed in folder from which you ran the command
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Here is the example:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">https://docs.nvidia.com/grid/11.0/grid-vgpu-user-guide/index.html#capture-config-data-for-bug-report
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>安裝時有遇到無法取得License：&lt;/p>
+&lt;p>建議先檢查Client跟License Server的時區、時間是否正確。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>License Server設定網卡IP時會出現錯誤訊息：&lt;/p>
+&lt;p>建議可用IPAM先配發DHCP，等服務起來再進去Web更改。&lt;/p>
+&lt;/li>
+&lt;/ol></description></item><item><title>Hello World</title><link>https://wangken0129.github.io/p/hello-world/</link><pubDate>Tue, 19 Sep 2023 05:10:00 +0800</pubDate><guid>https://wangken0129.github.io/p/hello-world/</guid><description>&lt;h1 id="hello-world">Hello World
+&lt;/h1>&lt;h2 id="description">Description
+&lt;/h2>&lt;p>This is a blog for my labs and knowledge bases.&lt;/p>
+&lt;p>Happy engineering.&lt;/p>
+&lt;p>這是Ken的部落格，用來放我的Lab跟知識庫。&lt;/p>
+&lt;p>當個快樂的工程師。&lt;/p>
+&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/0*ngAthWxOvKZHvsw9.jpeg"
+loading="lazy"
+alt="The Dangers of Hacking and What a Hacker Can Do to Your Computer? | by Sravan Cynixit | Quick Code | Medium"
+>&lt;/p>
+&lt;h2 id="this-is-a-test-shell-script">This is a test shell script
+&lt;/h2>&lt;p>Generate certificate script&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#!/bin/bash
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>&lt;span class="c1"># Create certificate given a specific url name&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">if&lt;/span> &lt;span class="o">[&lt;/span> &lt;span class="nv">$#&lt;/span> -ne &lt;span class="m">1&lt;/span> &lt;span class="o">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">then&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;No arguments supplied or too many arguments&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;Usage: &lt;/span>&lt;span class="nv">$0&lt;/span>&lt;span class="s2"> domain_name&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">exit&lt;/span> &lt;span class="m">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">fi&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">MYNAME&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="nv">$1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;Generating a private key...for &lt;/span>&lt;span class="nv">$MYNAME&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">openssl genrsa -out &lt;span class="nv">$MYNAME&lt;/span>.key &lt;span class="m">2048&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;Generating a CSR...for &lt;/span>&lt;span class="nv">$MYNAME&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">openssl req -new -key &lt;span class="nv">$MYNAME&lt;/span>.key &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span>-out &lt;span class="nv">$MYNAME&lt;/span>.csr &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span>-subj &lt;span class="s2">&amp;#34;/C=US/ST=NC/L=Raleigh/O=RedHat/OU=RHT/CN=&lt;/span>&lt;span class="nv">$MYNAME&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;Generating a certificate...for &lt;/span>&lt;span class="nv">$MYNAME&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">openssl x509 -req -days &lt;span class="m">366&lt;/span> -in &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span>&lt;span class="nv">$MYNAME&lt;/span>.csr -signkey &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span>&lt;span class="nv">$MYNAME&lt;/span>.key &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span>-out &lt;span class="nv">$MYNAME&lt;/span>.crt
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div></description></item></channel></rss>

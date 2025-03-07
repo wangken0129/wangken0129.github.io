@@ -1,0 +1,1231 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Vmware on Ken's blog</title><link>https://wangken0129.github.io/tags/vmware/</link><description>Recent content in Vmware on Ken's blog</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Sat, 23 Sep 2023 08:19:11 +0800</lastBuildDate><atom:link href="https://wangken0129.github.io/tags/vmware/index.xml" rel="self" type="application/rss+xml"/><item><title>OCP-4.11.9_on_vSphere(UPI)</title><link>https://wangken0129.github.io/p/ocp-4.11.9_on_vsphereupi/</link><pubDate>Sat, 23 Sep 2023 08:19:11 +0800</pubDate><guid>https://wangken0129.github.io/p/ocp-4.11.9_on_vsphereupi/</guid><description>&lt;h1 id="install-openshift-4119-on-vsphereupi">Install Openshift 4.11.9 on vSphere(UPI)
+&lt;/h1>&lt;h3 id="說明">說明
+&lt;/h3>&lt;p>&lt;a class="link" href="https://docs.openshift.com/container-platform/4.11/installing/installing_vsphere/installing-vsphere.html" target="_blank" rel="noopener"
+>https://docs.openshift.com/container-platform/4.11/installing/installing_vsphere/installing-vsphere.html&lt;/a>
+&lt;a class="link" href="https://cloud.redhat.com/blog/deploying-openshift-4.4-to-vmware-vsphere-7?hsLang=en-us" target="_blank" rel="noopener"
+>https://cloud.redhat.com/blog/deploying-openshift-4.4-to-vmware-vsphere-7?hsLang=en-us&lt;/a>&lt;/p>
+&lt;ol>
+&lt;li>用Mac 當作Client&lt;/li>
+&lt;li>需要事先安裝好Bastion&lt;/li>
+&lt;li>Bastion安裝設定Named、HAProxy、Web Server (這裡用Nginx)&lt;/li>
+&lt;li>用rhcos-4.11.9.ova 來ESXi 部署ovf 範本&lt;/li>
+&lt;/ol>
+&lt;h3 id="下載oc-client">下載OC Client
+&lt;/h3>&lt;p>&lt;a class="link" href="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/4.11.9/openshift-client-mac-4.11.9.tar.gz" target="_blank" rel="noopener"
+>https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/4.11.9/openshift-client-mac-4.11.9.tar.gz&lt;/a>&lt;/p>
+&lt;h3 id="下載ocp-installer">下載OCP Installer
+&lt;/h3>&lt;p>&lt;a class="link" href="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/4.11.9/openshift-install-mac-4.11.9.tar.gz" target="_blank" rel="noopener"
+>https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/4.11.9/openshift-install-mac-4.11.9.tar.gz&lt;/a>&lt;/p>
+&lt;h3 id="下載coreos-4119ova">下載CoreOS-4.11.9.ova
+&lt;/h3>&lt;p>&lt;a class="link" href="https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.11/4.11.9/rhcos-4.11.9-x86_64-vmware.x86_64.ova" target="_blank" rel="noopener"
+>https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.11/4.11.9/rhcos-4.11.9-x86_64-vmware.x86_64.ova&lt;/a>&lt;/p>
+&lt;h3 id="下載pull-secret">下載Pull-Secret
+&lt;/h3>&lt;p>&lt;a class="link" href="https://console.redhat.com/openshift/downloads#tool-pull-secret" target="_blank" rel="noopener"
+>https://console.redhat.com/openshift/downloads#tool-pull-secret&lt;/a>&lt;/p>
+&lt;h3 id="named">Named
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt"> 10
+&lt;/span>&lt;span class="lnt"> 11
+&lt;/span>&lt;span class="lnt"> 12
+&lt;/span>&lt;span class="lnt"> 13
+&lt;/span>&lt;span class="lnt"> 14
+&lt;/span>&lt;span class="lnt"> 15
+&lt;/span>&lt;span class="lnt"> 16
+&lt;/span>&lt;span class="lnt"> 17
+&lt;/span>&lt;span class="lnt"> 18
+&lt;/span>&lt;span class="lnt"> 19
+&lt;/span>&lt;span class="lnt"> 20
+&lt;/span>&lt;span class="lnt"> 21
+&lt;/span>&lt;span class="lnt"> 22
+&lt;/span>&lt;span class="lnt"> 23
+&lt;/span>&lt;span class="lnt"> 24
+&lt;/span>&lt;span class="lnt"> 25
+&lt;/span>&lt;span class="lnt"> 26
+&lt;/span>&lt;span class="lnt"> 27
+&lt;/span>&lt;span class="lnt"> 28
+&lt;/span>&lt;span class="lnt"> 29
+&lt;/span>&lt;span class="lnt"> 30
+&lt;/span>&lt;span class="lnt"> 31
+&lt;/span>&lt;span class="lnt"> 32
+&lt;/span>&lt;span class="lnt"> 33
+&lt;/span>&lt;span class="lnt"> 34
+&lt;/span>&lt;span class="lnt"> 35
+&lt;/span>&lt;span class="lnt"> 36
+&lt;/span>&lt;span class="lnt"> 37
+&lt;/span>&lt;span class="lnt"> 38
+&lt;/span>&lt;span class="lnt"> 39
+&lt;/span>&lt;span class="lnt"> 40
+&lt;/span>&lt;span class="lnt"> 41
+&lt;/span>&lt;span class="lnt"> 42
+&lt;/span>&lt;span class="lnt"> 43
+&lt;/span>&lt;span class="lnt"> 44
+&lt;/span>&lt;span class="lnt"> 45
+&lt;/span>&lt;span class="lnt"> 46
+&lt;/span>&lt;span class="lnt"> 47
+&lt;/span>&lt;span class="lnt"> 48
+&lt;/span>&lt;span class="lnt"> 49
+&lt;/span>&lt;span class="lnt"> 50
+&lt;/span>&lt;span class="lnt"> 51
+&lt;/span>&lt;span class="lnt"> 52
+&lt;/span>&lt;span class="lnt"> 53
+&lt;/span>&lt;span class="lnt"> 54
+&lt;/span>&lt;span class="lnt"> 55
+&lt;/span>&lt;span class="lnt"> 56
+&lt;/span>&lt;span class="lnt"> 57
+&lt;/span>&lt;span class="lnt"> 58
+&lt;/span>&lt;span class="lnt"> 59
+&lt;/span>&lt;span class="lnt"> 60
+&lt;/span>&lt;span class="lnt"> 61
+&lt;/span>&lt;span class="lnt"> 62
+&lt;/span>&lt;span class="lnt"> 63
+&lt;/span>&lt;span class="lnt"> 64
+&lt;/span>&lt;span class="lnt"> 65
+&lt;/span>&lt;span class="lnt"> 66
+&lt;/span>&lt;span class="lnt"> 67
+&lt;/span>&lt;span class="lnt"> 68
+&lt;/span>&lt;span class="lnt"> 69
+&lt;/span>&lt;span class="lnt"> 70
+&lt;/span>&lt;span class="lnt"> 71
+&lt;/span>&lt;span class="lnt"> 72
+&lt;/span>&lt;span class="lnt"> 73
+&lt;/span>&lt;span class="lnt"> 74
+&lt;/span>&lt;span class="lnt"> 75
+&lt;/span>&lt;span class="lnt"> 76
+&lt;/span>&lt;span class="lnt"> 77
+&lt;/span>&lt;span class="lnt"> 78
+&lt;/span>&lt;span class="lnt"> 79
+&lt;/span>&lt;span class="lnt"> 80
+&lt;/span>&lt;span class="lnt"> 81
+&lt;/span>&lt;span class="lnt"> 82
+&lt;/span>&lt;span class="lnt"> 83
+&lt;/span>&lt;span class="lnt"> 84
+&lt;/span>&lt;span class="lnt"> 85
+&lt;/span>&lt;span class="lnt"> 86
+&lt;/span>&lt;span class="lnt"> 87
+&lt;/span>&lt;span class="lnt"> 88
+&lt;/span>&lt;span class="lnt"> 89
+&lt;/span>&lt;span class="lnt"> 90
+&lt;/span>&lt;span class="lnt"> 91
+&lt;/span>&lt;span class="lnt"> 92
+&lt;/span>&lt;span class="lnt"> 93
+&lt;/span>&lt;span class="lnt"> 94
+&lt;/span>&lt;span class="lnt"> 95
+&lt;/span>&lt;span class="lnt"> 96
+&lt;/span>&lt;span class="lnt"> 97
+&lt;/span>&lt;span class="lnt"> 98
+&lt;/span>&lt;span class="lnt"> 99
+&lt;/span>&lt;span class="lnt">100
+&lt;/span>&lt;span class="lnt">101
+&lt;/span>&lt;span class="lnt">102
+&lt;/span>&lt;span class="lnt">103
+&lt;/span>&lt;span class="lnt">104
+&lt;/span>&lt;span class="lnt">105
+&lt;/span>&lt;span class="lnt">106
+&lt;/span>&lt;span class="lnt">107
+&lt;/span>&lt;span class="lnt">108
+&lt;/span>&lt;span class="lnt">109
+&lt;/span>&lt;span class="lnt">110
+&lt;/span>&lt;span class="lnt">111
+&lt;/span>&lt;span class="lnt">112
+&lt;/span>&lt;span class="lnt">113
+&lt;/span>&lt;span class="lnt">114
+&lt;/span>&lt;span class="lnt">115
+&lt;/span>&lt;span class="lnt">116
+&lt;/span>&lt;span class="lnt">117
+&lt;/span>&lt;span class="lnt">118
+&lt;/span>&lt;span class="lnt">119
+&lt;/span>&lt;span class="lnt">120
+&lt;/span>&lt;span class="lnt">121
+&lt;/span>&lt;span class="lnt">122
+&lt;/span>&lt;span class="lnt">123
+&lt;/span>&lt;span class="lnt">124
+&lt;/span>&lt;span class="lnt">125
+&lt;/span>&lt;span class="lnt">126
+&lt;/span>&lt;span class="lnt">127
+&lt;/span>&lt;span class="lnt">128
+&lt;/span>&lt;span class="lnt">129
+&lt;/span>&lt;span class="lnt">130
+&lt;/span>&lt;span class="lnt">131
+&lt;/span>&lt;span class="lnt">132
+&lt;/span>&lt;span class="lnt">133
+&lt;/span>&lt;span class="lnt">134
+&lt;/span>&lt;span class="lnt">135
+&lt;/span>&lt;span class="lnt">136
+&lt;/span>&lt;span class="lnt">137
+&lt;/span>&lt;span class="lnt">138
+&lt;/span>&lt;span class="lnt">139
+&lt;/span>&lt;span class="lnt">140
+&lt;/span>&lt;span class="lnt">141
+&lt;/span>&lt;span class="lnt">142
+&lt;/span>&lt;span class="lnt">143
+&lt;/span>&lt;span class="lnt">144
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-dns" data-lang="dns">&lt;span class="line">&lt;span class="cl">&lt;span class="nc">Named&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">設定檔&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="err">[root@bastion&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">~]#&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">cat&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">/etc/&lt;/span>&lt;span class="nc">named.conf&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="err">//&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="err">//&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nc">named.conf&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="err">//&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="err">//&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">Provided&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">by&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">Red&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">Hat&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">bind&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">package&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">to&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">configure&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">the&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">ISC&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">BIND&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">named&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="sc">8&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">DNS&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="err">//&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">server&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">as&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">a&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">caching&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">only&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">nameserver&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="err">as&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">a&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">localhost&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">DNS&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">resolver&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">only&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="err">.&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="err">//&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="err">//&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">See&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">/usr/share/doc/bind*/sample/&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">for&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">example&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">named&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">configuration&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="py">files.&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="err">//&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nc">options&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">{&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="err">listen-on&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">port&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="sc">53&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">{&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">any&lt;/span>&lt;span class="c">; };&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="err">#&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">listen-on-v6&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">port&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="sc">53&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">{&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">::&lt;/span>&lt;span class="sc">1&lt;/span>&lt;span class="c">; };&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="err">directory&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">&amp;#34;/var/named&amp;#34;&lt;/span>&lt;span class="c">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="err">dump-file&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">&amp;#34;/var/named/data/&lt;/span>&lt;span class="nc">cache_dump.db&lt;/span>&lt;span class="err">&amp;#34;&lt;/span>&lt;span class="c">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="err">statistics-file&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">&amp;#34;/var/named/data/&lt;/span>&lt;span class="nc">named_stats.txt&lt;/span>&lt;span class="err">&amp;#34;&lt;/span>&lt;span class="c">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="err">memstatistics-file&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">&amp;#34;/var/named/data/&lt;/span>&lt;span class="nc">named_mem_stats.txt&lt;/span>&lt;span class="err">&amp;#34;&lt;/span>&lt;span class="c">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="err">secroots-file&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">&amp;#34;/var/named/data/&lt;/span>&lt;span class="nc">named.secroots&lt;/span>&lt;span class="err">&amp;#34;&lt;/span>&lt;span class="c">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="err">recursing-file&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">&amp;#34;/var/named/data/&lt;/span>&lt;span class="nc">named.recursing&lt;/span>&lt;span class="err">&amp;#34;&lt;/span>&lt;span class="c">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="err">allow-query&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">{&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">any&lt;/span>&lt;span class="c">; };&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="err">##&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">設定轉寄站&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="err">forwarders&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">{&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="mi">192.168.2.12&lt;/span>&lt;span class="c">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="mi">192.168.2.11&lt;/span>&lt;span class="c">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="err">}&lt;/span>&lt;span class="c">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="err">/*&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="err">-&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">If&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">you&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">are&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">building&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">an&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">AUTHORITATIVE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">DNS&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">server,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">do&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">NOT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">enable&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="py">recursion.&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="err">-&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">If&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">you&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">are&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">building&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">a&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">RECURSIVE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="err">caching&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">DNS&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">server,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">you&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">need&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">to&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">enable&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="py">recursion. &lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="err">-&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">If&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">your&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">recursive&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">DNS&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">server&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">has&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">a&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">public&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">IP&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">address,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">you&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">MUST&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">enable&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">access&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="err">control&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">to&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">limit&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">queries&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">to&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">your&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">legitimate&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="py">users. &lt;/span>&lt;span class="err">Failing&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">to&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">do&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">so&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">will&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="err">cause&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">your&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">server&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">to&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">become&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">part&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">of&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">large&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">scale&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">DNS&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">amplification&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="py">attacks. &lt;/span>&lt;span class="err">Implementing&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">BCP38&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">within&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">your&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">network&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">would&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">greatly&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="err">reduce&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">such&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">attack&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">surface&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="err">*/&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="err">recursion&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">yes&lt;/span>&lt;span class="c">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="err">dnssec-enable&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">yes&lt;/span>&lt;span class="c">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="err">dnssec-validation&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">yes&lt;/span>&lt;span class="c">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="err">managed-keys-directory&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">&amp;#34;/var/named/dynamic&amp;#34;&lt;/span>&lt;span class="c">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="err">pid-file&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">&amp;#34;/run/named/&lt;/span>&lt;span class="nc">named.pid&lt;/span>&lt;span class="err">&amp;#34;&lt;/span>&lt;span class="c">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="err">session-keyfile&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">&amp;#34;/run/named/&lt;/span>&lt;span class="nc">session.key&lt;/span>&lt;span class="err">&amp;#34;&lt;/span>&lt;span class="c">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="err">/*&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">https://&lt;/span>&lt;span class="nc">fedoraproject.org&lt;/span>&lt;span class="err">/wiki/Changes/CryptoPolicy&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">*/&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="err">include&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">&amp;#34;/etc/crypto-policies/back-ends/&lt;/span>&lt;span class="nc">bind.config&lt;/span>&lt;span class="err">&amp;#34;&lt;/span>&lt;span class="c">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="err">}&lt;/span>&lt;span class="c">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nc">logging&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">{&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="err">channel&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">default_debug&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">{&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="err">file&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">&amp;#34;data/&lt;/span>&lt;span class="nc">named.run&lt;/span>&lt;span class="err">&amp;#34;&lt;/span>&lt;span class="c">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="err">severity&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">dynamic&lt;/span>&lt;span class="c">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="err">}&lt;/span>&lt;span class="c">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="err">}&lt;/span>&lt;span class="c">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nc">zone&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">&amp;#34;.&amp;#34;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">IN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">{&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="err">type&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">hint&lt;/span>&lt;span class="c">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="err">file&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">&amp;#34;&lt;/span>&lt;span class="nc">named.ca&lt;/span>&lt;span class="err">&amp;#34;&lt;/span>&lt;span class="c">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="err">}&lt;/span>&lt;span class="c">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nc">zone&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">&amp;#34;&lt;/span>&lt;span class="nc">ocp.infotech.com.tw&lt;/span>&lt;span class="err">&amp;#34;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">IN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">{&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nc">type&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">master&lt;/span>&lt;span class="c">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nc">file&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">&amp;#34;/var/named/&lt;/span>&lt;span class="nc">forward.bastion.ocp&lt;/span>&lt;span class="err">&amp;#34;&lt;/span>&lt;span class="c">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nc">allow-update&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">{&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">none&lt;/span>&lt;span class="c">; };&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nc">allow-query&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">{&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">any&lt;/span>&lt;span class="c">; };&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nc">allow-transfer&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">{&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">none&lt;/span>&lt;span class="c">; };&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="err">}&lt;/span>&lt;span class="c">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nc">zone&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">&amp;#34;&lt;/span>&lt;span class="sc">3&lt;/span>&lt;span class="nc">.168.192.in-addr.arpa&lt;/span>&lt;span class="err">&amp;#34;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">IN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">{&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nc">type&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">master&lt;/span>&lt;span class="c">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nc">file&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">&amp;#34;/var/named/&lt;/span>&lt;span class="nc">reverse.bastion.ocp&lt;/span>&lt;span class="err">&amp;#34;&lt;/span>&lt;span class="c">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nc">allow-update&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">{&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">none&lt;/span>&lt;span class="c">; };&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nc">allow-query&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">{&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">any&lt;/span>&lt;span class="c">; };&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nc">allow-transfer&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">{&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">none&lt;/span>&lt;span class="c">; };&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="err">}&lt;/span>&lt;span class="c">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nc">include&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">&amp;#34;/etc/&lt;/span>&lt;span class="nc">named.rfc1912.zones&lt;/span>&lt;span class="err">&amp;#34;&lt;/span>&lt;span class="c">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nc">include&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">&amp;#34;/etc/&lt;/span>&lt;span class="nc">named.root.key&lt;/span>&lt;span class="err">&amp;#34;&lt;/span>&lt;span class="c">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nc">------&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">正向解析&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="err">[root@bastion&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">~]#&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">cat&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">/var/named/&lt;/span>&lt;span class="nc">forward.bastion.ocp&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="na">$TTL&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="sc">1&lt;/span>&lt;span class="err">W&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nc">@&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">IN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">SOA&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="py">ns1.infotech.com.tw. &lt;/span>&lt;span class="err">root&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="sc">2019070700&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="c">; serial&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="sc">3&lt;/span>&lt;span class="err">H&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="c">; refresh (3 hours)&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="sc">30&lt;/span>&lt;span class="err">M&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="c">; retry (30 minutes)&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="sc">2&lt;/span>&lt;span class="err">W&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="c">; expiry (2 weeks)&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="sc">1&lt;/span>&lt;span class="err">W&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="c">; minimum (1 week)&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">IN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">NS&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="py">ns1.infotech.com.tw.&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">IN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">MX&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="sc">10&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="py">smtp.infotech.com.tw.&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="c">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="c">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="py">ns1.infotech.com.tw. &lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">IN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">A&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="mi">192.168.3.37&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="py">smtp.infotech.com.tw. &lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">IN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">A&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="mi">192.168.3.37&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="c">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="py">helper.infotech.com.tw. &lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">IN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">A&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="mi">192.168.3.37&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="py">helper.ocp.infotech.com.tw. &lt;/span>&lt;span class="k">IN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">A&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="mi">192.168.3.37&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="c">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="py">api.ocp.infotech.com.tw. &lt;/span>&lt;span class="k">IN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">A&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="mi">192.168.3.37&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="py">api-int.ocp.infotech.com.tw. &lt;/span>&lt;span class="k">IN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">A&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="mi">192.168.3.37&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="c">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="err">*&lt;/span>&lt;span class="nc">.apps.ocp.infotech.com.tw.&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">IN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">A&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="mi">192.168.3.37&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="c">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="py">bootstrap.ocp.infotech.com.tw. &lt;/span>&lt;span class="k">IN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">A&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="mi">192.168.3.36&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="c">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="py">master1.ocp.infotech.com.tw. &lt;/span>&lt;span class="k">IN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">A&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="mi">192.168.3.31&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="py">master2.ocp.infotech.com.tw. &lt;/span>&lt;span class="k">IN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">A&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="mi">192.168.3.32&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="py">master3.ocp.infotech.com.tw. &lt;/span>&lt;span class="k">IN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">A&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="mi">192.168.3.33&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="c">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="py">worker1.ocp.infotech.com.tw. &lt;/span>&lt;span class="k">IN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">A&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="mi">192.168.3.34&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="py">worker2.ocp.infotech.com.tw. &lt;/span>&lt;span class="k">IN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">A&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="mi">192.168.3.35&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="c">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="c">;EOF&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nc">-------&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">反向解析&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="err">[root@bastion&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">~]#&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">cat&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="err">/var/named/&lt;/span>&lt;span class="nc">reverse.bastion.ocp&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="na">$TTL&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="sc">1&lt;/span>&lt;span class="err">W&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nc">@&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">IN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">SOA&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="py">ns1.infotech.com.tw. &lt;/span>&lt;span class="err">root&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="sc">2019070700&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="c">; serial&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="sc">3&lt;/span>&lt;span class="err">H&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="c">; refresh (3 hours)&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="sc">30&lt;/span>&lt;span class="err">M&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="c">; retry (30 minutes)&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="sc">2&lt;/span>&lt;span class="err">W&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="c">; expiry (2 weeks)&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="sc">1&lt;/span>&lt;span class="err">W&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="c">; minimum (1 week)&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">IN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">NS&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="py">ns1.infotech.com.tw.&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="c">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="mi">37.3.168.192&lt;/span>&lt;span class="py">.in-addr.arpa. &lt;/span>&lt;span class="k">IN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">PTR&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="py">api.ocp.infotech.com.tw. &lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="mi">37.3.168.192&lt;/span>&lt;span class="py">.in-addr.arpa. &lt;/span>&lt;span class="k">IN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">PTR&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="py">api-int.ocp.infotech.com.tw. &lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="c">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="mi">36.3.168.192&lt;/span>&lt;span class="py">.in-addr.arpa. &lt;/span>&lt;span class="k">IN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">PTR&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="py">bootstrap.ocp.infotech.com.tw. &lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="c">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="mi">31.3.168.192&lt;/span>&lt;span class="py">.in-addr.arpa. &lt;/span>&lt;span class="k">IN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">PTR&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="py">master1.ocp.infotech.com.tw. &lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="mi">32.3.168.192&lt;/span>&lt;span class="py">.in-addr.arpa. &lt;/span>&lt;span class="k">IN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">PTR&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="py">master2.ocp.infotech.com.tw. &lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="mi">33.3.168.192&lt;/span>&lt;span class="py">.in-addr.arpa. &lt;/span>&lt;span class="k">IN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">PTR&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="py">master3.ocp.infotech.com.tw. &lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="c">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="mi">34.3.168.192&lt;/span>&lt;span class="py">.in-addr.arpa. &lt;/span>&lt;span class="k">IN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">PTR&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="py">worker1.ocp.infotech.com.tw. &lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="mi">35.3.168.192&lt;/span>&lt;span class="py">.in-addr.arpa. &lt;/span>&lt;span class="k">IN&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">PTR&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="py">worker2.ocp.infotech.com.tw. &lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="c">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="c">;EOF&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="haproxy">HAProxy
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;span class="lnt">46
+&lt;/span>&lt;span class="lnt">47
+&lt;/span>&lt;span class="lnt">48
+&lt;/span>&lt;span class="lnt">49
+&lt;/span>&lt;span class="lnt">50
+&lt;/span>&lt;span class="lnt">51
+&lt;/span>&lt;span class="lnt">52
+&lt;/span>&lt;span class="lnt">53
+&lt;/span>&lt;span class="lnt">54
+&lt;/span>&lt;span class="lnt">55
+&lt;/span>&lt;span class="lnt">56
+&lt;/span>&lt;span class="lnt">57
+&lt;/span>&lt;span class="lnt">58
+&lt;/span>&lt;span class="lnt">59
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="p">[&lt;/span>&lt;span class="n">root&lt;/span>&lt;span class="err">@&lt;/span>&lt;span class="n">bastion&lt;/span> &lt;span class="o">~&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="c1"># cat /etc/haproxy/haproxy.cfg&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">global&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">log&lt;/span> &lt;span class="mf">127.0&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="mf">0.1&lt;/span> &lt;span class="n">local2&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">pidfile&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="k">var&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">run&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">haproxy&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">pid&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">maxconn&lt;/span> &lt;span class="mi">4000&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">daemon&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">defaults&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">mode&lt;/span> &lt;span class="n">http&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">log&lt;/span> &lt;span class="n">global&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">option&lt;/span> &lt;span class="n">dontlognull&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">option&lt;/span> &lt;span class="n">http&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">server&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">close&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">option&lt;/span> &lt;span class="n">redispatch&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">retries&lt;/span> &lt;span class="mi">3&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">timeout&lt;/span> &lt;span class="n">http&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">request&lt;/span> &lt;span class="mi">10&lt;/span>&lt;span class="n">s&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">timeout&lt;/span> &lt;span class="n">queue&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="n">m&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">timeout&lt;/span> &lt;span class="n">connect&lt;/span> &lt;span class="mi">10&lt;/span>&lt;span class="n">s&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">timeout&lt;/span> &lt;span class="n">client&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="n">m&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">timeout&lt;/span> &lt;span class="n">server&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="n">m&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">timeout&lt;/span> &lt;span class="n">http&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">keep&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">alive&lt;/span> &lt;span class="mi">10&lt;/span>&lt;span class="n">s&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">timeout&lt;/span> &lt;span class="n">check&lt;/span> &lt;span class="mi">10&lt;/span>&lt;span class="n">s&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">maxconn&lt;/span> &lt;span class="mi">3000&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">frontend&lt;/span> &lt;span class="n">stats&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">bind&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">1936&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">mode&lt;/span> &lt;span class="n">http&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">log&lt;/span> &lt;span class="n">global&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">maxconn&lt;/span> &lt;span class="mi">10&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">stats&lt;/span> &lt;span class="n">enable&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">stats&lt;/span> &lt;span class="n">hide&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">version&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">stats&lt;/span> &lt;span class="n">refresh&lt;/span> &lt;span class="mi">30&lt;/span>&lt;span class="n">s&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">stats&lt;/span> &lt;span class="n">show&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">node&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">stats&lt;/span> &lt;span class="n">show&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">desc&lt;/span> &lt;span class="n">Stats&lt;/span> &lt;span class="k">for&lt;/span> &lt;span class="n">ocp&lt;/span> &lt;span class="n">cluster&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">stats&lt;/span> &lt;span class="n">auth&lt;/span> &lt;span class="n">admin&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="n">ocp&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">stats&lt;/span> &lt;span class="n">uri&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="n">stats&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">listen&lt;/span> &lt;span class="n">api&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">server&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="mi">6443&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">bind&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">6443&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">mode&lt;/span> &lt;span class="n">tcp&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">server&lt;/span> &lt;span class="n">bootstrap&lt;/span> &lt;span class="n">bootstrap&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">ocp&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">infotech&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">com&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">tw&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">6443&lt;/span> &lt;span class="n">check&lt;/span> &lt;span class="n">inter&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="n">s&lt;/span> &lt;span class="n">backup&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">server&lt;/span> &lt;span class="n">master1&lt;/span> &lt;span class="n">master1&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">ocp&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">infotech&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">com&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">tw&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">6443&lt;/span> &lt;span class="n">check&lt;/span> &lt;span class="n">inter&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="n">s&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">server&lt;/span> &lt;span class="n">master2&lt;/span> &lt;span class="n">master2&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">ocp&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">infotech&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">com&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">tw&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">6443&lt;/span> &lt;span class="n">check&lt;/span> &lt;span class="n">inter&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="n">s&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">server&lt;/span> &lt;span class="n">master3&lt;/span> &lt;span class="n">master3&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">ocp&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">infotech&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">com&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">tw&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">6443&lt;/span> &lt;span class="n">check&lt;/span> &lt;span class="n">inter&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="n">s&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">listen&lt;/span> &lt;span class="n">machine&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">config&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">server&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="mi">22623&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">bind&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">22623&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">mode&lt;/span> &lt;span class="n">tcp&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">server&lt;/span> &lt;span class="n">bootstrap&lt;/span> &lt;span class="n">bootstrap&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">ocp&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">infotech&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">com&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">tw&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">22623&lt;/span> &lt;span class="n">check&lt;/span> &lt;span class="n">inter&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="n">s&lt;/span> &lt;span class="n">backup&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">server&lt;/span> &lt;span class="n">master1&lt;/span> &lt;span class="n">master1&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">ocp&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">infotech&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">com&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">tw&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">22623&lt;/span> &lt;span class="n">check&lt;/span> &lt;span class="n">inter&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="n">s&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">server&lt;/span> &lt;span class="n">master2&lt;/span> &lt;span class="n">master2&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">ocp&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">infotech&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">com&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">tw&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">22623&lt;/span> &lt;span class="n">check&lt;/span> &lt;span class="n">inter&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="n">s&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">server&lt;/span> &lt;span class="n">master3&lt;/span> &lt;span class="n">master3&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">ocp&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">infotech&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">com&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">tw&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">22623&lt;/span> &lt;span class="n">check&lt;/span> &lt;span class="n">inter&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="n">s&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">listen&lt;/span> &lt;span class="n">ingress&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">router&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="mi">443&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">bind&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">443&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">mode&lt;/span> &lt;span class="n">tcp&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">balance&lt;/span> &lt;span class="n">source&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">server&lt;/span> &lt;span class="n">worker1&lt;/span> &lt;span class="n">worker1&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">ocp&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">infotech&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">com&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">tw&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">443&lt;/span> &lt;span class="n">check&lt;/span> &lt;span class="n">inter&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="n">s&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">server&lt;/span> &lt;span class="n">worker2&lt;/span> &lt;span class="n">worker2&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">ocp&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">infotech&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">com&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">tw&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">443&lt;/span> &lt;span class="n">check&lt;/span> &lt;span class="n">inter&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="n">s&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">listen&lt;/span> &lt;span class="n">ingress&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">router&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="mi">80&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">bind&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">80&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">mode&lt;/span> &lt;span class="n">tcp&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">balance&lt;/span> &lt;span class="n">source&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">server&lt;/span> &lt;span class="n">worker1&lt;/span> &lt;span class="n">worker1&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">ocp&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">infotech&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">com&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">tw&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">80&lt;/span> &lt;span class="n">check&lt;/span> &lt;span class="n">inter&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="n">s&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">server&lt;/span> &lt;span class="n">worker2&lt;/span> &lt;span class="n">worker2&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">ocp&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">infotech&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">com&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">tw&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">80&lt;/span> &lt;span class="n">check&lt;/span> &lt;span class="n">inter&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="n">s&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="nginx">Nginx
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;span class="lnt">46
+&lt;/span>&lt;span class="lnt">47
+&lt;/span>&lt;span class="lnt">48
+&lt;/span>&lt;span class="lnt">49
+&lt;/span>&lt;span class="lnt">50
+&lt;/span>&lt;span class="lnt">51
+&lt;/span>&lt;span class="lnt">52
+&lt;/span>&lt;span class="lnt">53
+&lt;/span>&lt;span class="lnt">54
+&lt;/span>&lt;span class="lnt">55
+&lt;/span>&lt;span class="lnt">56
+&lt;/span>&lt;span class="lnt">57
+&lt;/span>&lt;span class="lnt">58
+&lt;/span>&lt;span class="lnt">59
+&lt;/span>&lt;span class="lnt">60
+&lt;/span>&lt;span class="lnt">61
+&lt;/span>&lt;span class="lnt">62
+&lt;/span>&lt;span class="lnt">63
+&lt;/span>&lt;span class="lnt">64
+&lt;/span>&lt;span class="lnt">65
+&lt;/span>&lt;span class="lnt">66
+&lt;/span>&lt;span class="lnt">67
+&lt;/span>&lt;span class="lnt">68
+&lt;/span>&lt;span class="lnt">69
+&lt;/span>&lt;span class="lnt">70
+&lt;/span>&lt;span class="lnt">71
+&lt;/span>&lt;span class="lnt">72
+&lt;/span>&lt;span class="lnt">73
+&lt;/span>&lt;span class="lnt">74
+&lt;/span>&lt;span class="lnt">75
+&lt;/span>&lt;span class="lnt">76
+&lt;/span>&lt;span class="lnt">77
+&lt;/span>&lt;span class="lnt">78
+&lt;/span>&lt;span class="lnt">79
+&lt;/span>&lt;span class="lnt">80
+&lt;/span>&lt;span class="lnt">81
+&lt;/span>&lt;span class="lnt">82
+&lt;/span>&lt;span class="lnt">83
+&lt;/span>&lt;span class="lnt">84
+&lt;/span>&lt;span class="lnt">85
+&lt;/span>&lt;span class="lnt">86
+&lt;/span>&lt;span class="lnt">87
+&lt;/span>&lt;span class="lnt">88
+&lt;/span>&lt;span class="lnt">89
+&lt;/span>&lt;span class="lnt">90
+&lt;/span>&lt;span class="lnt">91
+&lt;/span>&lt;span class="lnt">92
+&lt;/span>&lt;span class="lnt">93
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="err">根目錄&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="n">usr&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">share&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">nginx&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">html&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Port&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">8000&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">[&lt;/span>&lt;span class="n">root&lt;/span>&lt;span class="err">@&lt;/span>&lt;span class="n">bastion&lt;/span> &lt;span class="n">html&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="c1"># cat /etc/nginx/nginx.conf&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># For more information on configuration, see:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># * Official English Documentation: http://nginx.org/en/docs/&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># * Official Russian Documentation: http://nginx.org/ru/docs/&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">user&lt;/span> &lt;span class="n">nginx&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">worker_processes&lt;/span> &lt;span class="n">auto&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">error_log&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="k">var&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="nb">log&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">nginx&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">error&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">log&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">pid&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="n">run&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">nginx&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">pid&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Load dynamic modules. See /usr/share/doc/nginx/README.dynamic.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">include&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="n">usr&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">share&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">nginx&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">modules&lt;/span>&lt;span class="o">/*.&lt;/span>&lt;span class="n">conf&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">events&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">worker_connections&lt;/span> &lt;span class="mi">1024&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">http&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">log_format&lt;/span> &lt;span class="n">main&lt;/span> &lt;span class="s1">&amp;#39;$remote_addr - $remote_user [$time_local] &amp;#34;$request&amp;#34; &amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s1">&amp;#39;$status $body_bytes_sent &amp;#34;$http_referer&amp;#34; &amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s1">&amp;#39;&amp;#34;$http_user_agent&amp;#34; &amp;#34;$http_x_forwarded_for&amp;#34;&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">access_log&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="k">var&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="nb">log&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">nginx&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">access&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">log&lt;/span> &lt;span class="n">main&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">sendfile&lt;/span> &lt;span class="n">on&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">tcp_nopush&lt;/span> &lt;span class="n">on&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">tcp_nodelay&lt;/span> &lt;span class="n">on&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">keepalive_timeout&lt;/span> &lt;span class="mi">65&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">types_hash_max_size&lt;/span> &lt;span class="mi">2048&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">include&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="n">etc&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">nginx&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">mime&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">types&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">default_type&lt;/span> &lt;span class="n">application&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">octet&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">stream&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1"># Load modular configuration files from the /etc/nginx/conf.d directory.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1"># See http://nginx.org/en/docs/ngx_core_module.html#include&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1"># for more information.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">include&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="n">etc&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">nginx&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">conf&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">d&lt;/span>&lt;span class="o">/*.&lt;/span>&lt;span class="n">conf&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">server&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">listen&lt;/span> &lt;span class="mi">8000&lt;/span> &lt;span class="n">default_server&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">listen&lt;/span> &lt;span class="p">[::]:&lt;/span>&lt;span class="mi">8000&lt;/span> &lt;span class="n">default_server&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">server_name&lt;/span> &lt;span class="n">_&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">root&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="n">usr&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">share&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">nginx&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">html&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1"># Load configuration files for the default server block.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">include&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="n">etc&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">nginx&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">default&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">d&lt;/span>&lt;span class="o">/*.&lt;/span>&lt;span class="n">conf&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">location&lt;/span> &lt;span class="o">/&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">error_page&lt;/span> &lt;span class="mi">404&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="mf">404.&lt;/span>&lt;span class="n">html&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">location&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="mi">40&lt;/span>&lt;span class="n">x&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">html&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">error_page&lt;/span> &lt;span class="mi">500&lt;/span> &lt;span class="mi">502&lt;/span> &lt;span class="mi">503&lt;/span> &lt;span class="mi">504&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="mi">50&lt;/span>&lt;span class="n">x&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">html&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">location&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="mi">50&lt;/span>&lt;span class="n">x&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">html&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Settings for a TLS enabled server.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">#&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># server {&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># listen 443 ssl http2 default_server;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># listen [::]:443 ssl http2 default_server;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># server_name _;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># root /usr/share/nginx/html;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">#&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># ssl_certificate &amp;#34;/etc/pki/nginx/server.crt&amp;#34;;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># ssl_certificate_key &amp;#34;/etc/pki/nginx/private/server.key&amp;#34;;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># ssl_session_cache shared:SSL:1m;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># ssl_session_timeout 10m;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># ssl_ciphers PROFILE=SYSTEM;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># ssl_prefer_server_ciphers on;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">#&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># # Load configuration files for the default server block.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># include /etc/nginx/default.d/*.conf;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">#&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># location / {&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># }&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">#&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># error_page 404 /404.html;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># location = /40x.html {&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># }&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">#&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># error_page 500 502 503 504 /50x.html;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># location = /50x.html {&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># }&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># }&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="產生安裝檔案">產生安裝檔案
+&lt;/h2>&lt;h3 id="確認-cli-tool">確認 cli tool
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">$ ls -l
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">total 2232728
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">drwxr-xr-x 8 wangken staff 256 12 13 15:36 .
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">drwxr-x---+ 41 wangken staff 1312 12 13 15:35 ..
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-rw-r--r--@ 1 wangken staff 706 10 8 18:41 README.md
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-rwxr-xr-x@ 2 wangken staff 98436592 10 6 20:06 kubectl
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-rwxr-xr-x@ 2 wangken staff 98436592 10 6 20:06 oc
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-rw-r--r--@ 1 wangken staff 44116650 12 13 15:06 openshift-client-mac-4.11.9.tar.gz
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-rwxr-xr-x@ 1 wangken staff 528956912 10 8 18:41 openshift-install
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-rw-r--r--@ 1 wangken staff 363543317 12 13 15:07 openshift-install-mac-4.11.9.tar.gz
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">$ ./oc version
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Client Version: 4.11.9
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Kustomize Version: v4.5.4
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">$ ./openshift-install version
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">./openshift-install 4.11.9
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">built from commit 01a6869a6f1208fb4d112060c5971432fdd619cf
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">release image quay.io/openshift-release-dev/ocp-release@sha256:94b611f00f51c9acc44ca3f4634e46bd79d7d28b46047c7e3389d250698f0c99
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">release architecture amd64
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="產生ssh-key-bastion">產生SSH key (Bastion)
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">[root@bastion .ssh]# cat id_rsa
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-----BEGIN OPENSSH PRIVATE KEY-----
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">QyNTUxOQAAACDF/jswkiYiL+jXDMMUpwga7CGV79kXtcMnOpbzO5xOwQAAAKjY1yrT2Ncq
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">0wAAAAtzc2gtZWQyNTUxOQAAACDF/jswkiYiL+jXDMMUpwga7CGV79kXtcMnOpbzO5xOwQ
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">AAAEBIWOmAtlitDdZXhb+1vtMnSbNBRQfyANPR/eHUPuisK8X+OzCSJiIv6NcMwxSnCBrs
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">IZXv2Re1wyc6lvM7nE7BAAAAIWRldm9wQGJhc3Rpb24ub2NwLmluZm90ZWNoLmNvbS50dw
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">ECAwQ=
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-----END OPENSSH PRIVATE KEY-----
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">[root@bastion .ssh]# cat id_rsa.pub
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMX+OzCSJiIv6NcMwxSnCBrsIZXv2Re1wyc6lvM7nE7B devop@bastion.ocp.infotech.com.tw
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="建立install-configyaml">建立Install-config.yaml
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">apiVersion: v1
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">baseDomain: infotech.com.tw
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">compute:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">- hyperthreading: Enabled
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> name: worker
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> replicas: 0
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">controlPlane:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> hyperthreading: Enabled
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> name: master
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> replicas: 3
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">metadata:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> name: ocp
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">networking:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> clusterNetwork:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> - cidr: 10.128.0.0/14
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> hostPrefix: 23
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> networkType: OpenShiftSDN
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> serviceNetwork:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> - 172.30.0.0/16
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">platform:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> vsphere:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> vcenter: tpeinfovcsa7p.infotech.com.tw
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> username: cisadmin@vsphere.local
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> password: P@55w.rd
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> datacenter: TPECIS_Datacenter
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> defaultDatastore: v7000_CIS01
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> diskType: thin
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">fips: false
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">pullSecret: &amp;#39;{&amp;#34;auths&amp;#34;:{&amp;#34;cloud.openshift.com&amp;#34;:{&amp;#34;auth&amp;#34;:&amp;#34;b3BlbnNoaWZ0LXJlbGVhc2UtZGV2K29jbV9hY2Nlc3NfMzEwNjVjNmVmMTk5NDZmNWEwNmUzZmI4MTVmNzk2OTE6NEJRVk1FVk9CTDRZQVRBT0pONEhQVkIyUExFQTdKNDE3WExFU1IzVDk3NU1YUTJXWE9FSjBNTVk0MzFQQk9RUA==&amp;#34;,&amp;#34;email&amp;#34;:&amp;#34;ken.wang@infotech.com.tw&amp;#34;},&amp;#34;quay.io&amp;#34;:{&amp;#34;auth&amp;#34;:&amp;#34;b3BlbnNoaWZ0LXJlbGVhc2UtZGV2K29jbV9hY2Nlc3NfMzEwNjVjNmVmMTk5NDZmNWEwNmUzZmI4MTVmNzk2OTE6NEJRVk1FVk9CTDRZQVRBT0pONEhQVkIyUExFQTdKNDE3WExFU1IzVDk3NU1YUTJXWE9FSjBNTVk0MzFQQk9RUA==&amp;#34;,&amp;#34;email&amp;#34;:&amp;#34;ken.wang@infotech.com.tw&amp;#34;},&amp;#34;registry.connect.redhat.com&amp;#34;:{&amp;#34;auth&amp;#34;:&amp;#34;fHVoYy1wb29sLTc5MzgwY2YyLTUxNTEtNGRiNi04YjA3LTRiNzQ4NDcxNWE2NDpleUpoYkdjaU9pSlNVelV4TWlKOS5leUp6ZFdJaU9pSmxOak5rWVdWbU1tSXlaRFEwTVdKaVlUTXpObVUwTkdGbVl6WmtPVEUwWVNKOS5RMlp6Q1JaWWltVDIxM2dpYU9CRWtNWEVkYUtjbnc4WHN1bTY3VEVOdjEyRjBjQUgyNWNZMVdWTjZNUEY2R21CNjh3TmF4TnoxRHVpVnBtY0ZKM2JZTW0yNVVzZGJxeFc4cEd1dGszSzF5NlNUWk9VejlkU0V4UGg4aUxha05qSEQ4Tml6emNmM1lUQjRNUXdhYTVFSG1PMXVTUERUZFRBTXFYS3FFa2gwRXpHOUpKZTlUMnM4bVJXWkVIbndoZW84cktncVZuV1VCeGhqTldFNElfWG1JZnBPRl91akpFNHdXNzRJWjd5UmdoUGExQVVwS3BsY0NJQ2ZGdGtaS29WUTFwNTBzUzNabkxWYjd6ZHdXR21WcXVsNUFoZUNiSHNoNEtpSjFnYXRSbkwtMG92THZoNGdseUZqd0c0Z3lMMEdyS1ItbU5WMFZYc01mVzJDNXNVaXBzVmhKcmhmY01vQjRNSDRDbjZKcjJXS2plbEdqSVdHQzBUV1BBNlZQZDBmc0lyLTRCY2RBdUFmcm5SaWpGM3d0Mng3RFdXQ1RScFVPbUVMY3U5bDR6Wm5uZkVSejNMd01rNmhCWTFyYXV1TGhCWXJraFlzQURqWEl3bGxPTkwyc01GMUU2OVNIVG1vV0tvNU5fdHdoWE5fX1BtT1ozMzc5ZVNDVGdnTFNZd3hyR1VwS3FXRDFva3JWZlRIWmNlcTk4WHQ2QjFtZHIxcmxLV2RiRmhsRDQ3Q1pldEhrNW1xQUlianp1UzlONENJWllhd0lIZE5LWVotN2tRNFQyUFg4QWdadHFNdHdjY2c0bWx3ME40c09LbWVZN2Q2bGw0bXpXV201bVo0aktTeHdpYmJ3STEwOFcxWVFlSlQ4QW9WZFlkc09YWkdWc3ZxZVVZOU9qbzR2RQ==&amp;#34;,&amp;#34;email&amp;#34;:&amp;#34;ken.wang@infotech.com.tw&amp;#34;},&amp;#34;registry.redhat.io&amp;#34;:{&amp;#34;auth&amp;#34;:&amp;#34;fHVoYy1wb29sLTc5MzgwY2YyLTUxNTEtNGRiNi04YjA3LTRiNzQ4NDcxNWE2NDpleUpoYkdjaU9pSlNVelV4TWlKOS5leUp6ZFdJaU9pSmxOak5rWVdWbU1tSXlaRFEwTVdKaVlUTXpObVUwTkdGbVl6WmtPVEUwWVNKOS5RMlp6Q1JaWWltVDIxM2dpYU9CRWtNWEVkYUtjbnc4WHN1bTY3VEVOdjEyRjBjQUgyNWNZMVdWTjZNUEY2R21CNjh3TmF4TnoxRHVpVnBtY0ZKM2JZTW0yNVVzZGJxeFc4cEd1dGszSzF5NlNUWk9VejlkU0V4UGg4aUxha05qSEQ4Tml6emNmM1lUQjRNUXdhYTVFSG1PMXVTUERUZFRBTXFYS3FFa2gwRXpHOUpKZTlUMnM4bVJXWkVIbndoZW84cktncVZuV1VCeGhqTldFNElfWG1JZnBPRl91akpFNHdXNzRJWjd5UmdoUGExQVVwS3BsY0NJQ2ZGdGtaS29WUTFwNTBzUzNabkxWYjd6ZHdXR21WcXVsNUFoZUNiSHNoNEtpSjFnYXRSbkwtMG92THZoNGdseUZqd0c0Z3lMMEdyS1ItbU5WMFZYc01mVzJDNXNVaXBzVmhKcmhmY01vQjRNSDRDbjZKcjJXS2plbEdqSVdHQzBUV1BBNlZQZDBmc0lyLTRCY2RBdUFmcm5SaWpGM3d0Mng3RFdXQ1RScFVPbUVMY3U5bDR6Wm5uZkVSejNMd01rNmhCWTFyYXV1TGhCWXJraFlzQURqWEl3bGxPTkwyc01GMUU2OVNIVG1vV0tvNU5fdHdoWE5fX1BtT1ozMzc5ZVNDVGdnTFNZd3hyR1VwS3FXRDFva3JWZlRIWmNlcTk4WHQ2QjFtZHIxcmxLV2RiRmhsRDQ3Q1pldEhrNW1xQUlianp1UzlONENJWllhd0lIZE5LWVotN2tRNFQyUFg4QWdadHFNdHdjY2c0bWx3ME40c09LbWVZN2Q2bGw0bXpXV201bVo0aktTeHdpYmJ3STEwOFcxWVFlSlQ4QW9WZFlkc09YWkdWc3ZxZVVZOU9qbzR2RQ==&amp;#34;,&amp;#34;email&amp;#34;:&amp;#34;ken.wang@infotech.com.tw&amp;#34;}}}&amp;#39;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sshKey: &amp;#39;ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMX+OzCSJiIv6NcMwxSnCBrsIZXv2Re1wyc6lvM7nE7B devop@bastion.ocp.infotech.com.tw&amp;#39;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">capabilities:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> baselineCapabilitySet: vCurrent
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-------------
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> platform:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> vsphere:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> vcenter: tpeinfovcsa7p.infotech.com.tw
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> username: cisadmin@vsphere.local
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> password: P@55w.rd
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> datacenter: TPECIS_Datacenter
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> defaultDatastore: v7000_CIS01
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> diskType: thin
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="產生ignition-file">產生Ignition file
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">./openshift-install create manifests --dir install
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">./openshift-install create ignition-configs --dir install
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">INFO Consuming Openshift Manifests from target directory
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">INFO Consuming Common Manifests from target directory
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">INFO Consuming Worker Machines from target directory
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">INFO Consuming Master Machines from target directory
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">INFO Consuming OpenShift Install (Manifests) from target directory
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">INFO Ignition-Configs created in: install and install/auth
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">cd install
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">$ ll
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">total 2960
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">drwxr-xr-x 9 wangken staff 288 12 13 16:27 .
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">drwxr-xr-x 11 wangken staff 352 12 13 15:56 ..
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-rw-r--r-- 1 wangken staff 67239 12 13 16:27 .openshift_install.log
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-rw-r----- 1 wangken staff 1154395 12 13 16:27 .openshift_install_state.json
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">drwxr-x--- 4 wangken staff 128 12 13 16:27 auth
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-rw-r----- 1 wangken staff 275583 12 13 16:27 bootstrap.ign
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-rw-r----- 1 wangken staff 1721 12 13 16:27 master.ign
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-rw-r----- 1 wangken staff 94 12 13 16:27 metadata.json
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-rw-r----- 1 wangken staff 1721 12 13 16:27 worker.ign
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="複製ignition-file-到web">複製Ignition File 到Web
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">scp *.ign root@192.168.3.37:/usr/share/nginx/html/
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">root@192.168.3.37&amp;#39;s password:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">bootstrap.ign 100% 269KB 3.5MB/s 00:00
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">master.ign 100% 1721 86.9KB/s 00:00
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">worker.ign 100% 1721 188.5KB/s 00:00
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-----------
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">cat merge-bootstrap.ign
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &amp;#34;ignition&amp;#34;: {
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &amp;#34;config&amp;#34;: {
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &amp;#34;merge&amp;#34;: [
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> {
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &amp;#34;source&amp;#34;: &amp;#34;http://192.168.3.37:8000/bootstrap.ign&amp;#34;,
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &amp;#34;verification&amp;#34;: {}
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> }
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> ]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> },
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &amp;#34;timeouts&amp;#34;: {},
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &amp;#34;version&amp;#34;: &amp;#34;3.2.0&amp;#34;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> },
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &amp;#34;networkd&amp;#34;: {},
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &amp;#34;passwd&amp;#34;: {},
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &amp;#34;storage&amp;#34;: {},
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &amp;#34;systemd&amp;#34;: {}
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">}
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-----轉檔為Base64
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">chmod 644 *.ign
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">[root@bastion html]# base64 -w0 merge-bootstrap.ign &amp;gt; merge-bootstrap.64
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">ewogICJpZ25pdGlvbiI6IHsKICAgICJjb25maWciOiB7CiAgICAgICJtZXJnZSI6IFsKICAgICAgICB7CiAgICAgICAgICAic291cmNlIjogImh0dHA6Ly8xOTIuMTY4LjMuMzc6ODAwMC9ib290c3RyYXAuaWduIiwKICAgICAgICAgICJ2ZXJpZmljYXRpb24iOiB7fQogICAgICAgIH0KICAgICAgXQogICAgfSwKICAgICJ0aW1lb3V0cyI6IHt9LAogICAgInZlcnNpb24iOiAiMy4yLjAiCiAgfSwKICAibmV0d29ya2QiOiB7fSwKICAicGFzc3dkIjoge30sCiAgInN0b3JhZ2UiOiB7fSwKICAic3lzdGVtZCI6IHt9Cn0K
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">[root@bastion html]# base64 -w0 master.ign &amp;gt; master.64
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">[root@bastion html]# base64 -w0 worker.ign &amp;gt; worker.64
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="複製ovf至vm">複製OVF至VM
+&lt;/h2>&lt;h3 id="調整參數">調整參數
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">vApp
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">1. base64
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">bootstrap
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">ewogICJpZ25pdGlvbiI6IHsKICAgICJjb25maWciOiB7CiAgICAgICJtZXJnZSI6IFsKICAgICAgICB7CiAgICAgICAgICAic291cmNlIjogImh0dHA6Ly8xOTIuMTY4LjMuMzc6ODAwMC9ib290c3RyYXAuaWduIiwKICAgICAgICAgICJ2ZXJpZmljYXRpb24iOiB7fQogICAgICAgIH0KICAgICAgXQogICAgfSwKICAgICJ0aW1lb3V0cyI6IHt9LAogICAgInZlcnNpb24iOiAiMy4yLjAiCiAgfSwKICAibmV0d29ya2QiOiB7fSwKICAicGFzc3dkIjoge30sCiAgInN0b3JhZ2UiOiB7fSwKICAic3lzdGVtZCI6IHt9Cn0K
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">master
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">eyJpZ25pdGlvbiI6eyJjb25maWciOnsibWVyZ2UiOlt7InNvdXJjZSI6Imh0dHBzOi8vYXBpLWludC5vY3AuaW5mb3RlY2guY29tLnR3OjIyNjIzL2NvbmZpZy9tYXN0ZXIifV19LCJzZWN1cml0eSI6eyJ0bHMiOnsiY2VydGlmaWNhdGVBdXRob3JpdGllcyI6W3sic291cmNlIjoiZGF0YTp0ZXh0L3BsYWluO2NoYXJzZXQ9dXRmLTg7YmFzZTY0LExTMHRMUzFDUlVkSlRpQkRSVkpVU1VaSlEwRlVSUzB0TFMwdENrMUpTVVJGUkVORFFXWnBaMEYzU1VKQlowbEpXV1JoZUZwMFZXVkVha2wzUkZGWlNrdHZXa2xvZG1OT1FWRkZURUpSUVhkS2FrVlRUVUpCUjBFeFZVVUtRM2hOU21JelFteGliazV2WVZkYU1FMVNRWGRFWjFsRVZsRlJSRVYzWkhsaU1qa3dURmRPYUUxQ05GaEVWRWw1VFZSSmVFMTZRVFJPUkZVeFRteHZXQXBFVkUxNVRWUkplRTFFUVRST1JGVXhUbXh2ZDBwcVJWTk5Ra0ZIUVRGVlJVTjRUVXBpTTBKc1ltNU9iMkZYV2pCTlVrRjNSR2RaUkZaUlVVUkZkMlI1Q21JeU9UQk1WMDVvVFVsSlFrbHFRVTVDWjJ0eGFHdHBSemwzTUVKQlVVVkdRVUZQUTBGUk9FRk5TVWxDUTJkTFEwRlJSVUV6U0hWcVNHc3haaTlCWWxNS2FHcEdhemxtV0hOelZqZFJNVzlJUVRkVFNqQnVlVkpqTDJNMmR6aERPV1ZUV1dkTWNIWnJjSEZEY3pCdFR5dE9NMHRGTW5Kb2VTdDVVVUZyUVN0eEt3cE5TVkJXVURWRU9HRjFkM3BwWTFOUFZERm5WR2xTTmpreWFFVTFVVEUwYmtaS1N6bE5UMGRaWkdJeFJFTklNazlJYkZkMWRqRktlVlJvUW5admJuRXhDamw2VG01SldreG5iMWRUUm5SWGNtMVFhR05vY3pJeE5sVTVhREpDY0U1QmIwbzJXbU01TjBZM09UWnRLMFpLVlVKeGRFSnhVMVU1UW0xMmEwbHZSa3dLVFd0dE5HczVORk50UzFCRVpURnpPSEZGY0ZGM2FDdDVhbGRPV214aFkyeHRaMGRTTVdkRFptbGxPRGt3UjJ4dWRUazFSbWMwWjBORVFXMHpNRkZ4V2dvdk1tVkNXVEJ2ZW5kMFkyOTZVakZVVkU1cVpUSnpXaTlPZEhBMUwyRTBiR3RMYjNweGJXSnpURE13U25aaFNtbzVlVmh4T1VRelZtRnZVV2xIWkhWbENsQkpMMlJ6WkZsTWEzZEpSRUZSUVVKdk1FbDNVVVJCVDBKblRsWklVVGhDUVdZNFJVSkJUVU5CY1ZGM1JIZFpSRlpTTUZSQlVVZ3ZRa0ZWZDBGM1JVSUtMM3BCWkVKblRsWklVVFJGUm1kUlZXdEljR1IyVG5sUlVuZzFkVWhoTjJoWmJ6Tm9RM0Y2ZDJ4M1VYZEVVVmxLUzI5YVNXaDJZMDVCVVVWTVFsRkJSQXBuWjBWQ1FVbzVlRnBRTlRNeVZqWjBaa3RVVGxSVGFGTllWbEZVTlRCdmF6VkRUR3h1ZVVaNWRtRkNjV2huZEhwVlZsZGpPR2xGVTFocWFYbHJSRlZxQ2twallXcFZOSEZaU1ZkSmVGWlJNVmR3Um5GcFNqQlpkbTV4TXpOa2JFMUdORTg1U1VWT1owTXdkRGx3UjI1R1NGSlpLMUV6YjA5WVkzUXdWRlF2UkhVS1JuSnpXbFpoTTJsVE1rZDRaSGc1ZDFsV1pFbHVUVzV2V0VscFFrRlliMDlaTTBaNVYwRlROakJOV1RkMmVXTkhObXRLVFZWdVpUbDRVbGRyWjBsRFJBcDZOVXBXU0RSUE1FZ3pZVGxaTVhsSFowODBTVVpSVVN0c1JsZENiMmhOU2xrelpXaEpXR05oVDJORGJsWTNZV1pvUXpKcVVHbFpPRTFrZFdsWU9HRkRDblExUkdVM1psQjRUMmsxVWpSclZWQmtWRFYwYkhGeldHdEliWEJFU3lzM1ZVaFZLMk13ZFdGd1FVTjVObVUzU1U1U1dGbHViVkpMTlVadFJUSkZPVVFLUmxoc2NXdEtTM1JITVVoVU5rSXdZbnB5UzBsU05ucDVPVVJyUFFvdExTMHRMVVZPUkNCRFJWSlVTVVpKUTBGVVJTMHRMUzB0Q2c9PSJ9XX19LCJ2ZXJzaW9uIjoiMy4yLjAifX0=
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">worker
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">eyJpZ25pdGlvbiI6eyJjb25maWciOnsibWVyZ2UiOlt7InNvdXJjZSI6Imh0dHBzOi8vYXBpLWludC5vY3AuaW5mb3RlY2guY29tLnR3OjIyNjIzL2NvbmZpZy93b3JrZXIifV19LCJzZWN1cml0eSI6eyJ0bHMiOnsiY2VydGlmaWNhdGVBdXRob3JpdGllcyI6W3sic291cmNlIjoiZGF0YTp0ZXh0L3BsYWluO2NoYXJzZXQ9dXRmLTg7YmFzZTY0LExTMHRMUzFDUlVkSlRpQkRSVkpVU1VaSlEwRlVSUzB0TFMwdENrMUpTVVJGUkVORFFXWnBaMEYzU1VKQlowbEpXV1JoZUZwMFZXVkVha2wzUkZGWlNrdHZXa2xvZG1OT1FWRkZURUpSUVhkS2FrVlRUVUpCUjBFeFZVVUtRM2hOU21JelFteGliazV2WVZkYU1FMVNRWGRFWjFsRVZsRlJSRVYzWkhsaU1qa3dURmRPYUUxQ05GaEVWRWw1VFZSSmVFMTZRVFJPUkZVeFRteHZXQXBFVkUxNVRWUkplRTFFUVRST1JGVXhUbXh2ZDBwcVJWTk5Ra0ZIUVRGVlJVTjRUVXBpTTBKc1ltNU9iMkZYV2pCTlVrRjNSR2RaUkZaUlVVUkZkMlI1Q21JeU9UQk1WMDVvVFVsSlFrbHFRVTVDWjJ0eGFHdHBSemwzTUVKQlVVVkdRVUZQUTBGUk9FRk5TVWxDUTJkTFEwRlJSVUV6U0hWcVNHc3haaTlCWWxNS2FHcEdhemxtV0hOelZqZFJNVzlJUVRkVFNqQnVlVkpqTDJNMmR6aERPV1ZUV1dkTWNIWnJjSEZEY3pCdFR5dE9NMHRGTW5Kb2VTdDVVVUZyUVN0eEt3cE5TVkJXVURWRU9HRjFkM3BwWTFOUFZERm5WR2xTTmpreWFFVTFVVEUwYmtaS1N6bE5UMGRaWkdJeFJFTklNazlJYkZkMWRqRktlVlJvUW5admJuRXhDamw2VG01SldreG5iMWRUUm5SWGNtMVFhR05vY3pJeE5sVTVhREpDY0U1QmIwbzJXbU01TjBZM09UWnRLMFpLVlVKeGRFSnhVMVU1UW0xMmEwbHZSa3dLVFd0dE5HczVORk50UzFCRVpURnpPSEZGY0ZGM2FDdDVhbGRPV214aFkyeHRaMGRTTVdkRFptbGxPRGt3UjJ4dWRUazFSbWMwWjBORVFXMHpNRkZ4V2dvdk1tVkNXVEJ2ZW5kMFkyOTZVakZVVkU1cVpUSnpXaTlPZEhBMUwyRTBiR3RMYjNweGJXSnpURE13U25aaFNtbzVlVmh4T1VRelZtRnZVV2xIWkhWbENsQkpMMlJ6WkZsTWEzZEpSRUZSUVVKdk1FbDNVVVJCVDBKblRsWklVVGhDUVdZNFJVSkJUVU5CY1ZGM1JIZFpSRlpTTUZSQlVVZ3ZRa0ZWZDBGM1JVSUtMM3BCWkVKblRsWklVVFJGUm1kUlZXdEljR1IyVG5sUlVuZzFkVWhoTjJoWmJ6Tm9RM0Y2ZDJ4M1VYZEVVVmxLUzI5YVNXaDJZMDVCVVVWTVFsRkJSQXBuWjBWQ1FVbzVlRnBRTlRNeVZqWjBaa3RVVGxSVGFGTllWbEZVTlRCdmF6VkRUR3h1ZVVaNWRtRkNjV2huZEhwVlZsZGpPR2xGVTFocWFYbHJSRlZxQ2twallXcFZOSEZaU1ZkSmVGWlJNVmR3Um5GcFNqQlpkbTV4TXpOa2JFMUdORTg1U1VWT1owTXdkRGx3UjI1R1NGSlpLMUV6YjA5WVkzUXdWRlF2UkhVS1JuSnpXbFpoTTJsVE1rZDRaSGc1ZDFsV1pFbHVUVzV2V0VscFFrRlliMDlaTTBaNVYwRlROakJOV1RkMmVXTkhObXRLVFZWdVpUbDRVbGRyWjBsRFJBcDZOVXBXU0RSUE1FZ3pZVGxaTVhsSFowODBTVVpSVVN0c1JsZENiMmhOU2xrelpXaEpXR05oVDJORGJsWTNZV1pvUXpKcVVHbFpPRTFrZFdsWU9HRkRDblExUkdVM1psQjRUMmsxVWpSclZWQmtWRFYwYkhGeldHdEliWEJFU3lzM1ZVaFZLMk13ZFdGd1FVTjVObVUzU1U1U1dGbHViVkpMTlVadFJUSkZPVVFLUmxoc2NXdEtTM1JITVVoVU5rSXdZbnB5UzBsU05ucDVPVVJyUFFvdExTMHRMVVZPUkNCRFJWSlVTVVpKUTBGVVJTMHRMUzB0Q2c9PSJ9XX19LCJ2ZXJzaW9uIjoiMy4yLjAifX0=
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h4 id="設定ip">設定IP
+&lt;/h4>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">guestinfo.afterburn.initrd.network-kargs
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">ip=192.168.3.36::192.168.3.251:255.255.255.0:::none nameserver=192.168.3.37
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">ip=192.168.3.31::192.168.3.251:255.255.255.0:::none nameserver=192.168.3.37
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">ip=192.168.3.32::192.168.3.251:255.255.255.0:::none nameserver=192.168.3.37
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">ip=192.168.3.33::192.168.3.251:255.255.255.0:::none nameserver=192.168.3.37
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">ip=192.168.3.34::192.168.3.251:255.255.255.0:::none nameserver=192.168.3.37
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">ip=192.168.3.35::192.168.3.251:255.255.255.0:::none nameserver=192.168.3.37
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="先啟動bootstrap">先啟動bootstrap
+&lt;/h2>&lt;h2 id="再啟動master">再啟動Master
+&lt;/h2>&lt;h2 id="啟動worker後-approve-csr">啟動Worker後 Approve CSR
+&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">$oc adm certificate approve &amp;lt;csr_name&amp;gt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">----
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">$oc get csr -o go-template=&amp;#39;{{range .items}}{{if not .status}}{{.metadata.name}}{{&amp;#34;\n&amp;#34;}}{{end}}{{end}}&amp;#39; | xargs --no-run-if-empty oc adm certificate approve
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="storage-class">Storage Class
+&lt;/h2>&lt;p>&lt;a class="link" href="https://access.redhat.com/solutions/4618011" target="_blank" rel="noopener"
+>https://access.redhat.com/solutions/4618011&lt;/a>&lt;/p>
+&lt;p>&lt;a class="link" href="https://access.redhat.com/solutions/5900501" target="_blank" rel="noopener"
+>https://access.redhat.com/solutions/5900501&lt;/a>
+&lt;a class="link" href="https://www.ibm.com/support/pages/creating-persistent-volume-claim-fails-not-found-openshift" target="_blank" rel="noopener"
+>https://www.ibm.com/support/pages/creating-persistent-volume-claim-fails-not-found-openshift&lt;/a>
+&lt;a class="link" href="https://docs.openshift.com/container-platform/4.9/storage/persistent_storage/persistent-storage-vsphere.html" target="_blank" rel="noopener"
+>https://docs.openshift.com/container-platform/4.9/storage/persistent_storage/persistent-storage-vsphere.html&lt;/a>&lt;/p>
+&lt;p>&lt;a class="link" href="https://github.com/rancher/rancher/issues/24258" target="_blank" rel="noopener"
+>https://github.com/rancher/rancher/issues/24258&lt;/a>&lt;/p>
+&lt;p>on vmware vsphere&lt;/p>
+&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20221214141836955.png"
+loading="lazy"
+alt="image-20221214141836955"
+>&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;span class="lnt">46
+&lt;/span>&lt;span class="lnt">47
+&lt;/span>&lt;span class="lnt">48
+&lt;/span>&lt;span class="lnt">49
+&lt;/span>&lt;span class="lnt">50
+&lt;/span>&lt;span class="lnt">51
+&lt;/span>&lt;span class="lnt">52
+&lt;/span>&lt;span class="lnt">53
+&lt;/span>&lt;span class="lnt">54
+&lt;/span>&lt;span class="lnt">55
+&lt;/span>&lt;span class="lnt">56
+&lt;/span>&lt;span class="lnt">57
+&lt;/span>&lt;span class="lnt">58
+&lt;/span>&lt;span class="lnt">59
+&lt;/span>&lt;span class="lnt">60
+&lt;/span>&lt;span class="lnt">61
+&lt;/span>&lt;span class="lnt">62
+&lt;/span>&lt;span class="lnt">63
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">[devop@bastion ~]$ oc get machineset ocp-7hb6g-worker -n openshift-machine-api -o yaml
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">apiVersion: machine.openshift.io/v1beta1
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kind: MachineSet
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">metadata:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> annotations:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> machine.openshift.io/memoryMb: &amp;#34;16384&amp;#34;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> machine.openshift.io/vCPU: &amp;#34;4&amp;#34;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> creationTimestamp: &amp;#34;2022-12-13T09:05:14Z&amp;#34;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> generation: 1
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> labels:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> machine.openshift.io/cluster-api-cluster: ocp-7hb6g
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> name: ocp-7hb6g-worker
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> namespace: openshift-machine-api
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> resourceVersion: &amp;#34;12244&amp;#34;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> uid: e52a023d-bc9f-4fb5-a66a-776768e1aa7c
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">spec:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> replicas: 0
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> selector:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> matchLabels:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> machine.openshift.io/cluster-api-cluster: ocp-7hb6g
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> machine.openshift.io/cluster-api-machineset: ocp-7hb6g-worker
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> template:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> metadata:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> labels:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> machine.openshift.io/cluster-api-cluster: ocp-7hb6g
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> machine.openshift.io/cluster-api-machine-role: worker
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> machine.openshift.io/cluster-api-machine-type: worker
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> machine.openshift.io/cluster-api-machineset: ocp-7hb6g-worker
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> spec:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> lifecycleHooks: {}
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> metadata: {}
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> providerSpec:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> value:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> apiVersion: machine.openshift.io/v1beta1
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> credentialsSecret:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> name: vsphere-cloud-credentials
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> diskGiB: 120
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> kind: VSphereMachineProviderSpec
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> memoryMiB: 16384
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> metadata:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> creationTimestamp: null
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> network:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> devices:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> - networkName: &amp;#34;&amp;#34;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> numCPUs: 4
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> numCoresPerSocket: 4
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> snapshot: &amp;#34;&amp;#34;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> template: ocp-7hb6g-rhcos
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> userDataSecret:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> name: worker-user-data
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> workspace:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> datacenter: TPECIS_Datacenter
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> datastore: v7000_CIS01
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> folder: /TPECIS_Datacenter/vm/ocp-7hb6g
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> resourcePool: /TPECIS_Datacenter/host//Resources
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> server: tpeinfovcsa7p.infotech.com.tw
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">status:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> observedGeneration: 1
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> replicas: 0
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">[devop@bastion ~]$ oc get cm cloud-provider-config -n openshift-config -o yaml | grep folder
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> folder = &amp;#34;/TPECIS_Datacenter/vm/ocp-7hb6g&amp;#34;
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20221214151017424.png"
+loading="lazy"
+alt="image-20221214151017424"
+>&lt;/p>
+&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20221214151029390.png"
+loading="lazy"
+alt="image-20221214151029390"
+>&lt;/p>
+&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20221214151038817.png"
+loading="lazy"
+alt="image-20221214151038817"
+>&lt;/p>
+&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20221214151215733.png"
+loading="lazy"
+alt="image-20221214151215733"
+>&lt;/p></description></item><item><title>Hello World</title><link>https://wangken0129.github.io/p/hello-world/</link><pubDate>Tue, 19 Sep 2023 05:10:00 +0800</pubDate><guid>https://wangken0129.github.io/p/hello-world/</guid><description>&lt;h1 id="hello-world">Hello World
+&lt;/h1>&lt;h2 id="description">Description
+&lt;/h2>&lt;p>This is a blog for my labs and knowledge bases.&lt;/p>
+&lt;p>Happy engineering.&lt;/p>
+&lt;p>這是Ken的部落格，用來放我的Lab跟知識庫。&lt;/p>
+&lt;p>當個快樂的工程師。&lt;/p>
+&lt;p>&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/0*ngAthWxOvKZHvsw9.jpeg"
+loading="lazy"
+alt="The Dangers of Hacking and What a Hacker Can Do to Your Computer? | by Sravan Cynixit | Quick Code | Medium"
+>&lt;/p>
+&lt;h2 id="this-is-a-test-shell-script">This is a test shell script
+&lt;/h2>&lt;p>Generate certificate script&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#!/bin/bash
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>&lt;span class="c1"># Create certificate given a specific url name&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">if&lt;/span> &lt;span class="o">[&lt;/span> &lt;span class="nv">$#&lt;/span> -ne &lt;span class="m">1&lt;/span> &lt;span class="o">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">then&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;No arguments supplied or too many arguments&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;Usage: &lt;/span>&lt;span class="nv">$0&lt;/span>&lt;span class="s2"> domain_name&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">exit&lt;/span> &lt;span class="m">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">fi&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">MYNAME&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="nv">$1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;Generating a private key...for &lt;/span>&lt;span class="nv">$MYNAME&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">openssl genrsa -out &lt;span class="nv">$MYNAME&lt;/span>.key &lt;span class="m">2048&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;Generating a CSR...for &lt;/span>&lt;span class="nv">$MYNAME&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">openssl req -new -key &lt;span class="nv">$MYNAME&lt;/span>.key &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span>-out &lt;span class="nv">$MYNAME&lt;/span>.csr &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span>-subj &lt;span class="s2">&amp;#34;/C=US/ST=NC/L=Raleigh/O=RedHat/OU=RHT/CN=&lt;/span>&lt;span class="nv">$MYNAME&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;Generating a certificate...for &lt;/span>&lt;span class="nv">$MYNAME&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">openssl x509 -req -days &lt;span class="m">366&lt;/span> -in &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span>&lt;span class="nv">$MYNAME&lt;/span>.csr -signkey &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span>&lt;span class="nv">$MYNAME&lt;/span>.key &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span>-out &lt;span class="nv">$MYNAME&lt;/span>.crt
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div></description></item></channel></rss>

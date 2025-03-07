@@ -1,0 +1,283 @@
+<!doctype html><html lang=en-us dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="Nutanix_NKP-v2.13_Preprovisioned"><title>Nutanix_NKP-v2.13_Preprovisioned</title>
+<link rel=canonical href=https://wangken0129.github.io/p/nutanix_nkp-v2.13_preprovisioned/><link rel=stylesheet href=/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css><meta property='og:title' content="Nutanix_NKP-v2.13_Preprovisioned"><meta property='og:description' content="Nutanix_NKP-v2.13_Preprovisioned"><meta property='og:url' content='https://wangken0129.github.io/p/nutanix_nkp-v2.13_preprovisioned/'><meta property='og:site_name' content="Ken's blog"><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='Nutanix'><meta property='article:tag' content='NKP'><meta property='article:tag' content='Kubernetes'><meta property='article:published_time' content='2025-02-27T09:42:42+08:00'><meta property='article:modified_time' content='2025-02-27T09:42:42+08:00'><meta name=twitter:title content="Nutanix_NKP-v2.13_Preprovisioned"><meta name=twitter:description content="Nutanix_NKP-v2.13_Preprovisioned"><link rel="shortcut icon" href=/favicon.png></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切換選單>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar_hu_c68a00bbf16dac8.png width=300 height=300 class=site-logo loading=lazy alt=Avatar>
+</a><span class=emoji>🇹🇼</span></figure><div class=site-meta><h1 class=site-name><a href=/>Ken's blog</a></h1><h2 class=site-description>紀錄與分享，當個快樂的工程師</h2></div></header><ol class=menu-social><li><a href=https://github.com/wangken0129/wangken0129.github.io target=_blank title=GitHub rel=me><svg class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li><li><a href=https://www.linkedin.com/in/ken-wang-88924b181/ target=_blank title=LinkedIn rel=me><svg class="icon icon-tabler icon-tabler-brand-linkedin" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4m0 2a2 2 0 012-2h12a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2z"/><path d="M8 11v5"/><path d="M8 8v.01"/><path d="M12 16v-5"/><path d="M16 16v-3a2 2 0 00-4 0"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>Home</span></a></li><li><a href=/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>Archives</span></a></li><li><a href=/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>Search</span></a></li><li><a href=/links/><svg class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 14a3.5 3.5.0 005 0l4-4a3.5 3.5.0 00-5-5l-.5.5"/><path d="M14 10a3.5 3.5.0 00-5 0l-4 4a3.5 3.5.0 005 5l.5-.5"/></svg>
+<span>Links</span></a></li><li class=menu-bottom-section><ol class=menu><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>夜晚模式</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目錄</h2><div class=widget--toc><nav id=TableOfContents><ol><li><a href=#安裝大致流程>安裝大致流程</a></li><li><a href=#環境資訊>環境資訊</a></li><li><a href=#bastion-host-準備>Bastion Host 準備</a><ol><li><a href=#安裝主機>安裝主機</a></li><li><a href=#環境準備>環境準備</a></li><li><a href=#container-service--工具>Container Service & 工具</a></li><li><a href=#nkp-cli>NKP CLI</a></li><li><a href=#kubectl>Kubectl</a></li><li><a href=#kib><strong>KIB</strong></a></li></ol></li><li><a href=#預配置主機準備>預配置主機準備</a></li><li><a href=#部署-nkp-pre-provisioned>部署 NKP Pre-provisioned</a><ol><li><a href=#定義環境變數><strong>定義環境變數</strong></a></li><li><a href=#inventoryyaml><strong>inventory.yaml</strong></a></li><li><a href=#bootstrap>bootstrap</a></li><li><a href=#dry-run>Dry run</a></li><li><a href=#create-cluster>Create Cluster</a><ol><li><a href=#取得kubeconfig>取得kubeconfig</a></li><li><a href=#pivot><strong>Pivot</strong></a></li><li><a href=#metallb><strong>MetalLB</strong></a></li><li><a href=#install-kommander>Install Kommander</a></li></ol></li></ol></li></ol></nav></div></section></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><header class=article-category><a href=/categories/lab-category/ style=background-color:#2a9d8f;color:#fff>Lab Category</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/p/nutanix_nkp-v2.13_preprovisioned/>Nutanix_NKP-v2.13_Preprovisioned</a></h2><h3 class=article-subtitle>Nutanix_NKP-v2.13_Preprovisioned</h3></div><footer class=article-time><div><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published>Feb 27, 2025</time></div><div><svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>閱讀時間: 5 分鐘</time></div></footer></div></header><section class=article-content><h1 id=nutanix-nkp-v213-pre-provisioned-環境>Nutanix NKP v2.13 Pre-Provisioned 環境</h1><p>Pre-Provisioned 預配置的方式，可以讓 NKP 裝在任何環境，只要先安裝好 OS 以及基本的設定完成後</p><p>即可部署 NKP 叢集，不論是實體機或是虛擬機都可以安裝。</p><h2 id=安裝大致流程>安裝大致流程</h2><p>可調整資源、自定義設定，生產環境建議使用此方法 ，self-managed 僅支援此方法</p><p>1.確認安裝環境</p><p>2.連線 bootstrap host (Bastion Host)</p><p>3.確認 Container Service</p><p>4.確認 Kubernetes CLI</p><p>5.確認 NKP CLI</p><p>6.設定 Local Registry (air-gapped)</p><p>7.推送 NKP Image 到 Local Registry (air-gapped)</p><p>8.建立 bootstrap cluster (air-gapped or pre-provisioned or KIB or NIB )</p><p>9.建立 machine image (optional)</p><p>10.建立 management cluster</p><h2 id=環境資訊>環境資訊</h2><p>此 LAB 僅用 1 個 control plane 加上 3 個 worker node 來測試，生產環境建議 3 個 control plane 加 4 個 worker node</p><p>NKP Version : 2.13</p><p>OS Image : Rocky 9.5</p><h2 id=bastion-host-準備>Bastion Host 準備</h2><h3 id=安裝主機>安裝主機</h3><p>創建虛擬機 Rocky 9.1 ，記憶體最少 8GB，最小安裝即可</p><p><img src=https://kenkenny.synology.me:5543/images/2025/02/image-20250227172457416.png loading=lazy alt=image-20250227172457416></p><h3 id=環境準備>環境準備</h3><p>設定網路、主機名稱、SSH，為簡化安裝流程選擇停用防火牆（Pre-Provisioned的節點需停用） 、
+關閉 SELinux，調整完後建議重開機確認，使用root or 一般使用者 + sudo</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>設定網路：
+</span></span><span class=line><span class=cl># nmcli c s     &gt;&gt; 顯示網卡名稱
+</span></span><span class=line><span class=cl># nmcli c m ens3 ipv4.method manual ipv4.addresses xxx.xx.xx.xx/24 ipv4.gateway xxx.xx.xx.xxx ipv4.dns 8.8.8.8   &gt;&gt; 設定ip,dns,gateway
+</span></span><span class=line><span class=cl># nmcli c u  ens3   &gt;&gt; 啟用網卡
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>主機名稱：
+</span></span><span class=line><span class=cl># hostnamectl set-hostname nkp-bastion
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>SSH Key：
+</span></span><span class=line><span class=cl>$ ssh-keygen &gt;&gt; 產生金鑰
+</span></span><span class=line><span class=cl>$ ssh-copy-id -i .ssh/id_rsa.pub nkp@xxx.xx.xx.xx   &gt;&gt; 複製金鑰到其他 Host 上
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>停用防火牆：
+</span></span><span class=line><span class=cl># systemctl disable firewalld --now
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>關閉SELinux：
+</span></span><span class=line><span class=cl># vi /etc/selinux/config
+</span></span><span class=line><span class=cl>SELINUX=disable
+</span></span></code></pre></td></tr></table></div></div><h3 id=container-service--工具>Container Service & 工具</h3><p>下載安裝NKP CLI、Container Service ( podman 4.0 or docker 20.10 以上 )、其他工具、Kubectl、KIB</p><p>請先確認環境所需的 NKP 以及 Kubernetes 版本，此範例用 NKP 2.13 對應 Kubernetes 1.30.5</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>Podman 下載安裝：
+</span></span><span class=line><span class=cl>$ sudo yum install -y podman
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>$ podman version
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>or Docker 下載安裝：
+</span></span><span class=line><span class=cl>$ sudo yum install -y docker-ce docker-ce-cli containerd.io
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>其他工具下載安裝：
+</span></span><span class=line><span class=cl>$ sudo yum install -y yum-utils bzip2 wget tar
+</span></span></code></pre></td></tr></table></div></div><p><img src=https://kenkenny.synology.me:5543/images/2025/02/image-20250227172655721.png loading=lazy alt=image-20250227172655721></p><h3 id=nkp-cli>NKP CLI</h3><p>下載安裝NKP CLI、Container Service ( podman 4.0 or docker 20.10 以上 )、其他工具、Kubectl、KIB</p><p>請先確認環境所需的 NKP 以及 Kubernetes 版本，此範例用 NKP 2.13 對應 Kubernetes 1.30.5</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-gdscript3 data-lang=gdscript3><span class=line><span class=cl><span class=n>NKP</span> <span class=n>CLI</span> <span class=err>下載：</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=o>$</span> <span class=n>curl</span> <span class=o>-</span><span class=n>o</span> <span class=n>nkp_v</span><span class=o>.</span><span class=mf>2.13</span><span class=o>.</span><span class=mf>0.</span><span class=n>tar</span><span class=o>.</span><span class=n>gz</span> <span class=err>“</span><span class=n>https</span><span class=p>:</span><span class=o>//</span><span class=n>download</span><span class=o>.</span><span class=n>nutanix</span><span class=o>.</span><span class=n>com</span><span class=o>/</span><span class=n>urlxxx</span><span class=err>”</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>NKP</span> <span class=n>CLI</span> <span class=err>安裝：</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=o>$</span> <span class=n>tar</span> <span class=n>xvf</span> <span class=n>nkp_v2</span><span class=o>.</span><span class=mf>13.0</span><span class=o>.</span><span class=n>tar</span><span class=o>.</span><span class=n>gz</span>
+</span></span><span class=line><span class=cl><span class=o>$</span> <span class=n>ls</span> <span class=o>-</span><span class=n>l</span>
+</span></span><span class=line><span class=cl><span class=o>$</span> <span class=n>sudo</span> <span class=n>cp</span> <span class=n>nkp</span> <span class=o>/</span><span class=n>usr</span><span class=o>/</span><span class=n>local</span><span class=o>/</span><span class=n>bin</span>
+</span></span><span class=line><span class=cl><span class=o>$</span> <span class=n>nkp</span> <span class=n>version</span>
+</span></span></code></pre></td></tr></table></div></div><p><img src=https://kenkenny.synology.me:5543/images/2025/02/image-20250227173028571.png loading=lazy alt=image-20250227173028571></p><p><img src=https://kenkenny.synology.me:5543/images/2025/02/image-20250227173015476.png loading=lazy alt=image-20250227173015476></p><p><img src=https://kenkenny.synology.me:5543/images/2025/02/image-20250227173035349.png loading=lazy alt=image-20250227173035349></p><h3 id=kubectl>Kubectl</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-gdscript3 data-lang=gdscript3><span class=line><span class=cl><span class=n>Kubectl</span> <span class=err>安裝：</span>
+</span></span><span class=line><span class=cl><span class=n>https</span><span class=p>:</span><span class=o>//</span><span class=n>github</span><span class=o>.</span><span class=n>com</span><span class=o>/</span><span class=n>kubernetes</span><span class=o>/</span><span class=n>kubernetes</span><span class=o>/</span><span class=n>blob</span><span class=o>/</span><span class=n>master</span><span class=o>/</span><span class=n>CHANGELOG</span><span class=o>/</span><span class=n>CHANGELOG</span><span class=o>-</span><span class=mf>1.30</span><span class=o>.</span><span class=n>md</span><span class=c1>#downloads-for-v1305</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=o>$</span> <span class=n>wget</span> <span class=s2>&#34;https://dl.k8s.io/v1.30.5/kubernetes-client-linux-amd64.tar.gz&#34;</span>
+</span></span><span class=line><span class=cl><span class=o>$</span> <span class=n>tar</span> <span class=n>xvf</span> <span class=n>kubernetes</span><span class=o>-</span><span class=n>client</span><span class=o>-</span><span class=n>linux</span><span class=o>-</span><span class=n>amd64</span><span class=o>.</span><span class=n>tar</span><span class=o>.</span><span class=n>gz</span>
+</span></span><span class=line><span class=cl><span class=o>$</span> <span class=n>sudo</span> <span class=n>cp</span> <span class=n>kubernetes</span><span class=o>/</span><span class=n>client</span><span class=o>/</span><span class=n>bin</span><span class=o>/</span><span class=n>kubectl</span> <span class=o>/</span><span class=n>usr</span><span class=o>/</span><span class=n>local</span><span class=o>/</span><span class=n>bin</span><span class=o>/</span>
+</span></span><span class=line><span class=cl><span class=o>$</span> <span class=n>kubectl</span> <span class=n>version</span>
+</span></span></code></pre></td></tr></table></div></div><p><img src=https://kenkenny.synology.me:5543/images/2025/02/image-20250227173058472.png loading=lazy alt=image-20250227173058472></p><h3 id=kib><strong>KIB</strong></h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>KIB Konvoy Image Builder 下載安裝 ( 有需要再裝 )：
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>$ curl -o konvoy-image-bundle-v2.18.0.tar.gz ”https://url”
+</span></span><span class=line><span class=cl>$ tar xvf konvoy-image-bundle-v2.18.0.tar.gz
+</span></span><span class=line><span class=cl>$ ls -l
+</span></span><span class=line><span class=cl>$ sudo cp konvoy-image /usr/local/bin
+</span></span><span class=line><span class=cl>$ konvoy-image version
+</span></span></code></pre></td></tr></table></div></div><p><img src=https://kenkenny.synology.me:5543/images/2025/02/image-20250227173137067.png loading=lazy alt=image-20250227173137067></p><h2 id=預配置主機準備>預配置主機準備</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-gdscript3 data-lang=gdscript3><span class=line><span class=cl><span class=ne>Control</span> <span class=ne>Plane</span> <span class=o>&amp;</span> <span class=n>Worker</span> <span class=n>Machines</span> <span class=err>建議：</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>control</span> <span class=n>plane</span><span class=o>*</span><span class=mi>3</span> <span class=p>:</span>  <span class=mi>4</span> <span class=n>cores</span> <span class=p>,</span> <span class=mi>16</span> <span class=n>GiB</span> 
+</span></span><span class=line><span class=cl><span class=n>worker</span> <span class=n>node</span><span class=o>*</span><span class=mi>4</span> <span class=p>:</span> <span class=mi>8</span> <span class=n>cores</span> <span class=p>,</span> <span class=mi>32</span> <span class=n>GiB</span>
+</span></span><span class=line><span class=cl><span class=n>root</span> <span class=err>目錄</span> <span class=mi>15</span><span class=o>%</span> <span class=err>可用空間，</span> <span class=o>/</span><span class=k>var</span><span class=o>/</span><span class=n>lib</span><span class=o>/</span><span class=n>kubelet</span> <span class=err>以及</span> <span class=o>/</span><span class=k>var</span><span class=o>/</span><span class=n>lib</span><span class=o>/</span><span class=n>containerd</span> <span class=mi>95</span> <span class=n>GiB</span> <span class=err>以上空間</span>
+</span></span><span class=line><span class=cl><span class=err>預設</span><span class=n>Storage</span> <span class=n>Class</span> <span class=err>是用</span> <span class=n>localvolume</span> <span class=err>所以</span> <span class=o>/</span><span class=n>mnt</span><span class=o>/</span><span class=n>disks</span> <span class=err>底下至少要有</span><span class=n>mount</span> <span class=err>一顆</span> <span class=mi>55</span><span class=n>GiB</span> <span class=err>硬碟</span> <span class=p>(</span><span class=err>官方建議</span><span class=mi>4</span><span class=err>顆</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=err>停用防火牆</span> <span class=n>firewalld</span><span class=err>、</span><span class=n>swap</span>
+</span></span><span class=line><span class=cl><span class=err>防火牆需求開通</span> <span class=n>nutanix</span> <span class=n>support</span> <span class=n>portal</span>
+</span></span><span class=line><span class=cl><span class=n>root</span> <span class=err>或是不用密碼執行</span> <span class=n>sudo</span> <span class=err>的使用者，並先跟</span><span class=n>Bastion做金鑰交換</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=err>至少</span> <span class=mi>1</span> <span class=err>個</span> <span class=n>Loadbalancer</span> <span class=ne>IP</span> <span class=err>或是設定外部</span> <span class=n>Loadbalance</span> <span class=p>(</span> <span class=err>含</span> <span class=n>api</span> <span class=err>及</span> <span class=n>Ingress</span> <span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=ne>OS</span> <span class=n>images</span><span class=p>:</span>
+</span></span><span class=line><span class=cl><span class=n>Air</span><span class=o>-</span><span class=n>gapped</span> <span class=err>環境需先準備好用</span> <span class=n>Konvoy</span> <span class=ne>Image</span> <span class=n>Builder</span> <span class=err>產生出需要的安裝包並用</span> <span class=n>konvoy</span> <span class=n>upload</span> <span class=err>上傳至節點</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=ne>Control</span> <span class=ne>Plane</span> <span class=o>*</span> <span class=mi>1</span><span class=err>：</span>
+</span></span><span class=line><span class=cl>	<span class=mi>8</span> <span class=n>vCPU</span> <span class=p>,</span> <span class=mi>8</span> <span class=n>GiB</span> <span class=n>RAM</span> <span class=p>,</span> <span class=mi>120</span> <span class=n>GiB</span> <span class=err>根目錄</span> <span class=p>,</span> <span class=mi>60</span> <span class=n>GiB</span> <span class=o>/</span><span class=n>mnt</span><span class=o>/</span><span class=n>disks</span><span class=o>/</span><span class=n>nkp1</span> <span class=err>一顆</span>
+</span></span><span class=line><span class=cl>	<span class=err>最小安裝</span><span class=p>,</span><span class=err>另外安裝</span> <span class=n>tar</span> <span class=p>,</span> <span class=err>停用</span> <span class=n>firewalld</span> <span class=p>,</span> <span class=n>swap</span> <span class=p>,</span> <span class=n>selinux</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>Worker</span> <span class=n>Machines</span> <span class=o>*</span> <span class=mi>3</span> <span class=err>：</span>
+</span></span><span class=line><span class=cl>	<span class=mi>4</span> <span class=n>vCPU</span> <span class=p>,</span> <span class=mi>8</span> <span class=n>GiB</span> <span class=n>RAM</span> <span class=p>,</span> <span class=mi>120</span> <span class=n>GiB</span> <span class=err>根目錄</span> <span class=p>,</span> <span class=mi>60</span> <span class=n>GiB</span> <span class=o>/</span><span class=n>mnt</span><span class=o>/</span><span class=n>disks</span><span class=o>/</span><span class=n>nkp1</span> <span class=err>一顆</span>
+</span></span><span class=line><span class=cl>	<span class=err>最小安裝</span><span class=p>,</span><span class=err>另外安裝</span> <span class=n>tar</span> <span class=p>,</span> <span class=err>停用</span> <span class=n>firewalld</span> <span class=p>,</span> <span class=n>swap</span> <span class=p>,</span> <span class=n>selinux</span>
+</span></span></code></pre></td></tr></table></div></div><p><img src=https://kenkenny.synology.me:5543/images/2025/02/image-20250227172309690.png loading=lazy alt=image-20250227172309690></p><p><img src=https://kenkenny.synology.me:5543/images/2025/02/image-20250227172316729.png loading=lazy alt=image-20250227172316729></p><h2 id=部署-nkp-pre-provisioned>部署 NKP Pre-provisioned</h2><h3 id=定義環境變數><strong>定義環境變數</strong></h3><p>此範例使用 root 使用者，如要其他使用者請先設定好Docker or Podman 權限</p><p>並且在 control 與 worker 上要設定 /etc/sudoers “<username> ALL=(ALL:ALL) NOPASSWD: ALL”</p><p>此為 single control plane 配置，生產環境建議至少 3 個 control plane，4 個 worker node</p><p>Storage Class 建議用外部 Storage</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-gdscript3 data-lang=gdscript3><span class=line><span class=cl><span class=err>在</span> <span class=n>Bastion</span> <span class=err>上定義環境變數</span>
+</span></span><span class=line><span class=cl><span class=k>export</span> <span class=n>CONTROL_PLANE_1_ADDRESS</span><span class=o>=</span><span class=s2>&#34;172.16.90.131&#34;</span>
+</span></span><span class=line><span class=cl><span class=k>export</span> <span class=n>WORKER_1_ADDRESS</span><span class=o>=</span><span class=s2>&#34;172.16.90.132&#34;</span>
+</span></span><span class=line><span class=cl><span class=k>export</span> <span class=n>WORKER_2_ADDRESS</span><span class=o>=</span><span class=s2>&#34;172.16.90.133&#34;</span>
+</span></span><span class=line><span class=cl><span class=k>export</span> <span class=n>WORKER_3_ADDRESS</span><span class=o>=</span><span class=s2>&#34;172.16.90.134&#34;</span>
+</span></span><span class=line><span class=cl><span class=k>export</span> <span class=n>SSH_USER</span><span class=o>=</span><span class=s2>&#34;root&#34;</span>
+</span></span><span class=line><span class=cl><span class=k>export</span> <span class=n>SSH_PRIVATE_KEY_SECRET_NAME</span><span class=o>=</span><span class=s2>&#34;$CLUSTER_NAME-ssh-key&#34;</span>
+</span></span><span class=line><span class=cl><span class=k>export</span> <span class=n>CLUSTER_NAME</span><span class=o>=</span><span class=s2>&#34;nkp-pro-preprovisioned” &gt;&gt; .bashrc</span>
+</span></span><span class=line><span class=cl><span class=n>source</span> <span class=o>.</span><span class=n>bashrc</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=inventoryyaml><strong>inventory.yaml</strong></h3><p>從 NKP 文件複製下來</p><p>確認 preprovisioned_inventory.yaml 內容是否正確
+vi preprovisioned_inventory.yaml</p><p>確認control plane 、worker 數量及IP、secret 名稱等等</p><p><img src=https://kenkenny.synology.me:5543/images/2025/02/image-20250227173246700.png loading=lazy alt=image-20250227173246700></p><p><img src=https://kenkenny.synology.me:5543/images/2025/02/image-20250227173255503.png loading=lazy alt=image-20250227173255503></p><h3 id=bootstrap>bootstrap</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>建立 bootstrap cluster 並部署 preprovisioned_inventory.yaml
+</span></span><span class=line><span class=cl># nkp create bootstrap
+</span></span><span class=line><span class=cl># kubectl get pods -A
+</span></span><span class=line><span class=cl># kubectl apply -f preprovisioned_inventory.yaml
+</span></span><span class=line><span class=cl>建立 override.yaml 設定 docker.io or Registry 及帳號密碼
+</span></span><span class=line><span class=cl># kubectl create secret generic $CLUSTER_NAME-user-overrides --from-file=overrides.yaml=overrides.yaml 
+</span></span><span class=line><span class=cl># kubectl label secret $CLUSTER_NAME-user-overrides clusterctl.cluster.x-k8s.io/move= 
+</span></span></code></pre></td></tr></table></div></div><p><img src=https://kenkenny.synology.me:5543/images/2025/02/image-20250227173347739.png loading=lazy alt=image-20250227173347739></p><p><img src=https://kenkenny.synology.me:5543/images/2025/02/image-20250227173352792.png loading=lazy alt=image-20250227173352792></p><p><img src=https://kenkenny.synology.me:5543/images/2025/02/image-20250227173400637.png loading=lazy alt=image-20250227173400637></p><h3 id=dry-run>Dry run</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>部署NKP Preprovisioned Cluster (non-airgapped)，使用單節點或是MetalLB，依需求修改下方資訊
+</span></span><span class=line><span class=cl>Kube-VIP 方式部署則需要加上--virtual-ip-interface eth1 
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>nkp create cluster preprovisioned \
+</span></span><span class=line><span class=cl>  --cluster-name=${CLUSTER_NAME} \
+</span></span><span class=line><span class=cl>  --control-plane-endpoint-host=&lt;control plane endpoint host&gt; \
+</span></span><span class=line><span class=cl>  --control-plane-replicas=1 \
+</span></span><span class=line><span class=cl>  --worker-replicas=3 \
+</span></span><span class=line><span class=cl>  --ssh-private-key-file=&lt;path-to-ssh-private-key&gt; \
+</span></span><span class=line><span class=cl>  --registry-mirror-url=https://registry-1.docker.io \
+</span></span><span class=line><span class=cl>  --registry-mirror-username=xxx \
+</span></span><span class=line><span class=cl>  --registry-mirror-password=xxx \
+</span></span><span class=line><span class=cl>  --dry-run \
+</span></span><span class=line><span class=cl>  --output=yaml &gt; deploy-nkp-$CLUSTER_NAME.yaml
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>檢查 deploy-nkp-$CLUSTER_NAME.yaml
+</span></span><span class=line><span class=cl># vi deploy-nkp-nkp-pro-preprovisioned.yaml
+</span></span></code></pre></td></tr></table></div></div><p><img src=https://kenkenny.synology.me:5543/images/2025/02/image-20250227173502810.png loading=lazy alt=image-20250227173502810></p><h3 id=create-cluster>Create Cluster</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>部署 nkp cluster
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl># kubectl create -f deploy-nkp-nkp-pro-preprovisioned.yaml
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>觀察狀態
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl># kubectl wait --for=condition=ControlPlaneReady &#34;clusters/${CLUSTER_NAME}&#34; --timeout=30m
+</span></span></code></pre></td></tr></table></div></div><p><img src=https://kenkenny.synology.me:5543/images/2025/02/image-20250227173547345.png loading=lazy alt=image-20250227173547345></p><p>確認 Cluster</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl># kubectl get cluster
+</span></span><span class=line><span class=cl># kubectl describe cluster
+</span></span></code></pre></td></tr></table></div></div><p><img src=https://kenkenny.synology.me:5543/images/2025/02/image-20250227173613836.png loading=lazy alt=image-20250227173613836></p><p><img src=https://kenkenny.synology.me:5543/images/2025/02/image-20250227173618232.png loading=lazy alt=image-20250227173618232></p><h4 id=取得kubeconfig>取得kubeconfig</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>取得kubeconfig檔案
+</span></span><span class=line><span class=cl># nkp get kubeconfig -c ${CLUSTER_NAME} &gt; ${CLUSTER_NAME}.conf
+</span></span><span class=line><span class=cl># kubectl get nodes --kubeconfig=${CLUSTER_NAME}.conf
+</span></span><span class=line><span class=cl># kubectl get pods -A --kubeconfig=${CLUSTER_NAME}.conf
+</span></span></code></pre></td></tr></table></div></div><p><img src=https://kenkenny.synology.me:5543/images/2025/02/image-20250227173719200.png loading=lazy alt=image-20250227173719200></p><h4 id=pivot><strong>Pivot</strong></h4><p>原bootstrap 部署出來只是 workload cluster，此動作是要將此叢集變成 Self-Manged or Management</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-gdscript3 data-lang=gdscript3><span class=line><span class=cl><span class=err>將</span> <span class=n>Cluster</span> <span class=n>API</span> <span class=err>元件部署到</span> <span class=n>workload</span> <span class=n>cluster</span> 
+</span></span><span class=line><span class=cl><span class=c1># nkp create capi-components --kubeconfig=${CLUSTER_NAME}.conf</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=err>再將</span> <span class=n>life</span> <span class=n>cycle</span> <span class=n>services</span> <span class=err>從</span> <span class=n>bootstrap</span> <span class=err>移轉到</span> <span class=n>workload</span> <span class=n>cluster</span><span class=err>，並確認</span><span class=n>NKP</span> <span class=n>describe</span> <span class=n>cluster</span>
+</span></span><span class=line><span class=cl><span class=c1># nkp move capi-resources --to-kubeconfig ${CLUSTER_NAME}.conf</span>
+</span></span><span class=line><span class=cl><span class=c1># nkp describe cluster --kubeconfig ${CLUSTER_NAME}.conf -c ${CLUSTER_NAME}</span>
+</span></span></code></pre></td></tr></table></div></div><p><img src=https://kenkenny.synology.me:5543/images/2025/02/image-20250227173802640.png loading=lazy alt=image-20250227173802640></p><h4 id=metallb><strong>MetalLB</strong></h4><p><strong>如果沒有外部</strong> <strong>LoadBalancer</strong> <strong>的話，可以使用</strong> <strong>MetalLB</strong> <strong>，需設定</strong> <strong>Loadbalancer IP Pool</strong></p><p><strong>IP</strong> <strong>網段需與</strong> <strong>Machine</strong> <strong>同網段，可以只設定一個</strong> <strong>Ex. 192.168.1.240-192.168.1.240</strong></p><p><strong>原廠文件提供範例，調整</strong> <strong>addresses</strong> <strong>後</strong> <strong>apply</strong> <strong>該設定檔</strong></p><p># kubectl apply -f metallb-conf.yaml &ndash;kubeconfig ${CLUSTER_NAME}.conf</p><p><img src=https://kenkenny.synology.me:5543/images/2025/02/image-20250227173825119.png loading=lazy alt=image-20250227173825119></p><h4 id=install-kommander>Install Kommander</h4><p><strong>移除</strong> <strong>bootstrap cluster</strong></p><p># nkp delete bootstrap &ndash;kubeconfig $HOME/.kube/config</p><p><strong>取得</strong> <strong>kommander.yaml</strong></p><p># nkp install kommander &ndash;init > kommander.yaml</p><p><strong>預設</strong> <strong>storage class</strong> <strong>是</strong> <strong>localvolumeprovisioner</strong>，<strong>volume mode</strong> <strong>無法為</strong> <strong>Block</strong> **，
+** <strong>故需修改</strong> <strong>yaml</strong> <strong>調整</strong> <strong>rook-ceph-cluster</strong> **設定，**<strong>原則上建議使用外部</strong> <strong>Storage Class</strong> <strong>( NFS or Nutanix CSI )</strong></p><p><strong>下方服務不需要的可以設成</strong> <strong>false</strong> <strong>最小安裝參照</strong> <a class=link href="https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Kubernetes-Platform-v2_13:top-addl-kommander-config-c.html" target=_blank rel=noopener>https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Kubernetes-Platform-v2_13:top-addl-kommander-config-c</a><a class=link href="https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Kubernetes-Platform-v2_13:top-addl-kommander-config-c.html" target=_blank rel=noopener>.html</a></p><p><img src=https://kenkenny.synology.me:5543/images/2025/02/image-20250227173900072.png loading=lazy alt=image-20250227173900072></p><p><strong>設定</strong> **NKP Catalog Applications，並部署 **Kommander</p><p># nkp install kommander &ndash;installer-config kommander.yaml &ndash;kubeconfig=${CLUSTER_NAME}.conf &ndash;wait-timeout=1h</p><p><img src=https://kenkenny.synology.me:5543/images/2025/02/image-20250227173923224.png loading=lazy alt=image-20250227173923224></p><p><strong>觀察安裝過程</strong></p><p># watch kubectl get pod &ndash;n kommander</p><p># kubectl -n kommander wait &ndash;for condition=Ready helmreleases &ndash;all &ndash;timeout 15m</p><p><img src=https://kenkenny.synology.me:5543/images/2025/02/image-20250227173938405.png loading=lazy alt=image-20250227173938405></p><p>取得 UI 連結、帳號密碼</p><p># nkp open dashboard &ndash;kubeconfig=${CLUSTER_NAME}.conf</p><p><img src=https://kenkenny.synology.me:5543/images/2025/02/image-20250227173956097.png loading=lazy alt=image-20250227173956097></p></section><footer class=article-footer><section class=article-tags><a href=/tags/nutanix/>Nutanix</a>
+<a href=/tags/nkp/>NKP</a>
+<a href=/tags/kubernetes/>Kubernetes</a></section><section class=article-copyright><svg class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
+<span>Licensed under CC BY-NC-SA 4.0</span></section></footer></article><aside class=related-content--wrapper><h2 class=section-title>相關文章</h2><div class=related-content><div class="flex article-list--tile"><article><a href=/p/nutanix_nkp-v2.13_ahv/><div class=article-details><h2 class=article-title>Nutanix_NKP-v2.13_AHV</h2></div></a></article><article><a href=/p/nutanix_nkp-v2.12_ahv/><div class=article-details><h2 class=article-title>Nutanix_NKP-v2.12_AHV</h2></div></a></article><article><a href=/p/ocp-4.16.3_on_nutanixipi/><div class=article-details><h2 class=article-title>OCP-4.16.3_on_Nutanix(IPI)</h2></div></a></article><article><a href=/p/nutanix_ndk-v1.0.0_on_ocp-4.13/><div class=article-details><h2 class=article-title>Nutanix_NDK-v1.0.0_On_OCP-4.13</h2></div></a></article><article><a href=/p/ocp-4.12.45_on_nutanixipi/><div class=article-details><h2 class=article-title>OCP-4.12.45_on_Nutanix(IPI)</h2></div></a></article></div></div></aside><div class=disqus-container><div id=disqus_thread></div><script>window.disqus_config=function(){},function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById("disqus_thread").innerHTML="Disqus comments not available by default when the website is previewed locally.";return}var t=document,e=t.createElement("script");e.async=!0,e.src="//wangken0129.disqus.com/embed.js",e.setAttribute("data-timestamp",+new Date),(t.head||t.body).appendChild(e)}()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></div><style>.disqus-container{background-color:var(--card-background);border-radius:var(--card-border-radius);box-shadow:var(--shadow-l1);padding:var(--card-padding)}</style><script>window.addEventListener("onColorSchemeChange",e=>{typeof DISQUS=="object"&&DISQUS.reset({reload:!0})})</script><footer class=site-footer><section class=copyright>&copy;
+2023 -
+2025 Ken's blog</section><section class=powerby>使用 <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> 建立<br>主題 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.30.0>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 設計</section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js defer></script><script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>

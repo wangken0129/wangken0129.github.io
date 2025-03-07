@@ -1,0 +1,186 @@
+<!doctype html><html lang=en-us dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="Typora + NAS ＋ Picgo"><title>製作Blog Part1</title>
+<link rel=canonical href=https://wangken0129.github.io/p/blog-part1/><link rel=stylesheet href=/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css><meta property='og:title' content="製作Blog Part1"><meta property='og:description' content="Typora + NAS ＋ Picgo"><meta property='og:url' content='https://wangken0129.github.io/p/blog-part1/'><meta property='og:site_name' content="Ken's blog"><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='Blog'><meta property='article:tag' content='KB'><meta property='article:published_time' content='2023-09-19T07:10:00+08:00'><meta property='article:modified_time' content='2023-09-19T07:10:00+08:00'><meta name=twitter:title content="製作Blog Part1"><meta name=twitter:description content="Typora + NAS ＋ Picgo"><link rel="shortcut icon" href=/favicon.png></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切換選單>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar_hu_c68a00bbf16dac8.png width=300 height=300 class=site-logo loading=lazy alt=Avatar>
+</a><span class=emoji>🇹🇼</span></figure><div class=site-meta><h1 class=site-name><a href=/>Ken's blog</a></h1><h2 class=site-description>紀錄與分享，當個快樂的工程師</h2></div></header><ol class=menu-social><li><a href=https://github.com/wangken0129/wangken0129.github.io target=_blank title=GitHub rel=me><svg class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li><li><a href=https://www.linkedin.com/in/ken-wang-88924b181/ target=_blank title=LinkedIn rel=me><svg class="icon icon-tabler icon-tabler-brand-linkedin" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4m0 2a2 2 0 012-2h12a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2z"/><path d="M8 11v5"/><path d="M8 8v.01"/><path d="M12 16v-5"/><path d="M16 16v-3a2 2 0 00-4 0"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>Home</span></a></li><li><a href=/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>Archives</span></a></li><li><a href=/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>Search</span></a></li><li><a href=/links/><svg class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 14a3.5 3.5.0 005 0l4-4a3.5 3.5.0 00-5-5l-.5.5"/><path d="M14 10a3.5 3.5.0 00-5 0l-4 4a3.5 3.5.0 005 5l.5-.5"/></svg>
+<span>Links</span></a></li><li class=menu-bottom-section><ol class=menu><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>夜晚模式</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目錄</h2><div class=widget--toc><nav id=TableOfContents><ol><li><a href=#typora>Typora</a><ol><li><a href=#install-typora>Install Typora</a></li><li><a href=#setting-typora>Setting Typora</a></li></ol></li><li><a href=#nas自架圖床>NAS自架圖床</a><ol><li><a href=#web-station-install>Web Station Install</a></li><li><a href=#ftp-設定>FTP 設定</a></li></ol></li><li><a href=#picgo>Picgo</a><ol><li><a href=#install-picgo>Install Picgo</a></li><li><a href=#setting-picgo>Setting Picgo</a></li></ol></li><li><a href=#驗證typora--picgo--nas>驗證Typora + Picgo + NAS</a></li></ol></nav></div></section></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><header class=article-category><a href=/categories/knowledge-base-category/ style=background-color:#87cefa;color:#fff>Knowledge Base Category</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/p/blog-part1/>製作Blog Part1</a></h2><h3 class=article-subtitle>Typora + NAS ＋ Picgo</h3></div><footer class=article-time><div><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published>Sep 19, 2023</time></div><div><svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>閱讀時間: 3 分鐘</time></div></footer></div></header><section class=article-content><h1 id=製作blog-part1>製作Blog Part1</h1><p>把過程記錄下來，未來若有更換電腦還可以照著操作復原回來。</p><p>原本我只有使用Typora做本地紀錄，有需要再上傳Github或是匯出成 PDF or Word 分享給別人，</p><p>後來覺得有時候要用手機查看不太方便，有嘗試使用Notion因為還有手機App可使用，</p><p>但是匯入文件的時候出現不少問題故作罷，幾經測試，覺得Github Page+Hugo看起來是比較簡單好上手。</p><p>Part1 是Typora作為筆記軟體，並用Picgo上傳圖片到自架的NAS當作圖床空間。</p><p>Part2 是透過Hugo + Github Page來做靜態網站，以存放Typora的筆記。</p><p>Part3 是自動化腳本。</p><h2 id=typora>Typora</h2><p>我使用Typora作為我的Markdown筆記軟體，操作簡單而且可以匯出很多格式。</p><h3 id=install-typora>Install Typora</h3><p>從官網下載下來安裝即可</p><p>官網: <a class=link href=https://typora.io/ target=_blank rel=noopener>https://typora.io/</a></p><h3 id=setting-typora>Setting Typora</h3><p>有三個步驟:</p><ol><li><p>輸入授權 or 破解(?)</p></li><li><p>針對圖片的存放設定，一開始我是使用如下圖的設定，</p><p>複製圖片至Typora時會存放到上層路徑的assets資料夾，後來因為方便性改為上傳到自架的NAS上作為圖床。
+<img src=https://kenkenny.synology.me:5543/images/2023/09/image-20230919115931790.png loading=lazy alt=image-20230919115931790></p></li><li><p>外觀配置，官網有很多主題可以使用，只要把下載下來的主題複製到主題資料夾即可。<img src=https://kenkenny.synology.me:5543/images/2023/09/image-20230919125343105.png loading=lazy alt=image-20230919125343105></p></li></ol><p>完成後就可以開始使用Typora了。</p><p><img src=https://kenkenny.synology.me:5543/images/2023/09/image-20230919143435523.png loading=lazy alt=image-20230919143435523></p><h2 id=nas自架圖床>NAS自架圖床</h2><p>這步驟如果沒有NAS或是使用其他圖床空間可以省略，</p><p>會使用NAS自架圖床也是剛好有NAS，而且Imgur前陣子在大掃除，</p><p>其他的圖床空間也難免會有大掃除或是停止的狀況，自架也只建議小型的Blog使用，</p><p>如果有大量的圖片需求，還是建議用雲端的像Amazon S3等等。</p><p><em>NAS設定 DDNS OR DNS 還有憑證網路上有很多參考文件此處就不多加贅述，此處使用的是Synology DDNS 憑證自動更新</em></p><h3 id=web-station-install>Web Station Install</h3><ol><li>新增共用資料夾 /www/wwwroot/blog/images
+<img src=https://kenkenny.synology.me:5543/images/2023/09/image-20230919130918428.png loading=lazy alt=image-20230919130918428></li><li>建議再新增一個使用者設定權限專門使用此資料夾
+<img src=https://kenkenny.synology.me:5543/images/2023/09/image-20230919131239449.png loading=lazy alt=image-20230919131239449></li><li>安裝Web Station<img src=https://kenkenny.synology.me:5543/images/2023/09/image-20230919130741842.png loading=lazy alt=image-20230919130741842></li><li>網頁服務 &ndash;> 新增靜態網站，指定主目錄為剛剛新增的資料夾
+<img src=https://kenkenny.synology.me:5543/images/2023/09/image-20230919131023338.png loading=lazy alt=image-20230919131023338></li><li>新增網頁入口，對應剛剛新增的網頁服務，並設定好Port號，建議使用HTTPS
+<img src=https://kenkenny.synology.me:5543/images/2023/09/image-20230919132005169.png loading=lazy alt=image-20230919132005169></li><li>丟一張圖片到 /www/wwwroot/blog/images
+用網頁連線測試看是否可以讀取
+<img src=https://kenkenny.synology.me:5543/images/2023/09/image-20230919131936400.png loading=lazy alt=image-20230919131936400></li></ol><h3 id=ftp-設定>FTP 設定</h3><ol><li>開啟FTP服務，設定FTPS、Port號，安全性考量不勾選FTP
+<img src=https://kenkenny.synology.me:5543/images/2023/09/image-20230919132202926.png loading=lazy alt=image-20230919132202926></li><li>設定指定使用者根目錄，安全考量不啟用匿名登入
+<img src=https://kenkenny.synology.me:5543/images/2023/09/image-20230919132448501.png loading=lazy alt=image-20230919132448501></li></ol><h2 id=picgo>Picgo</h2><p>配置文件</p><p>參考原文: <a class=link href=https://zhuanlan.zhihu.com/p/382702959 target=_blank rel=noopener>https://zhuanlan.zhihu.com/p/382702959</a></p><p>Picgo: <a class=link href=https://picgo.github.io/PicGo-Core-Doc/zh/guide/config.html target=_blank rel=noopener>https://picgo.github.io/PicGo-Core-Doc/zh/guide/config.html</a></p><p>ftp-uploader: <a class=link href=https://github.com/imba97/picgo-plugin-ftp-uploader/tree/master target=_blank rel=noopener>https://github.com/imba97/picgo-plugin-ftp-uploader/tree/master</a></p><p>ftp-basic: <a class=link href=https://www.npmjs.com/package/basic-ftp target=_blank rel=noopener>https://www.npmjs.com/package/basic-ftp</a></p><h3 id=install-picgo>Install Picgo</h3><ol><li><p>首先要先安裝Node.js，下載安裝或是用brew install node</p><p><a class=link href=https://nodejs.org/en/download target=_blank rel=noopener>https://nodejs.org/en/download</a></p></li><li><p>安裝好後確認版本</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>wangken@wangken-MAC ~ % npm -v
+</span></span><span class=line><span class=cl>9.6.7
+</span></span><span class=line><span class=cl>wangken@wangken-MAC ~ % node -v
+</span></span><span class=line><span class=cl>v18.17.1
+</span></span></code></pre></td></tr></table></div></div></li><li><p>使用npm安裝Picgo</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>wangken@wangken-MAC ~ % npm install picgo -g
+</span></span><span class=line><span class=cl>wangken@wangken-MAC ~ % picgo -v     
+</span></span><span class=line><span class=cl>1.5.6
+</span></span><span class=line><span class=cl>wangken@wangken-MAC ~ % picgo --help
+</span></span><span class=line><span class=cl>Usage: picgo <span class=o>[</span>options<span class=o>]</span> <span class=o>[</span>command<span class=o>]</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Options:
+</span></span><span class=line><span class=cl>  -v, --version                        output the version number
+</span></span><span class=line><span class=cl>  -d, --debug                          debug mode
+</span></span><span class=line><span class=cl>  -s, --silent                         silent mode
+</span></span><span class=line><span class=cl>  -c, --config &lt;path&gt;                  <span class=nb>set</span> config path
+</span></span><span class=line><span class=cl>  -p, --proxy &lt;url&gt;                    <span class=nb>set</span> proxy <span class=k>for</span> uploading
+</span></span><span class=line><span class=cl>  -h, --help                           display <span class=nb>help</span> <span class=k>for</span> <span class=nb>command</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Commands:
+</span></span><span class=line><span class=cl>  install<span class=p>|</span>add <span class=o>[</span>options<span class=o>]</span> &lt;plugins...&gt;   install picgo plugin
+</span></span><span class=line><span class=cl>  uninstall<span class=p>|</span>rm &lt;plugins...&gt;            uninstall picgo plugin
+</span></span><span class=line><span class=cl>  update <span class=o>[</span>options<span class=o>]</span> &lt;plugins...&gt;        update picgo plugin
+</span></span><span class=line><span class=cl>  set<span class=p>|</span>config &lt;module&gt; <span class=o>[</span>name<span class=o>]</span>           configure config of picgo modules
+</span></span><span class=line><span class=cl>  upload<span class=p>|</span>u <span class=o>[</span>input...<span class=o>]</span>                  upload, go go go
+</span></span><span class=line><span class=cl>  use <span class=o>[</span>module<span class=o>]</span>                         use modules of picgo
+</span></span><span class=line><span class=cl>  init <span class=o>[</span>options<span class=o>]</span> &lt;template&gt; <span class=o>[</span>project<span class=o>]</span>  create picgo plugin<span class=err>&#39;</span>s development templates
+</span></span><span class=line><span class=cl>  i18n <span class=o>[</span>lang<span class=o>]</span>                          change picgo language
+</span></span><span class=line><span class=cl>  <span class=nb>help</span> <span class=o>[</span>command<span class=o>]</span>                       display <span class=nb>help</span> <span class=k>for</span> <span class=nb>command</span>
+</span></span></code></pre></td></tr></table></div></div></li><li><p>安裝好後再新增ftp-uploader</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-gdscript3 data-lang=gdscript3><span class=line><span class=cl><span class=n>wangken</span><span class=err>@</span><span class=n>wangken</span><span class=o>-</span><span class=n>MAC</span> <span class=o>~</span> <span class=o>%</span> <span class=n>picgo</span> <span class=n>install</span> <span class=n>picgo</span><span class=o>-</span><span class=n>plugin</span><span class=o>-</span><span class=n>ftp</span><span class=o>-</span><span class=n>uploader</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># added 3 packages in 1s</span>
+</span></span><span class=line><span class=cl><span class=c1># [PicGo SUCCESS]: 插件安装成功</span>
+</span></span></code></pre></td></tr></table></div></div></li></ol><h3 id=setting-picgo>Setting Picgo</h3><ol><li><p>修改Picgo配置文件，預設在~/.picgo/config.json</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>wangken@wangken-MAC ~ % picgo <span class=nb>set</span> uploader
+</span></span><span class=line><span class=cl>? Choose a<span class=o>(</span>n<span class=o>)</span> uploader ftp-uploader
+</span></span><span class=line><span class=cl>? imba97 kenkenny
+</span></span><span class=line><span class=cl>? D:/ftpUploaderConfig.json /Users/wangken/.picgo/ftpUploaderConfig.json
+</span></span><span class=line><span class=cl><span class=o>[</span>PicGo SUCCESS<span class=o>]</span>: Configure config successfully!
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>wangken@wangken-MAC ~ % cat ~/.picgo/config.json   
+</span></span><span class=line><span class=cl><span class=o>{</span>
+</span></span><span class=line><span class=cl>  <span class=s2>&#34;picBed&#34;</span>: <span class=o>{</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;uploader&#34;</span>: <span class=s2>&#34;ftp-uploader&#34;</span>,
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;current&#34;</span>: <span class=s2>&#34;ftp-uploader&#34;</span>,
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;ftp-uploader&#34;</span>: <span class=o>{</span>
+</span></span><span class=line><span class=cl>      <span class=s2>&#34;site&#34;</span>: <span class=s2>&#34;kenkenny&#34;</span>,
+</span></span><span class=line><span class=cl>      <span class=s2>&#34;configFile&#34;</span>: <span class=s2>&#34;/Users/wangken/.picgo/ftpUploaderConfig.json&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=o>}</span>
+</span></span><span class=line><span class=cl>  <span class=o>}</span>,
+</span></span><span class=line><span class=cl>  <span class=s2>&#34;picgoPlugins&#34;</span>: <span class=o>{</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;picgo-plugin-ftp-uploader&#34;</span>: <span class=nb>true</span>
+</span></span><span class=line><span class=cl>  <span class=o>}</span>
+</span></span><span class=line><span class=cl><span class=o>}</span>%
+</span></span></code></pre></td></tr></table></div></div></li><li><p>新增~/.picgo/ftpUploaderConfig.json
+這裡我多了一個secure的選項，安裝好後預設是沒有這個參數
+因為我是使用FTPS，所以後面的配置檔案也要新增secure的參數，其餘請自行修改NAS對應的路徑及連結</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-json data-lang=json><span class=line><span class=cl><span class=err>wangken@wangken-MAC</span> <span class=err>.picgo</span> <span class=err>%</span> <span class=err>cat</span> <span class=err>ftpUploaderConfig.json</span> 
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;kenkenny&#34;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;url&#34;</span><span class=p>:</span> <span class=s2>&#34;https://nas.domain:xxxx&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;path&#34;</span><span class=p>:</span> <span class=s2>&#34;/images/{year}/{month}/{fullName}&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;uploadPath&#34;</span><span class=p>:</span> <span class=s2>&#34;/wwwroot/blog/images/{year}/{month}/{fullName}&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;host&#34;</span><span class=p>:</span> <span class=s2>&#34;nas.domain&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;port&#34;</span><span class=p>:</span> <span class=err>portnumber</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;username&#34;</span><span class=p>:</span> <span class=s2>&#34;ftp-user&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;password&#34;</span><span class=p>:</span> <span class=s2>&#34;ftp-user-password&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;secure&#34;</span><span class=p>:</span> <span class=kc>true</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div></li><li><p>修改 ~/.picgo/node_modules/picgo-plugin-ftp-uploader/dist/index.js</p><p>在await client.access的地方新增 <strong>secure: config.secure</strong></p><p>詳細配置可以Google &ldquo;ftp-basic&rdquo; 就會有文件可以參考了</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>wangken@wangken-MAC dist % vim index.js
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>          await client.access({
+</span></span><span class=line><span class=cl>              host: config.host,
+</span></span><span class=line><span class=cl>              port: config.port,
+</span></span><span class=line><span class=cl>              user: config.username,
+</span></span><span class=line><span class=cl>              password: config.password,
+</span></span><span class=line><span class=cl>              secure: config.secure
+</span></span><span class=line><span class=cl>          });
+</span></span></code></pre></td></tr></table></div></div></li><li><p>以上配置完成，不用重開機直接進入Typora修改圖片上傳的設定</p></li></ol><h2 id=驗證typora--picgo--nas>驗證Typora + Picgo + NAS</h2><ol><li><p>首先修改Typora的圖片設定，改為自訂命令，輸入 picgo upload
+<img src=https://kenkenny.synology.me:5543/images/2023/09/image-20230919141634956.png loading=lazy alt=image-20230919141634956></p></li><li><p>接著新增一個md檔案，複製一張圖片進去即可看到圖片上傳成功</p><p>Typora: 點擊圖片即可看到上傳後的路徑</p><p><img src=https://kenkenny.synology.me:5543/images/2023/09/image-20230919142209291.png loading=lazy alt=image-20230919142209291></p><p>NAS: 點選連結或是進入NAS的File Station確認圖片
+<img src=https://kenkenny.synology.me:5543/images/2023/09/image-20230919142323495.png loading=lazy alt=image-20230919142323495></p></li></ol><p>以上就是Typora+Picgo上傳圖片到NAS上的設定，下一篇再來進入部落格的製作。</p></section><footer class=article-footer><section class=article-tags><a href=/tags/blog/>Blog</a>
+<a href=/tags/kb/>KB</a></section><section class=article-copyright><svg class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
+<span>Licensed under CC BY-NC-SA 4.0</span></section></footer></article><aside class=related-content--wrapper><h2 class=section-title>相關文章</h2><div class=related-content><div class="flex article-list--tile"><article><a href=/p/blog-part3/><div class=article-details><h2 class=article-title>製作Blog Part3 (半自動腳本)</h2></div></a></article><article><a href=/p/blog-part2/><div class=article-details><h2 class=article-title>製作Blog Part2</h2></div></a></article><article><a href=/p/nutanix-notes/><div class=article-details><h2 class=article-title>Nutanix-Notes</h2></div></a></article><article><a href=/p/nutanix_webinar_%E9%80%9A%E9%81%8Enutanix%E5%AF%A6%E7%8F%BE%E8%B3%87%E6%96%99%E5%BA%AB%E8%88%87devops%E7%9A%84%E8%9E%8D%E5%90%88/><div class=article-details><h2 class=article-title>Nutanix_Webinar_通過Nutanix實現資料庫與DevOps的融合</h2></div></a></article><article><a href=/p/guide_rke2rancher_install/><div class=article-details><h2 class=article-title>Guide_RKE2&amp;Rancher_install</h2></div></a></article></div></div></aside><div class=disqus-container><div id=disqus_thread></div><script>window.disqus_config=function(){},function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById("disqus_thread").innerHTML="Disqus comments not available by default when the website is previewed locally.";return}var t=document,e=t.createElement("script");e.async=!0,e.src="//wangken0129.disqus.com/embed.js",e.setAttribute("data-timestamp",+new Date),(t.head||t.body).appendChild(e)}()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></div><style>.disqus-container{background-color:var(--card-background);border-radius:var(--card-border-radius);box-shadow:var(--shadow-l1);padding:var(--card-padding)}</style><script>window.addEventListener("onColorSchemeChange",e=>{typeof DISQUS=="object"&&DISQUS.reset({reload:!0})})</script><footer class=site-footer><section class=copyright>&copy;
+2023 -
+2025 Ken's blog</section><section class=powerby>使用 <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> 建立<br>主題 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.30.0>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 設計</section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js defer></script><script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>

@@ -1,0 +1,1048 @@
+<!doctype html><html lang=en-us dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="OCP-4.11.9_on_vSphere(UPI)"><title>OCP-4.11.9_on_vSphere(UPI)</title>
+<link rel=canonical href=https://wangken0129.github.io/p/ocp-4.11.9_on_vsphereupi/><link rel=stylesheet href=/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css><meta property='og:title' content="OCP-4.11.9_on_vSphere(UPI)"><meta property='og:description' content="OCP-4.11.9_on_vSphere(UPI)"><meta property='og:url' content='https://wangken0129.github.io/p/ocp-4.11.9_on_vsphereupi/'><meta property='og:site_name' content="Ken's blog"><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='Openshift'><meta property='article:tag' content='Redhat'><meta property='article:tag' content='Kubernetes'><meta property='article:tag' content='Vmware'><meta property='article:published_time' content='2023-09-23T08:19:11+08:00'><meta property='article:modified_time' content='2023-09-23T08:19:11+08:00'><meta name=twitter:title content="OCP-4.11.9_on_vSphere(UPI)"><meta name=twitter:description content="OCP-4.11.9_on_vSphere(UPI)"><link rel="shortcut icon" href=/favicon.png></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切換選單>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar_hu_c68a00bbf16dac8.png width=300 height=300 class=site-logo loading=lazy alt=Avatar>
+</a><span class=emoji>🇹🇼</span></figure><div class=site-meta><h1 class=site-name><a href=/>Ken's blog</a></h1><h2 class=site-description>紀錄與分享，當個快樂的工程師</h2></div></header><ol class=menu-social><li><a href=https://github.com/wangken0129/wangken0129.github.io target=_blank title=GitHub rel=me><svg class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li><li><a href=https://www.linkedin.com/in/ken-wang-88924b181/ target=_blank title=LinkedIn rel=me><svg class="icon icon-tabler icon-tabler-brand-linkedin" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4m0 2a2 2 0 012-2h12a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2z"/><path d="M8 11v5"/><path d="M8 8v.01"/><path d="M12 16v-5"/><path d="M16 16v-3a2 2 0 00-4 0"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>Home</span></a></li><li><a href=/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>Archives</span></a></li><li><a href=/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>Search</span></a></li><li><a href=/links/><svg class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 14a3.5 3.5.0 005 0l4-4a3.5 3.5.0 00-5-5l-.5.5"/><path d="M14 10a3.5 3.5.0 00-5 0l-4 4a3.5 3.5.0 005 5l.5-.5"/></svg>
+<span>Links</span></a></li><li class=menu-bottom-section><ol class=menu><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>夜晚模式</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目錄</h2><div class=widget--toc><nav id=TableOfContents><ol><li><ol><li><a href=#說明>說明</a></li><li><a href=#下載oc-client>下載OC Client</a></li><li><a href=#下載ocp-installer>下載OCP Installer</a></li><li><a href=#下載coreos-4119ova>下載CoreOS-4.11.9.ova</a></li><li><a href=#下載pull-secret>下載Pull-Secret</a></li><li><a href=#named>Named</a></li><li><a href=#haproxy>HAProxy</a></li><li><a href=#nginx>Nginx</a></li></ol></li><li><a href=#產生安裝檔案>產生安裝檔案</a><ol><li><a href=#確認-cli-tool>確認 cli tool</a></li><li><a href=#產生ssh-key-bastion>產生SSH key (Bastion)</a></li><li><a href=#建立install-configyaml>建立Install-config.yaml</a></li><li><a href=#產生ignition-file>產生Ignition file</a></li><li><a href=#複製ignition-file-到web>複製Ignition File 到Web</a></li></ol></li><li><a href=#複製ovf至vm>複製OVF至VM</a><ol><li><a href=#調整參數>調整參數</a><ol><li><a href=#設定ip>設定IP</a></li></ol></li></ol></li><li><a href=#先啟動bootstrap>先啟動bootstrap</a></li><li><a href=#再啟動master>再啟動Master</a></li><li><a href=#啟動worker後-approve-csr>啟動Worker後 Approve CSR</a></li><li><a href=#storage-class>Storage Class</a></li></ol></nav></div></section></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><header class=article-category><a href=/categories/lab-category/ style=background-color:#2a9d8f;color:#fff>Lab Category</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/p/ocp-4.11.9_on_vsphereupi/>OCP-4.11.9_on_vSphere(UPI)</a></h2><h3 class=article-subtitle>OCP-4.11.9_on_vSphere(UPI)</h3></div><footer class=article-time><div><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published>Sep 23, 2023</time></div><div><svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>閱讀時間: 10 分鐘</time></div></footer></div></header><section class=article-content><h1 id=install-openshift-4119-on-vsphereupi>Install Openshift 4.11.9 on vSphere(UPI)</h1><h3 id=說明>說明</h3><p><a class=link href=https://docs.openshift.com/container-platform/4.11/installing/installing_vsphere/installing-vsphere.html target=_blank rel=noopener>https://docs.openshift.com/container-platform/4.11/installing/installing_vsphere/installing-vsphere.html</a>
+<a class=link href="https://cloud.redhat.com/blog/deploying-openshift-4.4-to-vmware-vsphere-7?hsLang=en-us" target=_blank rel=noopener>https://cloud.redhat.com/blog/deploying-openshift-4.4-to-vmware-vsphere-7?hsLang=en-us</a></p><ol><li>用Mac 當作Client</li><li>需要事先安裝好Bastion</li><li>Bastion安裝設定Named、HAProxy、Web Server (這裡用Nginx)</li><li>用rhcos-4.11.9.ova 來ESXi 部署ovf 範本</li></ol><h3 id=下載oc-client>下載OC Client</h3><p><a class=link href=https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/4.11.9/openshift-client-mac-4.11.9.tar.gz target=_blank rel=noopener>https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/4.11.9/openshift-client-mac-4.11.9.tar.gz</a></p><h3 id=下載ocp-installer>下載OCP Installer</h3><p><a class=link href=https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/4.11.9/openshift-install-mac-4.11.9.tar.gz target=_blank rel=noopener>https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/4.11.9/openshift-install-mac-4.11.9.tar.gz</a></p><h3 id=下載coreos-4119ova>下載CoreOS-4.11.9.ova</h3><p><a class=link href=https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.11/4.11.9/rhcos-4.11.9-x86_64-vmware.x86_64.ova target=_blank rel=noopener>https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.11/4.11.9/rhcos-4.11.9-x86_64-vmware.x86_64.ova</a></p><h3 id=下載pull-secret>下載Pull-Secret</h3><p><a class=link href=https://console.redhat.com/openshift/downloads#tool-pull-secret target=_blank rel=noopener>https://console.redhat.com/openshift/downloads#tool-pull-secret</a></p><h3 id=named>Named</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>  1
+</span><span class=lnt>  2
+</span><span class=lnt>  3
+</span><span class=lnt>  4
+</span><span class=lnt>  5
+</span><span class=lnt>  6
+</span><span class=lnt>  7
+</span><span class=lnt>  8
+</span><span class=lnt>  9
+</span><span class=lnt> 10
+</span><span class=lnt> 11
+</span><span class=lnt> 12
+</span><span class=lnt> 13
+</span><span class=lnt> 14
+</span><span class=lnt> 15
+</span><span class=lnt> 16
+</span><span class=lnt> 17
+</span><span class=lnt> 18
+</span><span class=lnt> 19
+</span><span class=lnt> 20
+</span><span class=lnt> 21
+</span><span class=lnt> 22
+</span><span class=lnt> 23
+</span><span class=lnt> 24
+</span><span class=lnt> 25
+</span><span class=lnt> 26
+</span><span class=lnt> 27
+</span><span class=lnt> 28
+</span><span class=lnt> 29
+</span><span class=lnt> 30
+</span><span class=lnt> 31
+</span><span class=lnt> 32
+</span><span class=lnt> 33
+</span><span class=lnt> 34
+</span><span class=lnt> 35
+</span><span class=lnt> 36
+</span><span class=lnt> 37
+</span><span class=lnt> 38
+</span><span class=lnt> 39
+</span><span class=lnt> 40
+</span><span class=lnt> 41
+</span><span class=lnt> 42
+</span><span class=lnt> 43
+</span><span class=lnt> 44
+</span><span class=lnt> 45
+</span><span class=lnt> 46
+</span><span class=lnt> 47
+</span><span class=lnt> 48
+</span><span class=lnt> 49
+</span><span class=lnt> 50
+</span><span class=lnt> 51
+</span><span class=lnt> 52
+</span><span class=lnt> 53
+</span><span class=lnt> 54
+</span><span class=lnt> 55
+</span><span class=lnt> 56
+</span><span class=lnt> 57
+</span><span class=lnt> 58
+</span><span class=lnt> 59
+</span><span class=lnt> 60
+</span><span class=lnt> 61
+</span><span class=lnt> 62
+</span><span class=lnt> 63
+</span><span class=lnt> 64
+</span><span class=lnt> 65
+</span><span class=lnt> 66
+</span><span class=lnt> 67
+</span><span class=lnt> 68
+</span><span class=lnt> 69
+</span><span class=lnt> 70
+</span><span class=lnt> 71
+</span><span class=lnt> 72
+</span><span class=lnt> 73
+</span><span class=lnt> 74
+</span><span class=lnt> 75
+</span><span class=lnt> 76
+</span><span class=lnt> 77
+</span><span class=lnt> 78
+</span><span class=lnt> 79
+</span><span class=lnt> 80
+</span><span class=lnt> 81
+</span><span class=lnt> 82
+</span><span class=lnt> 83
+</span><span class=lnt> 84
+</span><span class=lnt> 85
+</span><span class=lnt> 86
+</span><span class=lnt> 87
+</span><span class=lnt> 88
+</span><span class=lnt> 89
+</span><span class=lnt> 90
+</span><span class=lnt> 91
+</span><span class=lnt> 92
+</span><span class=lnt> 93
+</span><span class=lnt> 94
+</span><span class=lnt> 95
+</span><span class=lnt> 96
+</span><span class=lnt> 97
+</span><span class=lnt> 98
+</span><span class=lnt> 99
+</span><span class=lnt>100
+</span><span class=lnt>101
+</span><span class=lnt>102
+</span><span class=lnt>103
+</span><span class=lnt>104
+</span><span class=lnt>105
+</span><span class=lnt>106
+</span><span class=lnt>107
+</span><span class=lnt>108
+</span><span class=lnt>109
+</span><span class=lnt>110
+</span><span class=lnt>111
+</span><span class=lnt>112
+</span><span class=lnt>113
+</span><span class=lnt>114
+</span><span class=lnt>115
+</span><span class=lnt>116
+</span><span class=lnt>117
+</span><span class=lnt>118
+</span><span class=lnt>119
+</span><span class=lnt>120
+</span><span class=lnt>121
+</span><span class=lnt>122
+</span><span class=lnt>123
+</span><span class=lnt>124
+</span><span class=lnt>125
+</span><span class=lnt>126
+</span><span class=lnt>127
+</span><span class=lnt>128
+</span><span class=lnt>129
+</span><span class=lnt>130
+</span><span class=lnt>131
+</span><span class=lnt>132
+</span><span class=lnt>133
+</span><span class=lnt>134
+</span><span class=lnt>135
+</span><span class=lnt>136
+</span><span class=lnt>137
+</span><span class=lnt>138
+</span><span class=lnt>139
+</span><span class=lnt>140
+</span><span class=lnt>141
+</span><span class=lnt>142
+</span><span class=lnt>143
+</span><span class=lnt>144
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-dns data-lang=dns><span class=line><span class=cl><span class=nc>Named</span><span class=w> </span><span class=err>設定檔</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=err>[root@bastion</span><span class=w> </span><span class=err>~]#</span><span class=w> </span><span class=err>cat</span><span class=w> </span><span class=err>/etc/</span><span class=nc>named.conf</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=err>//</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=err>//</span><span class=w> </span><span class=nc>named.conf</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=err>//</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=err>//</span><span class=w> </span><span class=err>Provided</span><span class=w> </span><span class=err>by</span><span class=w> </span><span class=err>Red</span><span class=w> </span><span class=err>Hat</span><span class=w> </span><span class=err>bind</span><span class=w> </span><span class=err>package</span><span class=w> </span><span class=err>to</span><span class=w> </span><span class=err>configure</span><span class=w> </span><span class=err>the</span><span class=w> </span><span class=err>ISC</span><span class=w> </span><span class=err>BIND</span><span class=w> </span><span class=err>named</span><span class=p>(</span><span class=sc>8</span><span class=p>)</span><span class=w> </span><span class=err>DNS</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=err>//</span><span class=w> </span><span class=err>server</span><span class=w> </span><span class=err>as</span><span class=w> </span><span class=err>a</span><span class=w> </span><span class=err>caching</span><span class=w> </span><span class=err>only</span><span class=w> </span><span class=err>nameserver</span><span class=w> </span><span class=p>(</span><span class=err>as</span><span class=w> </span><span class=err>a</span><span class=w> </span><span class=err>localhost</span><span class=w> </span><span class=err>DNS</span><span class=w> </span><span class=err>resolver</span><span class=w> </span><span class=err>only</span><span class=p>)</span><span class=err>.</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=err>//</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=err>//</span><span class=w> </span><span class=err>See</span><span class=w> </span><span class=err>/usr/share/doc/bind*/sample/</span><span class=w> </span><span class=err>for</span><span class=w> </span><span class=err>example</span><span class=w> </span><span class=err>named</span><span class=w> </span><span class=err>configuration</span><span class=w> </span><span class=py>files.</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=err>//</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nc>options</span><span class=w> </span><span class=err>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>	</span><span class=err>listen-on</span><span class=w> </span><span class=err>port</span><span class=w> </span><span class=sc>53</span><span class=w> </span><span class=err>{</span><span class=w> </span><span class=err>any</span><span class=c>; };</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=err>#</span><span class=w>	</span><span class=err>listen-on-v6</span><span class=w> </span><span class=err>port</span><span class=w> </span><span class=sc>53</span><span class=w> </span><span class=err>{</span><span class=w> </span><span class=err>::</span><span class=sc>1</span><span class=c>; };</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>	</span><span class=err>directory</span><span class=w> 	</span><span class=err>&#34;/var/named&#34;</span><span class=c>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>	</span><span class=err>dump-file</span><span class=w> 	</span><span class=err>&#34;/var/named/data/</span><span class=nc>cache_dump.db</span><span class=err>&#34;</span><span class=c>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>	</span><span class=err>statistics-file</span><span class=w> </span><span class=err>&#34;/var/named/data/</span><span class=nc>named_stats.txt</span><span class=err>&#34;</span><span class=c>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>	</span><span class=err>memstatistics-file</span><span class=w> </span><span class=err>&#34;/var/named/data/</span><span class=nc>named_mem_stats.txt</span><span class=err>&#34;</span><span class=c>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>	</span><span class=err>secroots-file</span><span class=w>	</span><span class=err>&#34;/var/named/data/</span><span class=nc>named.secroots</span><span class=err>&#34;</span><span class=c>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>	</span><span class=err>recursing-file</span><span class=w>	</span><span class=err>&#34;/var/named/data/</span><span class=nc>named.recursing</span><span class=err>&#34;</span><span class=c>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>	</span><span class=err>allow-query</span><span class=w>     </span><span class=err>{</span><span class=w> </span><span class=err>any</span><span class=c>; };</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>	</span><span class=err>##</span><span class=w> </span><span class=err>設定轉寄站</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>	</span><span class=err>forwarders</span><span class=w> </span><span class=err>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=mi>192.168.2.12</span><span class=c>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=mi>192.168.2.11</span><span class=c>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>   </span><span class=err>}</span><span class=c>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>	</span><span class=err>/*</span><span class=w> 
+</span></span></span><span class=line><span class=cl><span class=w>	 </span><span class=err>-</span><span class=w> </span><span class=err>If</span><span class=w> </span><span class=err>you</span><span class=w> </span><span class=err>are</span><span class=w> </span><span class=err>building</span><span class=w> </span><span class=err>an</span><span class=w> </span><span class=err>AUTHORITATIVE</span><span class=w> </span><span class=err>DNS</span><span class=w> </span><span class=err>server,</span><span class=w> </span><span class=err>do</span><span class=w> </span><span class=err>NOT</span><span class=w> </span><span class=err>enable</span><span class=w> </span><span class=py>recursion.</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>	 </span><span class=err>-</span><span class=w> </span><span class=err>If</span><span class=w> </span><span class=err>you</span><span class=w> </span><span class=err>are</span><span class=w> </span><span class=err>building</span><span class=w> </span><span class=err>a</span><span class=w> </span><span class=err>RECURSIVE</span><span class=w> </span><span class=p>(</span><span class=err>caching</span><span class=p>)</span><span class=w> </span><span class=err>DNS</span><span class=w> </span><span class=err>server,</span><span class=w> </span><span class=err>you</span><span class=w> </span><span class=err>need</span><span class=w> </span><span class=err>to</span><span class=w> </span><span class=err>enable</span><span class=w> 
+</span></span></span><span class=line><span class=cl><span class=w>	   </span><span class=py>recursion. </span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>	 </span><span class=err>-</span><span class=w> </span><span class=err>If</span><span class=w> </span><span class=err>your</span><span class=w> </span><span class=err>recursive</span><span class=w> </span><span class=err>DNS</span><span class=w> </span><span class=err>server</span><span class=w> </span><span class=err>has</span><span class=w> </span><span class=err>a</span><span class=w> </span><span class=err>public</span><span class=w> </span><span class=err>IP</span><span class=w> </span><span class=err>address,</span><span class=w> </span><span class=err>you</span><span class=w> </span><span class=err>MUST</span><span class=w> </span><span class=err>enable</span><span class=w> </span><span class=err>access</span><span class=w> 
+</span></span></span><span class=line><span class=cl><span class=w>	   </span><span class=err>control</span><span class=w> </span><span class=err>to</span><span class=w> </span><span class=err>limit</span><span class=w> </span><span class=err>queries</span><span class=w> </span><span class=err>to</span><span class=w> </span><span class=err>your</span><span class=w> </span><span class=err>legitimate</span><span class=w> </span><span class=py>users. </span><span class=err>Failing</span><span class=w> </span><span class=err>to</span><span class=w> </span><span class=err>do</span><span class=w> </span><span class=err>so</span><span class=w> </span><span class=err>will</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>	   </span><span class=err>cause</span><span class=w> </span><span class=err>your</span><span class=w> </span><span class=err>server</span><span class=w> </span><span class=err>to</span><span class=w> </span><span class=err>become</span><span class=w> </span><span class=err>part</span><span class=w> </span><span class=err>of</span><span class=w> </span><span class=err>large</span><span class=w> </span><span class=err>scale</span><span class=w> </span><span class=err>DNS</span><span class=w> </span><span class=err>amplification</span><span class=w> 
+</span></span></span><span class=line><span class=cl><span class=w>	   </span><span class=py>attacks. </span><span class=err>Implementing</span><span class=w> </span><span class=err>BCP38</span><span class=w> </span><span class=err>within</span><span class=w> </span><span class=err>your</span><span class=w> </span><span class=err>network</span><span class=w> </span><span class=err>would</span><span class=w> </span><span class=err>greatly</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>	   </span><span class=err>reduce</span><span class=w> </span><span class=err>such</span><span class=w> </span><span class=err>attack</span><span class=w> </span><span class=err>surface</span><span class=w> 
+</span></span></span><span class=line><span class=cl><span class=w>	</span><span class=err>*/</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>	</span><span class=err>recursion</span><span class=w> </span><span class=err>yes</span><span class=c>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>	</span><span class=err>dnssec-enable</span><span class=w> </span><span class=err>yes</span><span class=c>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>	</span><span class=err>dnssec-validation</span><span class=w> </span><span class=err>yes</span><span class=c>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>	</span><span class=err>managed-keys-directory</span><span class=w> </span><span class=err>&#34;/var/named/dynamic&#34;</span><span class=c>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>	</span><span class=err>pid-file</span><span class=w> </span><span class=err>&#34;/run/named/</span><span class=nc>named.pid</span><span class=err>&#34;</span><span class=c>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>	</span><span class=err>session-keyfile</span><span class=w> </span><span class=err>&#34;/run/named/</span><span class=nc>session.key</span><span class=err>&#34;</span><span class=c>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>	</span><span class=err>/*</span><span class=w> </span><span class=err>https://</span><span class=nc>fedoraproject.org</span><span class=err>/wiki/Changes/CryptoPolicy</span><span class=w> </span><span class=err>*/</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>	</span><span class=err>include</span><span class=w> </span><span class=err>&#34;/etc/crypto-policies/back-ends/</span><span class=nc>bind.config</span><span class=err>&#34;</span><span class=c>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=err>}</span><span class=c>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nc>logging</span><span class=w> </span><span class=err>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=err>channel</span><span class=w> </span><span class=err>default_debug</span><span class=w> </span><span class=err>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=err>file</span><span class=w> </span><span class=err>&#34;data/</span><span class=nc>named.run</span><span class=err>&#34;</span><span class=c>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=err>severity</span><span class=w> </span><span class=err>dynamic</span><span class=c>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=err>}</span><span class=c>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=err>}</span><span class=c>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nc>zone</span><span class=w> </span><span class=err>&#34;.&#34;</span><span class=w> </span><span class=k>IN</span><span class=w> </span><span class=err>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>	</span><span class=err>type</span><span class=w> </span><span class=err>hint</span><span class=c>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>	</span><span class=err>file</span><span class=w> </span><span class=err>&#34;</span><span class=nc>named.ca</span><span class=err>&#34;</span><span class=c>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=err>}</span><span class=c>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nc>zone</span><span class=w> </span><span class=err>&#34;</span><span class=nc>ocp.infotech.com.tw</span><span class=err>&#34;</span><span class=w> </span><span class=k>IN</span><span class=w> </span><span class=err>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nc>type</span><span class=w> </span><span class=err>master</span><span class=c>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nc>file</span><span class=w> </span><span class=err>&#34;/var/named/</span><span class=nc>forward.bastion.ocp</span><span class=err>&#34;</span><span class=c>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nc>allow-update</span><span class=w> </span><span class=err>{</span><span class=w> </span><span class=err>none</span><span class=c>; };</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nc>allow-query</span><span class=w> </span><span class=err>{</span><span class=w> </span><span class=err>any</span><span class=c>; };</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nc>allow-transfer</span><span class=w> </span><span class=err>{</span><span class=w> </span><span class=err>none</span><span class=c>; };</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=err>}</span><span class=c>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nc>zone</span><span class=w> </span><span class=err>&#34;</span><span class=sc>3</span><span class=nc>.168.192.in-addr.arpa</span><span class=err>&#34;</span><span class=w> </span><span class=k>IN</span><span class=w> </span><span class=err>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nc>type</span><span class=w> </span><span class=err>master</span><span class=c>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nc>file</span><span class=w> </span><span class=err>&#34;/var/named/</span><span class=nc>reverse.bastion.ocp</span><span class=err>&#34;</span><span class=c>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nc>allow-update</span><span class=w> </span><span class=err>{</span><span class=w> </span><span class=err>none</span><span class=c>; };</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nc>allow-query</span><span class=w> </span><span class=err>{</span><span class=w> </span><span class=err>any</span><span class=c>; };</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nc>allow-transfer</span><span class=w> </span><span class=err>{</span><span class=w> </span><span class=err>none</span><span class=c>; };</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=err>}</span><span class=c>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nc>include</span><span class=w> </span><span class=err>&#34;/etc/</span><span class=nc>named.rfc1912.zones</span><span class=err>&#34;</span><span class=c>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nc>include</span><span class=w> </span><span class=err>&#34;/etc/</span><span class=nc>named.root.key</span><span class=err>&#34;</span><span class=c>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nc>------</span><span class=w> </span><span class=err>正向解析</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=err>[root@bastion</span><span class=w> </span><span class=err>~]#</span><span class=w> </span><span class=err>cat</span><span class=w> </span><span class=err>/var/named/</span><span class=nc>forward.bastion.ocp</span><span class=w> 
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=na>$TTL</span><span class=w> </span><span class=sc>1</span><span class=err>W</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nc>@</span><span class=w>	</span><span class=k>IN</span><span class=w>	</span><span class=k>SOA</span><span class=w>	</span><span class=py>ns1.infotech.com.tw.	</span><span class=err>root</span><span class=w> </span><span class=p>(</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>			</span><span class=sc>2019070700</span><span class=w>	</span><span class=c>; serial</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>			</span><span class=sc>3</span><span class=err>H</span><span class=w>		</span><span class=c>; refresh (3 hours)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>			</span><span class=sc>30</span><span class=err>M</span><span class=w>		</span><span class=c>; retry (30 minutes)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>			</span><span class=sc>2</span><span class=err>W</span><span class=w>		</span><span class=c>; expiry (2 weeks)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>			</span><span class=sc>1</span><span class=err>W</span><span class=w> </span><span class=p>)</span><span class=w>		</span><span class=c>; minimum (1 week)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>	</span><span class=k>IN</span><span class=w>	</span><span class=k>NS</span><span class=w>	</span><span class=py>ns1.infotech.com.tw.</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>	</span><span class=k>IN</span><span class=w>	</span><span class=k>MX</span><span class=w> </span><span class=sc>10</span><span class=w>	</span><span class=py>smtp.infotech.com.tw.</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=c>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=c>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=py>ns1.infotech.com.tw.	</span><span class=w>	</span><span class=k>IN</span><span class=w>	</span><span class=k>A</span><span class=w>	</span><span class=mi>192.168.3.37</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=py>smtp.infotech.com.tw.	</span><span class=w>	</span><span class=k>IN</span><span class=w>	</span><span class=k>A</span><span class=w>	</span><span class=mi>192.168.3.37</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=c>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=py>helper.infotech.com.tw.	</span><span class=w>	</span><span class=k>IN</span><span class=w>	</span><span class=k>A</span><span class=w>	</span><span class=mi>192.168.3.37</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=py>helper.ocp.infotech.com.tw.	</span><span class=k>IN</span><span class=w>	</span><span class=k>A</span><span class=w>	</span><span class=mi>192.168.3.37</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=c>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=py>api.ocp.infotech.com.tw.	</span><span class=k>IN</span><span class=w>	</span><span class=k>A</span><span class=w>	</span><span class=mi>192.168.3.37</span><span class=w> 
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=py>api-int.ocp.infotech.com.tw.	</span><span class=k>IN</span><span class=w>	</span><span class=k>A</span><span class=w>	</span><span class=mi>192.168.3.37</span><span class=w> 
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=c>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=err>*</span><span class=nc>.apps.ocp.infotech.com.tw.</span><span class=w>	</span><span class=k>IN</span><span class=w>	</span><span class=k>A</span><span class=w>	</span><span class=mi>192.168.3.37</span><span class=w> 
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=c>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=py>bootstrap.ocp.infotech.com.tw.	</span><span class=k>IN</span><span class=w>	</span><span class=k>A</span><span class=w>	</span><span class=mi>192.168.3.36</span><span class=w> 
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=c>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=py>master1.ocp.infotech.com.tw.	</span><span class=k>IN</span><span class=w>	</span><span class=k>A</span><span class=w>	</span><span class=mi>192.168.3.31</span><span class=w> 
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=py>master2.ocp.infotech.com.tw.	</span><span class=k>IN</span><span class=w>	</span><span class=k>A</span><span class=w>	</span><span class=mi>192.168.3.32</span><span class=w> 
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=py>master3.ocp.infotech.com.tw.	</span><span class=k>IN</span><span class=w>	</span><span class=k>A</span><span class=w>	</span><span class=mi>192.168.3.33</span><span class=w> 
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=c>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=py>worker1.ocp.infotech.com.tw.	</span><span class=k>IN</span><span class=w>	</span><span class=k>A</span><span class=w>	</span><span class=mi>192.168.3.34</span><span class=w> 
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=py>worker2.ocp.infotech.com.tw.	</span><span class=k>IN</span><span class=w>	</span><span class=k>A</span><span class=w>	</span><span class=mi>192.168.3.35</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=c>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=c>;EOF</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nc>-------</span><span class=w> </span><span class=err>反向解析</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=err>[root@bastion</span><span class=w> </span><span class=err>~]#</span><span class=w> </span><span class=err>cat</span><span class=w> </span><span class=err>/var/named/</span><span class=nc>reverse.bastion.ocp</span><span class=w> 
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=na>$TTL</span><span class=w> </span><span class=sc>1</span><span class=err>W</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nc>@</span><span class=w>	</span><span class=k>IN</span><span class=w>	</span><span class=k>SOA</span><span class=w>	</span><span class=py>ns1.infotech.com.tw.	</span><span class=err>root</span><span class=w> </span><span class=p>(</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>			</span><span class=sc>2019070700</span><span class=w>	</span><span class=c>; serial</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>			</span><span class=sc>3</span><span class=err>H</span><span class=w>		</span><span class=c>; refresh (3 hours)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>			</span><span class=sc>30</span><span class=err>M</span><span class=w>		</span><span class=c>; retry (30 minutes)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>			</span><span class=sc>2</span><span class=err>W</span><span class=w>		</span><span class=c>; expiry (2 weeks)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>			</span><span class=sc>1</span><span class=err>W</span><span class=w> </span><span class=p>)</span><span class=w>		</span><span class=c>; minimum (1 week)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>	</span><span class=k>IN</span><span class=w>	</span><span class=k>NS</span><span class=w>	</span><span class=py>ns1.infotech.com.tw.</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=c>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=mi>37.3.168.192</span><span class=py>.in-addr.arpa.	</span><span class=k>IN</span><span class=w>	</span><span class=k>PTR</span><span class=w>	</span><span class=py>api.ocp.infotech.com.tw. </span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=mi>37.3.168.192</span><span class=py>.in-addr.arpa.	</span><span class=k>IN</span><span class=w>	</span><span class=k>PTR</span><span class=w>	</span><span class=py>api-int.ocp.infotech.com.tw. </span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=c>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=mi>36.3.168.192</span><span class=py>.in-addr.arpa.	</span><span class=k>IN</span><span class=w>	</span><span class=k>PTR</span><span class=w>	</span><span class=py>bootstrap.ocp.infotech.com.tw. </span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=c>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=mi>31.3.168.192</span><span class=py>.in-addr.arpa.	</span><span class=k>IN</span><span class=w>	</span><span class=k>PTR</span><span class=w>	</span><span class=py>master1.ocp.infotech.com.tw. </span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=mi>32.3.168.192</span><span class=py>.in-addr.arpa.	</span><span class=k>IN</span><span class=w>	</span><span class=k>PTR</span><span class=w>	</span><span class=py>master2.ocp.infotech.com.tw. </span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=mi>33.3.168.192</span><span class=py>.in-addr.arpa.	</span><span class=k>IN</span><span class=w>	</span><span class=k>PTR</span><span class=w>	</span><span class=py>master3.ocp.infotech.com.tw. </span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=c>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=mi>34.3.168.192</span><span class=py>.in-addr.arpa.	</span><span class=k>IN</span><span class=w>	</span><span class=k>PTR</span><span class=w>	</span><span class=py>worker1.ocp.infotech.com.tw. </span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=mi>35.3.168.192</span><span class=py>.in-addr.arpa.	</span><span class=k>IN</span><span class=w>	</span><span class=k>PTR</span><span class=w>	</span><span class=py>worker2.ocp.infotech.com.tw. </span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=c>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=c>;EOF</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h3 id=haproxy>HAProxy</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-gdscript3 data-lang=gdscript3><span class=line><span class=cl><span class=p>[</span><span class=n>root</span><span class=err>@</span><span class=n>bastion</span> <span class=o>~</span><span class=p>]</span><span class=c1># cat /etc/haproxy/haproxy.cfg</span>
+</span></span><span class=line><span class=cl><span class=n>global</span>
+</span></span><span class=line><span class=cl>  <span class=nb>log</span>         <span class=mf>127.0</span><span class=o>.</span><span class=mf>0.1</span> <span class=n>local2</span>
+</span></span><span class=line><span class=cl>  <span class=n>pidfile</span>     <span class=o>/</span><span class=k>var</span><span class=o>/</span><span class=n>run</span><span class=o>/</span><span class=n>haproxy</span><span class=o>.</span><span class=n>pid</span>
+</span></span><span class=line><span class=cl>  <span class=n>maxconn</span>     <span class=mi>4000</span>
+</span></span><span class=line><span class=cl>  <span class=n>daemon</span>
+</span></span><span class=line><span class=cl><span class=n>defaults</span>
+</span></span><span class=line><span class=cl>  <span class=n>mode</span>                    <span class=n>http</span>
+</span></span><span class=line><span class=cl>  <span class=nb>log</span>                     <span class=n>global</span>
+</span></span><span class=line><span class=cl>  <span class=n>option</span>                  <span class=n>dontlognull</span>
+</span></span><span class=line><span class=cl>  <span class=n>option</span> <span class=n>http</span><span class=o>-</span><span class=n>server</span><span class=o>-</span><span class=n>close</span>
+</span></span><span class=line><span class=cl>  <span class=n>option</span>                  <span class=n>redispatch</span>
+</span></span><span class=line><span class=cl>  <span class=n>retries</span>                 <span class=mi>3</span>
+</span></span><span class=line><span class=cl>  <span class=n>timeout</span> <span class=n>http</span><span class=o>-</span><span class=n>request</span>    <span class=mi>10</span><span class=n>s</span>
+</span></span><span class=line><span class=cl>  <span class=n>timeout</span> <span class=n>queue</span>           <span class=mi>1</span><span class=n>m</span>
+</span></span><span class=line><span class=cl>  <span class=n>timeout</span> <span class=n>connect</span>         <span class=mi>10</span><span class=n>s</span>
+</span></span><span class=line><span class=cl>  <span class=n>timeout</span> <span class=n>client</span>          <span class=mi>1</span><span class=n>m</span>
+</span></span><span class=line><span class=cl>  <span class=n>timeout</span> <span class=n>server</span>          <span class=mi>1</span><span class=n>m</span>
+</span></span><span class=line><span class=cl>  <span class=n>timeout</span> <span class=n>http</span><span class=o>-</span><span class=n>keep</span><span class=o>-</span><span class=n>alive</span> <span class=mi>10</span><span class=n>s</span>
+</span></span><span class=line><span class=cl>  <span class=n>timeout</span> <span class=n>check</span>           <span class=mi>10</span><span class=n>s</span>
+</span></span><span class=line><span class=cl>  <span class=n>maxconn</span>                 <span class=mi>3000</span>
+</span></span><span class=line><span class=cl><span class=n>frontend</span> <span class=n>stats</span>
+</span></span><span class=line><span class=cl>  <span class=n>bind</span> <span class=o>*</span><span class=p>:</span><span class=mi>1936</span>
+</span></span><span class=line><span class=cl>  <span class=n>mode</span>            <span class=n>http</span>
+</span></span><span class=line><span class=cl>  <span class=nb>log</span>             <span class=n>global</span>
+</span></span><span class=line><span class=cl>  <span class=n>maxconn</span> <span class=mi>10</span>
+</span></span><span class=line><span class=cl>  <span class=n>stats</span> <span class=n>enable</span>
+</span></span><span class=line><span class=cl>  <span class=n>stats</span> <span class=n>hide</span><span class=o>-</span><span class=n>version</span>
+</span></span><span class=line><span class=cl>  <span class=n>stats</span> <span class=n>refresh</span> <span class=mi>30</span><span class=n>s</span>
+</span></span><span class=line><span class=cl>  <span class=n>stats</span> <span class=n>show</span><span class=o>-</span><span class=n>node</span>
+</span></span><span class=line><span class=cl>  <span class=n>stats</span> <span class=n>show</span><span class=o>-</span><span class=n>desc</span> <span class=n>Stats</span> <span class=k>for</span> <span class=n>ocp</span> <span class=n>cluster</span> 
+</span></span><span class=line><span class=cl>  <span class=n>stats</span> <span class=n>auth</span> <span class=n>admin</span><span class=p>:</span><span class=n>ocp</span>
+</span></span><span class=line><span class=cl>  <span class=n>stats</span> <span class=n>uri</span> <span class=o>/</span><span class=n>stats</span>
+</span></span><span class=line><span class=cl><span class=n>listen</span> <span class=n>api</span><span class=o>-</span><span class=n>server</span><span class=o>-</span><span class=mi>6443</span> 
+</span></span><span class=line><span class=cl>  <span class=n>bind</span> <span class=o>*</span><span class=p>:</span><span class=mi>6443</span>
+</span></span><span class=line><span class=cl>  <span class=n>mode</span> <span class=n>tcp</span>
+</span></span><span class=line><span class=cl>  <span class=n>server</span> <span class=n>bootstrap</span> <span class=n>bootstrap</span><span class=o>.</span><span class=n>ocp</span><span class=o>.</span><span class=n>infotech</span><span class=o>.</span><span class=n>com</span><span class=o>.</span><span class=n>tw</span><span class=p>:</span><span class=mi>6443</span> <span class=n>check</span> <span class=n>inter</span> <span class=mi>1</span><span class=n>s</span> <span class=n>backup</span> 
+</span></span><span class=line><span class=cl>  <span class=n>server</span> <span class=n>master1</span> <span class=n>master1</span><span class=o>.</span><span class=n>ocp</span><span class=o>.</span><span class=n>infotech</span><span class=o>.</span><span class=n>com</span><span class=o>.</span><span class=n>tw</span><span class=p>:</span><span class=mi>6443</span> <span class=n>check</span> <span class=n>inter</span> <span class=mi>1</span><span class=n>s</span>
+</span></span><span class=line><span class=cl>  <span class=n>server</span> <span class=n>master2</span> <span class=n>master2</span><span class=o>.</span><span class=n>ocp</span><span class=o>.</span><span class=n>infotech</span><span class=o>.</span><span class=n>com</span><span class=o>.</span><span class=n>tw</span><span class=p>:</span><span class=mi>6443</span> <span class=n>check</span> <span class=n>inter</span> <span class=mi>1</span><span class=n>s</span>
+</span></span><span class=line><span class=cl>  <span class=n>server</span> <span class=n>master3</span> <span class=n>master3</span><span class=o>.</span><span class=n>ocp</span><span class=o>.</span><span class=n>infotech</span><span class=o>.</span><span class=n>com</span><span class=o>.</span><span class=n>tw</span><span class=p>:</span><span class=mi>6443</span> <span class=n>check</span> <span class=n>inter</span> <span class=mi>1</span><span class=n>s</span>
+</span></span><span class=line><span class=cl><span class=n>listen</span> <span class=n>machine</span><span class=o>-</span><span class=n>config</span><span class=o>-</span><span class=n>server</span><span class=o>-</span><span class=mi>22623</span> 
+</span></span><span class=line><span class=cl>  <span class=n>bind</span> <span class=o>*</span><span class=p>:</span><span class=mi>22623</span>
+</span></span><span class=line><span class=cl>  <span class=n>mode</span> <span class=n>tcp</span>
+</span></span><span class=line><span class=cl>  <span class=n>server</span> <span class=n>bootstrap</span> <span class=n>bootstrap</span><span class=o>.</span><span class=n>ocp</span><span class=o>.</span><span class=n>infotech</span><span class=o>.</span><span class=n>com</span><span class=o>.</span><span class=n>tw</span><span class=p>:</span><span class=mi>22623</span> <span class=n>check</span> <span class=n>inter</span> <span class=mi>1</span><span class=n>s</span> <span class=n>backup</span> 
+</span></span><span class=line><span class=cl>  <span class=n>server</span> <span class=n>master1</span> <span class=n>master1</span><span class=o>.</span><span class=n>ocp</span><span class=o>.</span><span class=n>infotech</span><span class=o>.</span><span class=n>com</span><span class=o>.</span><span class=n>tw</span><span class=p>:</span><span class=mi>22623</span> <span class=n>check</span> <span class=n>inter</span> <span class=mi>1</span><span class=n>s</span>
+</span></span><span class=line><span class=cl>  <span class=n>server</span> <span class=n>master2</span> <span class=n>master2</span><span class=o>.</span><span class=n>ocp</span><span class=o>.</span><span class=n>infotech</span><span class=o>.</span><span class=n>com</span><span class=o>.</span><span class=n>tw</span><span class=p>:</span><span class=mi>22623</span> <span class=n>check</span> <span class=n>inter</span> <span class=mi>1</span><span class=n>s</span>
+</span></span><span class=line><span class=cl>  <span class=n>server</span> <span class=n>master3</span> <span class=n>master3</span><span class=o>.</span><span class=n>ocp</span><span class=o>.</span><span class=n>infotech</span><span class=o>.</span><span class=n>com</span><span class=o>.</span><span class=n>tw</span><span class=p>:</span><span class=mi>22623</span> <span class=n>check</span> <span class=n>inter</span> <span class=mi>1</span><span class=n>s</span>
+</span></span><span class=line><span class=cl><span class=n>listen</span> <span class=n>ingress</span><span class=o>-</span><span class=n>router</span><span class=o>-</span><span class=mi>443</span> 
+</span></span><span class=line><span class=cl>  <span class=n>bind</span> <span class=o>*</span><span class=p>:</span><span class=mi>443</span>
+</span></span><span class=line><span class=cl>  <span class=n>mode</span> <span class=n>tcp</span>
+</span></span><span class=line><span class=cl>  <span class=n>balance</span> <span class=n>source</span>
+</span></span><span class=line><span class=cl>  <span class=n>server</span> <span class=n>worker1</span> <span class=n>worker1</span><span class=o>.</span><span class=n>ocp</span><span class=o>.</span><span class=n>infotech</span><span class=o>.</span><span class=n>com</span><span class=o>.</span><span class=n>tw</span><span class=p>:</span><span class=mi>443</span> <span class=n>check</span> <span class=n>inter</span> <span class=mi>1</span><span class=n>s</span>
+</span></span><span class=line><span class=cl>  <span class=n>server</span> <span class=n>worker2</span> <span class=n>worker2</span><span class=o>.</span><span class=n>ocp</span><span class=o>.</span><span class=n>infotech</span><span class=o>.</span><span class=n>com</span><span class=o>.</span><span class=n>tw</span><span class=p>:</span><span class=mi>443</span> <span class=n>check</span> <span class=n>inter</span> <span class=mi>1</span><span class=n>s</span>
+</span></span><span class=line><span class=cl><span class=n>listen</span> <span class=n>ingress</span><span class=o>-</span><span class=n>router</span><span class=o>-</span><span class=mi>80</span> 
+</span></span><span class=line><span class=cl>  <span class=n>bind</span> <span class=o>*</span><span class=p>:</span><span class=mi>80</span>
+</span></span><span class=line><span class=cl>  <span class=n>mode</span> <span class=n>tcp</span>
+</span></span><span class=line><span class=cl>  <span class=n>balance</span> <span class=n>source</span>
+</span></span><span class=line><span class=cl>  <span class=n>server</span> <span class=n>worker1</span> <span class=n>worker1</span><span class=o>.</span><span class=n>ocp</span><span class=o>.</span><span class=n>infotech</span><span class=o>.</span><span class=n>com</span><span class=o>.</span><span class=n>tw</span><span class=p>:</span><span class=mi>80</span> <span class=n>check</span> <span class=n>inter</span> <span class=mi>1</span><span class=n>s</span>
+</span></span><span class=line><span class=cl>  <span class=n>server</span> <span class=n>worker2</span> <span class=n>worker2</span><span class=o>.</span><span class=n>ocp</span><span class=o>.</span><span class=n>infotech</span><span class=o>.</span><span class=n>com</span><span class=o>.</span><span class=n>tw</span><span class=p>:</span><span class=mi>80</span> <span class=n>check</span> <span class=n>inter</span> <span class=mi>1</span><span class=n>s</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=nginx>Nginx</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span><span class=lnt>68
+</span><span class=lnt>69
+</span><span class=lnt>70
+</span><span class=lnt>71
+</span><span class=lnt>72
+</span><span class=lnt>73
+</span><span class=lnt>74
+</span><span class=lnt>75
+</span><span class=lnt>76
+</span><span class=lnt>77
+</span><span class=lnt>78
+</span><span class=lnt>79
+</span><span class=lnt>80
+</span><span class=lnt>81
+</span><span class=lnt>82
+</span><span class=lnt>83
+</span><span class=lnt>84
+</span><span class=lnt>85
+</span><span class=lnt>86
+</span><span class=lnt>87
+</span><span class=lnt>88
+</span><span class=lnt>89
+</span><span class=lnt>90
+</span><span class=lnt>91
+</span><span class=lnt>92
+</span><span class=lnt>93
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-gdscript3 data-lang=gdscript3><span class=line><span class=cl><span class=err>根目錄</span> <span class=o>/</span><span class=n>usr</span><span class=o>/</span><span class=n>share</span><span class=o>/</span><span class=n>nginx</span><span class=o>/</span><span class=n>html</span>
+</span></span><span class=line><span class=cl><span class=n>Port</span><span class=p>:</span> <span class=mi>8000</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=n>root</span><span class=err>@</span><span class=n>bastion</span> <span class=n>html</span><span class=p>]</span><span class=c1># cat /etc/nginx/nginx.conf</span>
+</span></span><span class=line><span class=cl><span class=c1># For more information on configuration, see:</span>
+</span></span><span class=line><span class=cl><span class=c1>#   * Official English Documentation: http://nginx.org/en/docs/</span>
+</span></span><span class=line><span class=cl><span class=c1>#   * Official Russian Documentation: http://nginx.org/ru/docs/</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>user</span> <span class=n>nginx</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=n>worker_processes</span> <span class=n>auto</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=n>error_log</span> <span class=o>/</span><span class=k>var</span><span class=o>/</span><span class=nb>log</span><span class=o>/</span><span class=n>nginx</span><span class=o>/</span><span class=n>error</span><span class=o>.</span><span class=n>log</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=n>pid</span> <span class=o>/</span><span class=n>run</span><span class=o>/</span><span class=n>nginx</span><span class=o>.</span><span class=n>pid</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># Load dynamic modules. See /usr/share/doc/nginx/README.dynamic.</span>
+</span></span><span class=line><span class=cl><span class=n>include</span> <span class=o>/</span><span class=n>usr</span><span class=o>/</span><span class=n>share</span><span class=o>/</span><span class=n>nginx</span><span class=o>/</span><span class=n>modules</span><span class=o>/*.</span><span class=n>conf</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>events</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>worker_connections</span> <span class=mi>1024</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>http</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>log_format</span>  <span class=n>main</span>  <span class=s1>&#39;$remote_addr - $remote_user [$time_local] &#34;$request&#34; &#39;</span>
+</span></span><span class=line><span class=cl>                      <span class=s1>&#39;$status $body_bytes_sent &#34;$http_referer&#34; &#39;</span>
+</span></span><span class=line><span class=cl>                      <span class=s1>&#39;&#34;$http_user_agent&#34; &#34;$http_x_forwarded_for&#34;&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>access_log</span>  <span class=o>/</span><span class=k>var</span><span class=o>/</span><span class=nb>log</span><span class=o>/</span><span class=n>nginx</span><span class=o>/</span><span class=n>access</span><span class=o>.</span><span class=n>log</span>  <span class=n>main</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>sendfile</span>            <span class=n>on</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>tcp_nopush</span>          <span class=n>on</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>tcp_nodelay</span>         <span class=n>on</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>keepalive_timeout</span>   <span class=mi>65</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>types_hash_max_size</span> <span class=mi>2048</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>include</span>             <span class=o>/</span><span class=n>etc</span><span class=o>/</span><span class=n>nginx</span><span class=o>/</span><span class=n>mime</span><span class=o>.</span><span class=n>types</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>default_type</span>        <span class=n>application</span><span class=o>/</span><span class=n>octet</span><span class=o>-</span><span class=n>stream</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1># Load modular configuration files from the /etc/nginx/conf.d directory.</span>
+</span></span><span class=line><span class=cl>    <span class=c1># See http://nginx.org/en/docs/ngx_core_module.html#include</span>
+</span></span><span class=line><span class=cl>    <span class=c1># for more information.</span>
+</span></span><span class=line><span class=cl>    <span class=n>include</span> <span class=o>/</span><span class=n>etc</span><span class=o>/</span><span class=n>nginx</span><span class=o>/</span><span class=n>conf</span><span class=o>.</span><span class=n>d</span><span class=o>/*.</span><span class=n>conf</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>server</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>listen</span>       <span class=mi>8000</span> <span class=n>default_server</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>listen</span>       <span class=p>[::]:</span><span class=mi>8000</span> <span class=n>default_server</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>server_name</span>  <span class=n>_</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>root</span>         <span class=o>/</span><span class=n>usr</span><span class=o>/</span><span class=n>share</span><span class=o>/</span><span class=n>nginx</span><span class=o>/</span><span class=n>html</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1># Load configuration files for the default server block.</span>
+</span></span><span class=line><span class=cl>        <span class=n>include</span> <span class=o>/</span><span class=n>etc</span><span class=o>/</span><span class=n>nginx</span><span class=o>/</span><span class=n>default</span><span class=o>.</span><span class=n>d</span><span class=o>/*.</span><span class=n>conf</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=n>location</span> <span class=o>/</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=n>error_page</span> <span class=mi>404</span> <span class=o>/</span><span class=mf>404.</span><span class=n>html</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=n>location</span> <span class=o>=</span> <span class=o>/</span><span class=mi>40</span><span class=n>x</span><span class=o>.</span><span class=n>html</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=n>error_page</span> <span class=mi>500</span> <span class=mi>502</span> <span class=mi>503</span> <span class=mi>504</span> <span class=o>/</span><span class=mi>50</span><span class=n>x</span><span class=o>.</span><span class=n>html</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=n>location</span> <span class=o>=</span> <span class=o>/</span><span class=mi>50</span><span class=n>x</span><span class=o>.</span><span class=n>html</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># Settings for a TLS enabled server.</span>
+</span></span><span class=line><span class=cl><span class=c1>#</span>
+</span></span><span class=line><span class=cl><span class=c1>#    server {</span>
+</span></span><span class=line><span class=cl><span class=c1>#        listen       443 ssl http2 default_server;</span>
+</span></span><span class=line><span class=cl><span class=c1>#        listen       [::]:443 ssl http2 default_server;</span>
+</span></span><span class=line><span class=cl><span class=c1>#        server_name  _;</span>
+</span></span><span class=line><span class=cl><span class=c1>#        root         /usr/share/nginx/html;</span>
+</span></span><span class=line><span class=cl><span class=c1>#</span>
+</span></span><span class=line><span class=cl><span class=c1>#        ssl_certificate &#34;/etc/pki/nginx/server.crt&#34;;</span>
+</span></span><span class=line><span class=cl><span class=c1>#        ssl_certificate_key &#34;/etc/pki/nginx/private/server.key&#34;;</span>
+</span></span><span class=line><span class=cl><span class=c1>#        ssl_session_cache shared:SSL:1m;</span>
+</span></span><span class=line><span class=cl><span class=c1>#        ssl_session_timeout  10m;</span>
+</span></span><span class=line><span class=cl><span class=c1>#        ssl_ciphers PROFILE=SYSTEM;</span>
+</span></span><span class=line><span class=cl><span class=c1>#        ssl_prefer_server_ciphers on;</span>
+</span></span><span class=line><span class=cl><span class=c1>#</span>
+</span></span><span class=line><span class=cl><span class=c1>#        # Load configuration files for the default server block.</span>
+</span></span><span class=line><span class=cl><span class=c1>#        include /etc/nginx/default.d/*.conf;</span>
+</span></span><span class=line><span class=cl><span class=c1>#</span>
+</span></span><span class=line><span class=cl><span class=c1>#        location / {</span>
+</span></span><span class=line><span class=cl><span class=c1>#        }</span>
+</span></span><span class=line><span class=cl><span class=c1>#</span>
+</span></span><span class=line><span class=cl><span class=c1>#        error_page 404 /404.html;</span>
+</span></span><span class=line><span class=cl><span class=c1>#            location = /40x.html {</span>
+</span></span><span class=line><span class=cl><span class=c1>#        }</span>
+</span></span><span class=line><span class=cl><span class=c1>#</span>
+</span></span><span class=line><span class=cl><span class=c1>#        error_page 500 502 503 504 /50x.html;</span>
+</span></span><span class=line><span class=cl><span class=c1>#            location = /50x.html {</span>
+</span></span><span class=line><span class=cl><span class=c1>#        }</span>
+</span></span><span class=line><span class=cl><span class=c1>#    }</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=產生安裝檔案>產生安裝檔案</h2><h3 id=確認-cli-tool>確認 cli tool</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>$ ls -l
+</span></span><span class=line><span class=cl>total 2232728
+</span></span><span class=line><span class=cl>drwxr-xr-x   8 wangken  staff        256 12 13 15:36 .
+</span></span><span class=line><span class=cl>drwxr-x---+ 41 wangken  staff       1312 12 13 15:35 ..
+</span></span><span class=line><span class=cl>-rw-r--r--@  1 wangken  staff        706 10  8 18:41 README.md
+</span></span><span class=line><span class=cl>-rwxr-xr-x@  2 wangken  staff   98436592 10  6 20:06 kubectl
+</span></span><span class=line><span class=cl>-rwxr-xr-x@  2 wangken  staff   98436592 10  6 20:06 oc
+</span></span><span class=line><span class=cl>-rw-r--r--@  1 wangken  staff   44116650 12 13 15:06 openshift-client-mac-4.11.9.tar.gz
+</span></span><span class=line><span class=cl>-rwxr-xr-x@  1 wangken  staff  528956912 10  8 18:41 openshift-install
+</span></span><span class=line><span class=cl>-rw-r--r--@  1 wangken  staff  363543317 12 13 15:07 openshift-install-mac-4.11.9.tar.gz
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>$ ./oc version
+</span></span><span class=line><span class=cl>Client Version: 4.11.9
+</span></span><span class=line><span class=cl>Kustomize Version: v4.5.4
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>$ ./openshift-install version
+</span></span><span class=line><span class=cl>./openshift-install 4.11.9
+</span></span><span class=line><span class=cl>built from commit 01a6869a6f1208fb4d112060c5971432fdd619cf
+</span></span><span class=line><span class=cl>release image quay.io/openshift-release-dev/ocp-release@sha256:94b611f00f51c9acc44ca3f4634e46bd79d7d28b46047c7e3389d250698f0c99
+</span></span><span class=line><span class=cl>release architecture amd64
+</span></span></code></pre></td></tr></table></div></div><h3 id=產生ssh-key-bastion>產生SSH key (Bastion)</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>[root@bastion .ssh]# cat id_rsa
+</span></span><span class=line><span class=cl>-----BEGIN OPENSSH PRIVATE KEY-----
+</span></span><span class=line><span class=cl>b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
+</span></span><span class=line><span class=cl>QyNTUxOQAAACDF/jswkiYiL+jXDMMUpwga7CGV79kXtcMnOpbzO5xOwQAAAKjY1yrT2Ncq
+</span></span><span class=line><span class=cl>0wAAAAtzc2gtZWQyNTUxOQAAACDF/jswkiYiL+jXDMMUpwga7CGV79kXtcMnOpbzO5xOwQ
+</span></span><span class=line><span class=cl>AAAEBIWOmAtlitDdZXhb+1vtMnSbNBRQfyANPR/eHUPuisK8X+OzCSJiIv6NcMwxSnCBrs
+</span></span><span class=line><span class=cl>IZXv2Re1wyc6lvM7nE7BAAAAIWRldm9wQGJhc3Rpb24ub2NwLmluZm90ZWNoLmNvbS50dw
+</span></span><span class=line><span class=cl>ECAwQ=
+</span></span><span class=line><span class=cl>-----END OPENSSH PRIVATE KEY-----
+</span></span><span class=line><span class=cl>[root@bastion .ssh]# cat id_rsa.pub 
+</span></span><span class=line><span class=cl>ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMX+OzCSJiIv6NcMwxSnCBrsIZXv2Re1wyc6lvM7nE7B devop@bastion.ocp.infotech.com.tw
+</span></span></code></pre></td></tr></table></div></div><h3 id=建立install-configyaml>建立Install-config.yaml</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>apiVersion: v1
+</span></span><span class=line><span class=cl>baseDomain: infotech.com.tw
+</span></span><span class=line><span class=cl>compute: 
+</span></span><span class=line><span class=cl>- hyperthreading: Enabled 
+</span></span><span class=line><span class=cl>  name: worker
+</span></span><span class=line><span class=cl>  replicas: 0 
+</span></span><span class=line><span class=cl>controlPlane: 
+</span></span><span class=line><span class=cl>  hyperthreading: Enabled 
+</span></span><span class=line><span class=cl>  name: master
+</span></span><span class=line><span class=cl>  replicas: 3 
+</span></span><span class=line><span class=cl>metadata:
+</span></span><span class=line><span class=cl>  name: ocp
+</span></span><span class=line><span class=cl>networking:
+</span></span><span class=line><span class=cl>  clusterNetwork:
+</span></span><span class=line><span class=cl>  - cidr: 10.128.0.0/14 
+</span></span><span class=line><span class=cl>    hostPrefix: 23 
+</span></span><span class=line><span class=cl>  networkType: OpenShiftSDN
+</span></span><span class=line><span class=cl>  serviceNetwork: 
+</span></span><span class=line><span class=cl>  - 172.30.0.0/16
+</span></span><span class=line><span class=cl>platform:
+</span></span><span class=line><span class=cl>  vsphere:
+</span></span><span class=line><span class=cl>    vcenter: tpeinfovcsa7p.infotech.com.tw
+</span></span><span class=line><span class=cl>    username: cisadmin@vsphere.local
+</span></span><span class=line><span class=cl>    password: P@55w.rd
+</span></span><span class=line><span class=cl>    datacenter: TPECIS_Datacenter
+</span></span><span class=line><span class=cl>    defaultDatastore: v7000_CIS01
+</span></span><span class=line><span class=cl>    diskType: thin  
+</span></span><span class=line><span class=cl>fips: false 
+</span></span><span class=line><span class=cl>pullSecret: &#39;{&#34;auths&#34;:{&#34;cloud.openshift.com&#34;:{&#34;auth&#34;:&#34;b3BlbnNoaWZ0LXJlbGVhc2UtZGV2K29jbV9hY2Nlc3NfMzEwNjVjNmVmMTk5NDZmNWEwNmUzZmI4MTVmNzk2OTE6NEJRVk1FVk9CTDRZQVRBT0pONEhQVkIyUExFQTdKNDE3WExFU1IzVDk3NU1YUTJXWE9FSjBNTVk0MzFQQk9RUA==&#34;,&#34;email&#34;:&#34;ken.wang@infotech.com.tw&#34;},&#34;quay.io&#34;:{&#34;auth&#34;:&#34;b3BlbnNoaWZ0LXJlbGVhc2UtZGV2K29jbV9hY2Nlc3NfMzEwNjVjNmVmMTk5NDZmNWEwNmUzZmI4MTVmNzk2OTE6NEJRVk1FVk9CTDRZQVRBT0pONEhQVkIyUExFQTdKNDE3WExFU1IzVDk3NU1YUTJXWE9FSjBNTVk0MzFQQk9RUA==&#34;,&#34;email&#34;:&#34;ken.wang@infotech.com.tw&#34;},&#34;registry.connect.redhat.com&#34;:{&#34;auth&#34;:&#34;fHVoYy1wb29sLTc5MzgwY2YyLTUxNTEtNGRiNi04YjA3LTRiNzQ4NDcxNWE2NDpleUpoYkdjaU9pSlNVelV4TWlKOS5leUp6ZFdJaU9pSmxOak5rWVdWbU1tSXlaRFEwTVdKaVlUTXpObVUwTkdGbVl6WmtPVEUwWVNKOS5RMlp6Q1JaWWltVDIxM2dpYU9CRWtNWEVkYUtjbnc4WHN1bTY3VEVOdjEyRjBjQUgyNWNZMVdWTjZNUEY2R21CNjh3TmF4TnoxRHVpVnBtY0ZKM2JZTW0yNVVzZGJxeFc4cEd1dGszSzF5NlNUWk9VejlkU0V4UGg4aUxha05qSEQ4Tml6emNmM1lUQjRNUXdhYTVFSG1PMXVTUERUZFRBTXFYS3FFa2gwRXpHOUpKZTlUMnM4bVJXWkVIbndoZW84cktncVZuV1VCeGhqTldFNElfWG1JZnBPRl91akpFNHdXNzRJWjd5UmdoUGExQVVwS3BsY0NJQ2ZGdGtaS29WUTFwNTBzUzNabkxWYjd6ZHdXR21WcXVsNUFoZUNiSHNoNEtpSjFnYXRSbkwtMG92THZoNGdseUZqd0c0Z3lMMEdyS1ItbU5WMFZYc01mVzJDNXNVaXBzVmhKcmhmY01vQjRNSDRDbjZKcjJXS2plbEdqSVdHQzBUV1BBNlZQZDBmc0lyLTRCY2RBdUFmcm5SaWpGM3d0Mng3RFdXQ1RScFVPbUVMY3U5bDR6Wm5uZkVSejNMd01rNmhCWTFyYXV1TGhCWXJraFlzQURqWEl3bGxPTkwyc01GMUU2OVNIVG1vV0tvNU5fdHdoWE5fX1BtT1ozMzc5ZVNDVGdnTFNZd3hyR1VwS3FXRDFva3JWZlRIWmNlcTk4WHQ2QjFtZHIxcmxLV2RiRmhsRDQ3Q1pldEhrNW1xQUlianp1UzlONENJWllhd0lIZE5LWVotN2tRNFQyUFg4QWdadHFNdHdjY2c0bWx3ME40c09LbWVZN2Q2bGw0bXpXV201bVo0aktTeHdpYmJ3STEwOFcxWVFlSlQ4QW9WZFlkc09YWkdWc3ZxZVVZOU9qbzR2RQ==&#34;,&#34;email&#34;:&#34;ken.wang@infotech.com.tw&#34;},&#34;registry.redhat.io&#34;:{&#34;auth&#34;:&#34;fHVoYy1wb29sLTc5MzgwY2YyLTUxNTEtNGRiNi04YjA3LTRiNzQ4NDcxNWE2NDpleUpoYkdjaU9pSlNVelV4TWlKOS5leUp6ZFdJaU9pSmxOak5rWVdWbU1tSXlaRFEwTVdKaVlUTXpObVUwTkdGbVl6WmtPVEUwWVNKOS5RMlp6Q1JaWWltVDIxM2dpYU9CRWtNWEVkYUtjbnc4WHN1bTY3VEVOdjEyRjBjQUgyNWNZMVdWTjZNUEY2R21CNjh3TmF4TnoxRHVpVnBtY0ZKM2JZTW0yNVVzZGJxeFc4cEd1dGszSzF5NlNUWk9VejlkU0V4UGg4aUxha05qSEQ4Tml6emNmM1lUQjRNUXdhYTVFSG1PMXVTUERUZFRBTXFYS3FFa2gwRXpHOUpKZTlUMnM4bVJXWkVIbndoZW84cktncVZuV1VCeGhqTldFNElfWG1JZnBPRl91akpFNHdXNzRJWjd5UmdoUGExQVVwS3BsY0NJQ2ZGdGtaS29WUTFwNTBzUzNabkxWYjd6ZHdXR21WcXVsNUFoZUNiSHNoNEtpSjFnYXRSbkwtMG92THZoNGdseUZqd0c0Z3lMMEdyS1ItbU5WMFZYc01mVzJDNXNVaXBzVmhKcmhmY01vQjRNSDRDbjZKcjJXS2plbEdqSVdHQzBUV1BBNlZQZDBmc0lyLTRCY2RBdUFmcm5SaWpGM3d0Mng3RFdXQ1RScFVPbUVMY3U5bDR6Wm5uZkVSejNMd01rNmhCWTFyYXV1TGhCWXJraFlzQURqWEl3bGxPTkwyc01GMUU2OVNIVG1vV0tvNU5fdHdoWE5fX1BtT1ozMzc5ZVNDVGdnTFNZd3hyR1VwS3FXRDFva3JWZlRIWmNlcTk4WHQ2QjFtZHIxcmxLV2RiRmhsRDQ3Q1pldEhrNW1xQUlianp1UzlONENJWllhd0lIZE5LWVotN2tRNFQyUFg4QWdadHFNdHdjY2c0bWx3ME40c09LbWVZN2Q2bGw0bXpXV201bVo0aktTeHdpYmJ3STEwOFcxWVFlSlQ4QW9WZFlkc09YWkdWc3ZxZVVZOU9qbzR2RQ==&#34;,&#34;email&#34;:&#34;ken.wang@infotech.com.tw&#34;}}}&#39;
+</span></span><span class=line><span class=cl>sshKey: &#39;ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMX+OzCSJiIv6NcMwxSnCBrsIZXv2Re1wyc6lvM7nE7B devop@bastion.ocp.infotech.com.tw&#39; 
+</span></span><span class=line><span class=cl>capabilities:
+</span></span><span class=line><span class=cl>  baselineCapabilitySet: vCurrent
+</span></span><span class=line><span class=cl>  
+</span></span><span class=line><span class=cl>-------------  
+</span></span><span class=line><span class=cl>    platform:
+</span></span><span class=line><span class=cl>    vsphere:
+</span></span><span class=line><span class=cl>      vcenter: tpeinfovcsa7p.infotech.com.tw
+</span></span><span class=line><span class=cl>      username: cisadmin@vsphere.local
+</span></span><span class=line><span class=cl>      password: P@55w.rd
+</span></span><span class=line><span class=cl>      datacenter: TPECIS_Datacenter
+</span></span><span class=line><span class=cl>      defaultDatastore: v7000_CIS01
+</span></span><span class=line><span class=cl>      diskType: thin  
+</span></span></code></pre></td></tr></table></div></div><h3 id=產生ignition-file>產生Ignition file</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>./openshift-install create manifests --dir install 
+</span></span><span class=line><span class=cl>./openshift-install create ignition-configs --dir install
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>INFO Consuming Openshift Manifests from target directory 
+</span></span><span class=line><span class=cl>INFO Consuming Common Manifests from target directory 
+</span></span><span class=line><span class=cl>INFO Consuming Worker Machines from target directory 
+</span></span><span class=line><span class=cl>INFO Consuming Master Machines from target directory 
+</span></span><span class=line><span class=cl>INFO Consuming OpenShift Install (Manifests) from target directory 
+</span></span><span class=line><span class=cl>INFO Ignition-Configs created in: install and install/auth 
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>cd install 
+</span></span><span class=line><span class=cl>$ ll
+</span></span><span class=line><span class=cl>total 2960
+</span></span><span class=line><span class=cl>drwxr-xr-x   9 wangken  staff      288 12 13 16:27 .
+</span></span><span class=line><span class=cl>drwxr-xr-x  11 wangken  staff      352 12 13 15:56 ..
+</span></span><span class=line><span class=cl>-rw-r--r--   1 wangken  staff    67239 12 13 16:27 .openshift_install.log
+</span></span><span class=line><span class=cl>-rw-r-----   1 wangken  staff  1154395 12 13 16:27 .openshift_install_state.json
+</span></span><span class=line><span class=cl>drwxr-x---   4 wangken  staff      128 12 13 16:27 auth
+</span></span><span class=line><span class=cl>-rw-r-----   1 wangken  staff   275583 12 13 16:27 bootstrap.ign
+</span></span><span class=line><span class=cl>-rw-r-----   1 wangken  staff     1721 12 13 16:27 master.ign
+</span></span><span class=line><span class=cl>-rw-r-----   1 wangken  staff       94 12 13 16:27 metadata.json
+</span></span><span class=line><span class=cl>-rw-r-----   1 wangken  staff     1721 12 13 16:27 worker.ign
+</span></span></code></pre></td></tr></table></div></div><h3 id=複製ignition-file-到web>複製Ignition File 到Web</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>scp *.ign root@192.168.3.37:/usr/share/nginx/html/
+</span></span><span class=line><span class=cl>root@192.168.3.37&#39;s password: 
+</span></span><span class=line><span class=cl>bootstrap.ign                                 100%  269KB   3.5MB/s   00:00    
+</span></span><span class=line><span class=cl>master.ign                                    100% 1721    86.9KB/s   00:00    
+</span></span><span class=line><span class=cl>worker.ign                                    100% 1721   188.5KB/s   00:00 
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>-----------
+</span></span><span class=line><span class=cl>cat merge-bootstrap.ign 
+</span></span><span class=line><span class=cl>{
+</span></span><span class=line><span class=cl>  &#34;ignition&#34;: {
+</span></span><span class=line><span class=cl>    &#34;config&#34;: {
+</span></span><span class=line><span class=cl>      &#34;merge&#34;: [
+</span></span><span class=line><span class=cl>        {
+</span></span><span class=line><span class=cl>          &#34;source&#34;: &#34;http://192.168.3.37:8000/bootstrap.ign&#34;,
+</span></span><span class=line><span class=cl>          &#34;verification&#34;: {}
+</span></span><span class=line><span class=cl>        }
+</span></span><span class=line><span class=cl>      ]
+</span></span><span class=line><span class=cl>    },
+</span></span><span class=line><span class=cl>    &#34;timeouts&#34;: {},
+</span></span><span class=line><span class=cl>    &#34;version&#34;: &#34;3.2.0&#34;
+</span></span><span class=line><span class=cl>  },
+</span></span><span class=line><span class=cl>  &#34;networkd&#34;: {},
+</span></span><span class=line><span class=cl>  &#34;passwd&#34;: {},
+</span></span><span class=line><span class=cl>  &#34;storage&#34;: {},
+</span></span><span class=line><span class=cl>  &#34;systemd&#34;: {}
+</span></span><span class=line><span class=cl>}
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>-----轉檔為Base64
+</span></span><span class=line><span class=cl>chmod 644 *.ign
+</span></span><span class=line><span class=cl>[root@bastion html]# base64 -w0 merge-bootstrap.ign &gt; merge-bootstrap.64
+</span></span><span class=line><span class=cl>ewogICJpZ25pdGlvbiI6IHsKICAgICJjb25maWciOiB7CiAgICAgICJtZXJnZSI6IFsKICAgICAgICB7CiAgICAgICAgICAic291cmNlIjogImh0dHA6Ly8xOTIuMTY4LjMuMzc6ODAwMC9ib290c3RyYXAuaWduIiwKICAgICAgICAgICJ2ZXJpZmljYXRpb24iOiB7fQogICAgICAgIH0KICAgICAgXQogICAgfSwKICAgICJ0aW1lb3V0cyI6IHt9LAogICAgInZlcnNpb24iOiAiMy4yLjAiCiAgfSwKICAibmV0d29ya2QiOiB7fSwKICAicGFzc3dkIjoge30sCiAgInN0b3JhZ2UiOiB7fSwKICAic3lzdGVtZCI6IHt9Cn0K
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>[root@bastion html]# base64 -w0 master.ign &gt; master.64
+</span></span><span class=line><span class=cl>[root@bastion html]# base64 -w0 worker.ign &gt; worker.64
+</span></span></code></pre></td></tr></table></div></div><h2 id=複製ovf至vm>複製OVF至VM</h2><h3 id=調整參數>調整參數</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>vApp
+</span></span><span class=line><span class=cl>1. base64
+</span></span><span class=line><span class=cl>2. 
+</span></span><span class=line><span class=cl>bootstrap
+</span></span><span class=line><span class=cl>ewogICJpZ25pdGlvbiI6IHsKICAgICJjb25maWciOiB7CiAgICAgICJtZXJnZSI6IFsKICAgICAgICB7CiAgICAgICAgICAic291cmNlIjogImh0dHA6Ly8xOTIuMTY4LjMuMzc6ODAwMC9ib290c3RyYXAuaWduIiwKICAgICAgICAgICJ2ZXJpZmljYXRpb24iOiB7fQogICAgICAgIH0KICAgICAgXQogICAgfSwKICAgICJ0aW1lb3V0cyI6IHt9LAogICAgInZlcnNpb24iOiAiMy4yLjAiCiAgfSwKICAibmV0d29ya2QiOiB7fSwKICAicGFzc3dkIjoge30sCiAgInN0b3JhZ2UiOiB7fSwKICAic3lzdGVtZCI6IHt9Cn0K
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>master
+</span></span><span class=line><span class=cl>eyJpZ25pdGlvbiI6eyJjb25maWciOnsibWVyZ2UiOlt7InNvdXJjZSI6Imh0dHBzOi8vYXBpLWludC5vY3AuaW5mb3RlY2guY29tLnR3OjIyNjIzL2NvbmZpZy9tYXN0ZXIifV19LCJzZWN1cml0eSI6eyJ0bHMiOnsiY2VydGlmaWNhdGVBdXRob3JpdGllcyI6W3sic291cmNlIjoiZGF0YTp0ZXh0L3BsYWluO2NoYXJzZXQ9dXRmLTg7YmFzZTY0LExTMHRMUzFDUlVkSlRpQkRSVkpVU1VaSlEwRlVSUzB0TFMwdENrMUpTVVJGUkVORFFXWnBaMEYzU1VKQlowbEpXV1JoZUZwMFZXVkVha2wzUkZGWlNrdHZXa2xvZG1OT1FWRkZURUpSUVhkS2FrVlRUVUpCUjBFeFZVVUtRM2hOU21JelFteGliazV2WVZkYU1FMVNRWGRFWjFsRVZsRlJSRVYzWkhsaU1qa3dURmRPYUUxQ05GaEVWRWw1VFZSSmVFMTZRVFJPUkZVeFRteHZXQXBFVkUxNVRWUkplRTFFUVRST1JGVXhUbXh2ZDBwcVJWTk5Ra0ZIUVRGVlJVTjRUVXBpTTBKc1ltNU9iMkZYV2pCTlVrRjNSR2RaUkZaUlVVUkZkMlI1Q21JeU9UQk1WMDVvVFVsSlFrbHFRVTVDWjJ0eGFHdHBSemwzTUVKQlVVVkdRVUZQUTBGUk9FRk5TVWxDUTJkTFEwRlJSVUV6U0hWcVNHc3haaTlCWWxNS2FHcEdhemxtV0hOelZqZFJNVzlJUVRkVFNqQnVlVkpqTDJNMmR6aERPV1ZUV1dkTWNIWnJjSEZEY3pCdFR5dE9NMHRGTW5Kb2VTdDVVVUZyUVN0eEt3cE5TVkJXVURWRU9HRjFkM3BwWTFOUFZERm5WR2xTTmpreWFFVTFVVEUwYmtaS1N6bE5UMGRaWkdJeFJFTklNazlJYkZkMWRqRktlVlJvUW5admJuRXhDamw2VG01SldreG5iMWRUUm5SWGNtMVFhR05vY3pJeE5sVTVhREpDY0U1QmIwbzJXbU01TjBZM09UWnRLMFpLVlVKeGRFSnhVMVU1UW0xMmEwbHZSa3dLVFd0dE5HczVORk50UzFCRVpURnpPSEZGY0ZGM2FDdDVhbGRPV214aFkyeHRaMGRTTVdkRFptbGxPRGt3UjJ4dWRUazFSbWMwWjBORVFXMHpNRkZ4V2dvdk1tVkNXVEJ2ZW5kMFkyOTZVakZVVkU1cVpUSnpXaTlPZEhBMUwyRTBiR3RMYjNweGJXSnpURE13U25aaFNtbzVlVmh4T1VRelZtRnZVV2xIWkhWbENsQkpMMlJ6WkZsTWEzZEpSRUZSUVVKdk1FbDNVVVJCVDBKblRsWklVVGhDUVdZNFJVSkJUVU5CY1ZGM1JIZFpSRlpTTUZSQlVVZ3ZRa0ZWZDBGM1JVSUtMM3BCWkVKblRsWklVVFJGUm1kUlZXdEljR1IyVG5sUlVuZzFkVWhoTjJoWmJ6Tm9RM0Y2ZDJ4M1VYZEVVVmxLUzI5YVNXaDJZMDVCVVVWTVFsRkJSQXBuWjBWQ1FVbzVlRnBRTlRNeVZqWjBaa3RVVGxSVGFGTllWbEZVTlRCdmF6VkRUR3h1ZVVaNWRtRkNjV2huZEhwVlZsZGpPR2xGVTFocWFYbHJSRlZxQ2twallXcFZOSEZaU1ZkSmVGWlJNVmR3Um5GcFNqQlpkbTV4TXpOa2JFMUdORTg1U1VWT1owTXdkRGx3UjI1R1NGSlpLMUV6YjA5WVkzUXdWRlF2UkhVS1JuSnpXbFpoTTJsVE1rZDRaSGc1ZDFsV1pFbHVUVzV2V0VscFFrRlliMDlaTTBaNVYwRlROakJOV1RkMmVXTkhObXRLVFZWdVpUbDRVbGRyWjBsRFJBcDZOVXBXU0RSUE1FZ3pZVGxaTVhsSFowODBTVVpSVVN0c1JsZENiMmhOU2xrelpXaEpXR05oVDJORGJsWTNZV1pvUXpKcVVHbFpPRTFrZFdsWU9HRkRDblExUkdVM1psQjRUMmsxVWpSclZWQmtWRFYwYkhGeldHdEliWEJFU3lzM1ZVaFZLMk13ZFdGd1FVTjVObVUzU1U1U1dGbHViVkpMTlVadFJUSkZPVVFLUmxoc2NXdEtTM1JITVVoVU5rSXdZbnB5UzBsU05ucDVPVVJyUFFvdExTMHRMVVZPUkNCRFJWSlVTVVpKUTBGVVJTMHRMUzB0Q2c9PSJ9XX19LCJ2ZXJzaW9uIjoiMy4yLjAifX0=
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>worker
+</span></span><span class=line><span class=cl>eyJpZ25pdGlvbiI6eyJjb25maWciOnsibWVyZ2UiOlt7InNvdXJjZSI6Imh0dHBzOi8vYXBpLWludC5vY3AuaW5mb3RlY2guY29tLnR3OjIyNjIzL2NvbmZpZy93b3JrZXIifV19LCJzZWN1cml0eSI6eyJ0bHMiOnsiY2VydGlmaWNhdGVBdXRob3JpdGllcyI6W3sic291cmNlIjoiZGF0YTp0ZXh0L3BsYWluO2NoYXJzZXQ9dXRmLTg7YmFzZTY0LExTMHRMUzFDUlVkSlRpQkRSVkpVU1VaSlEwRlVSUzB0TFMwdENrMUpTVVJGUkVORFFXWnBaMEYzU1VKQlowbEpXV1JoZUZwMFZXVkVha2wzUkZGWlNrdHZXa2xvZG1OT1FWRkZURUpSUVhkS2FrVlRUVUpCUjBFeFZVVUtRM2hOU21JelFteGliazV2WVZkYU1FMVNRWGRFWjFsRVZsRlJSRVYzWkhsaU1qa3dURmRPYUUxQ05GaEVWRWw1VFZSSmVFMTZRVFJPUkZVeFRteHZXQXBFVkUxNVRWUkplRTFFUVRST1JGVXhUbXh2ZDBwcVJWTk5Ra0ZIUVRGVlJVTjRUVXBpTTBKc1ltNU9iMkZYV2pCTlVrRjNSR2RaUkZaUlVVUkZkMlI1Q21JeU9UQk1WMDVvVFVsSlFrbHFRVTVDWjJ0eGFHdHBSemwzTUVKQlVVVkdRVUZQUTBGUk9FRk5TVWxDUTJkTFEwRlJSVUV6U0hWcVNHc3haaTlCWWxNS2FHcEdhemxtV0hOelZqZFJNVzlJUVRkVFNqQnVlVkpqTDJNMmR6aERPV1ZUV1dkTWNIWnJjSEZEY3pCdFR5dE9NMHRGTW5Kb2VTdDVVVUZyUVN0eEt3cE5TVkJXVURWRU9HRjFkM3BwWTFOUFZERm5WR2xTTmpreWFFVTFVVEUwYmtaS1N6bE5UMGRaWkdJeFJFTklNazlJYkZkMWRqRktlVlJvUW5admJuRXhDamw2VG01SldreG5iMWRUUm5SWGNtMVFhR05vY3pJeE5sVTVhREpDY0U1QmIwbzJXbU01TjBZM09UWnRLMFpLVlVKeGRFSnhVMVU1UW0xMmEwbHZSa3dLVFd0dE5HczVORk50UzFCRVpURnpPSEZGY0ZGM2FDdDVhbGRPV214aFkyeHRaMGRTTVdkRFptbGxPRGt3UjJ4dWRUazFSbWMwWjBORVFXMHpNRkZ4V2dvdk1tVkNXVEJ2ZW5kMFkyOTZVakZVVkU1cVpUSnpXaTlPZEhBMUwyRTBiR3RMYjNweGJXSnpURE13U25aaFNtbzVlVmh4T1VRelZtRnZVV2xIWkhWbENsQkpMMlJ6WkZsTWEzZEpSRUZSUVVKdk1FbDNVVVJCVDBKblRsWklVVGhDUVdZNFJVSkJUVU5CY1ZGM1JIZFpSRlpTTUZSQlVVZ3ZRa0ZWZDBGM1JVSUtMM3BCWkVKblRsWklVVFJGUm1kUlZXdEljR1IyVG5sUlVuZzFkVWhoTjJoWmJ6Tm9RM0Y2ZDJ4M1VYZEVVVmxLUzI5YVNXaDJZMDVCVVVWTVFsRkJSQXBuWjBWQ1FVbzVlRnBRTlRNeVZqWjBaa3RVVGxSVGFGTllWbEZVTlRCdmF6VkRUR3h1ZVVaNWRtRkNjV2huZEhwVlZsZGpPR2xGVTFocWFYbHJSRlZxQ2twallXcFZOSEZaU1ZkSmVGWlJNVmR3Um5GcFNqQlpkbTV4TXpOa2JFMUdORTg1U1VWT1owTXdkRGx3UjI1R1NGSlpLMUV6YjA5WVkzUXdWRlF2UkhVS1JuSnpXbFpoTTJsVE1rZDRaSGc1ZDFsV1pFbHVUVzV2V0VscFFrRlliMDlaTTBaNVYwRlROakJOV1RkMmVXTkhObXRLVFZWdVpUbDRVbGRyWjBsRFJBcDZOVXBXU0RSUE1FZ3pZVGxaTVhsSFowODBTVVpSVVN0c1JsZENiMmhOU2xrelpXaEpXR05oVDJORGJsWTNZV1pvUXpKcVVHbFpPRTFrZFdsWU9HRkRDblExUkdVM1psQjRUMmsxVWpSclZWQmtWRFYwYkhGeldHdEliWEJFU3lzM1ZVaFZLMk13ZFdGd1FVTjVObVUzU1U1U1dGbHViVkpMTlVadFJUSkZPVVFLUmxoc2NXdEtTM1JITVVoVU5rSXdZbnB5UzBsU05ucDVPVVJyUFFvdExTMHRMVVZPUkNCRFJWSlVTVVpKUTBGVVJTMHRMUzB0Q2c9PSJ9XX19LCJ2ZXJzaW9uIjoiMy4yLjAifX0=
+</span></span></code></pre></td></tr></table></div></div><h4 id=設定ip>設定IP</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>guestinfo.afterburn.initrd.network-kargs
+</span></span><span class=line><span class=cl>ip=192.168.3.36::192.168.3.251:255.255.255.0:::none nameserver=192.168.3.37 
+</span></span><span class=line><span class=cl>ip=192.168.3.31::192.168.3.251:255.255.255.0:::none nameserver=192.168.3.37
+</span></span><span class=line><span class=cl>ip=192.168.3.32::192.168.3.251:255.255.255.0:::none nameserver=192.168.3.37
+</span></span><span class=line><span class=cl>ip=192.168.3.33::192.168.3.251:255.255.255.0:::none nameserver=192.168.3.37
+</span></span><span class=line><span class=cl>ip=192.168.3.34::192.168.3.251:255.255.255.0:::none nameserver=192.168.3.37
+</span></span><span class=line><span class=cl>ip=192.168.3.35::192.168.3.251:255.255.255.0:::none nameserver=192.168.3.37
+</span></span></code></pre></td></tr></table></div></div><h2 id=先啟動bootstrap>先啟動bootstrap</h2><h2 id=再啟動master>再啟動Master</h2><h2 id=啟動worker後-approve-csr>啟動Worker後 Approve CSR</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>$oc adm certificate approve &lt;csr_name&gt;
+</span></span><span class=line><span class=cl>----
+</span></span><span class=line><span class=cl>$oc get csr -o go-template=&#39;{{range .items}}{{if not .status}}{{.metadata.name}}{{&#34;\n&#34;}}{{end}}{{end}}&#39; | xargs --no-run-if-empty oc adm certificate approve
+</span></span></code></pre></td></tr></table></div></div><h2 id=storage-class>Storage Class</h2><p><a class=link href=https://access.redhat.com/solutions/4618011 target=_blank rel=noopener>https://access.redhat.com/solutions/4618011</a></p><p><a class=link href=https://access.redhat.com/solutions/5900501 target=_blank rel=noopener>https://access.redhat.com/solutions/5900501</a>
+<a class=link href=https://www.ibm.com/support/pages/creating-persistent-volume-claim-fails-not-found-openshift target=_blank rel=noopener>https://www.ibm.com/support/pages/creating-persistent-volume-claim-fails-not-found-openshift</a>
+<a class=link href=https://docs.openshift.com/container-platform/4.9/storage/persistent_storage/persistent-storage-vsphere.html target=_blank rel=noopener>https://docs.openshift.com/container-platform/4.9/storage/persistent_storage/persistent-storage-vsphere.html</a></p><p><a class=link href=https://github.com/rancher/rancher/issues/24258 target=_blank rel=noopener>https://github.com/rancher/rancher/issues/24258</a></p><p>on vmware vsphere</p><p><img src=https://kenkenny.synology.me:5543/images/2023/09/image-20221214141836955.png loading=lazy alt=image-20221214141836955></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>[devop@bastion ~]$ oc get machineset ocp-7hb6g-worker -n openshift-machine-api -o yaml
+</span></span><span class=line><span class=cl>apiVersion: machine.openshift.io/v1beta1
+</span></span><span class=line><span class=cl>kind: MachineSet
+</span></span><span class=line><span class=cl>metadata:
+</span></span><span class=line><span class=cl>  annotations:
+</span></span><span class=line><span class=cl>    machine.openshift.io/memoryMb: &#34;16384&#34;
+</span></span><span class=line><span class=cl>    machine.openshift.io/vCPU: &#34;4&#34;
+</span></span><span class=line><span class=cl>  creationTimestamp: &#34;2022-12-13T09:05:14Z&#34;
+</span></span><span class=line><span class=cl>  generation: 1
+</span></span><span class=line><span class=cl>  labels:
+</span></span><span class=line><span class=cl>    machine.openshift.io/cluster-api-cluster: ocp-7hb6g
+</span></span><span class=line><span class=cl>  name: ocp-7hb6g-worker
+</span></span><span class=line><span class=cl>  namespace: openshift-machine-api
+</span></span><span class=line><span class=cl>  resourceVersion: &#34;12244&#34;
+</span></span><span class=line><span class=cl>  uid: e52a023d-bc9f-4fb5-a66a-776768e1aa7c
+</span></span><span class=line><span class=cl>spec:
+</span></span><span class=line><span class=cl>  replicas: 0
+</span></span><span class=line><span class=cl>  selector:
+</span></span><span class=line><span class=cl>    matchLabels:
+</span></span><span class=line><span class=cl>      machine.openshift.io/cluster-api-cluster: ocp-7hb6g
+</span></span><span class=line><span class=cl>      machine.openshift.io/cluster-api-machineset: ocp-7hb6g-worker
+</span></span><span class=line><span class=cl>  template:
+</span></span><span class=line><span class=cl>    metadata:
+</span></span><span class=line><span class=cl>      labels:
+</span></span><span class=line><span class=cl>        machine.openshift.io/cluster-api-cluster: ocp-7hb6g
+</span></span><span class=line><span class=cl>        machine.openshift.io/cluster-api-machine-role: worker
+</span></span><span class=line><span class=cl>        machine.openshift.io/cluster-api-machine-type: worker
+</span></span><span class=line><span class=cl>        machine.openshift.io/cluster-api-machineset: ocp-7hb6g-worker
+</span></span><span class=line><span class=cl>    spec:
+</span></span><span class=line><span class=cl>      lifecycleHooks: {}
+</span></span><span class=line><span class=cl>      metadata: {}
+</span></span><span class=line><span class=cl>      providerSpec:
+</span></span><span class=line><span class=cl>        value:
+</span></span><span class=line><span class=cl>          apiVersion: machine.openshift.io/v1beta1
+</span></span><span class=line><span class=cl>          credentialsSecret:
+</span></span><span class=line><span class=cl>            name: vsphere-cloud-credentials
+</span></span><span class=line><span class=cl>          diskGiB: 120
+</span></span><span class=line><span class=cl>          kind: VSphereMachineProviderSpec
+</span></span><span class=line><span class=cl>          memoryMiB: 16384
+</span></span><span class=line><span class=cl>          metadata:
+</span></span><span class=line><span class=cl>            creationTimestamp: null
+</span></span><span class=line><span class=cl>          network:
+</span></span><span class=line><span class=cl>            devices:
+</span></span><span class=line><span class=cl>            - networkName: &#34;&#34;
+</span></span><span class=line><span class=cl>          numCPUs: 4
+</span></span><span class=line><span class=cl>          numCoresPerSocket: 4
+</span></span><span class=line><span class=cl>          snapshot: &#34;&#34;
+</span></span><span class=line><span class=cl>          template: ocp-7hb6g-rhcos
+</span></span><span class=line><span class=cl>          userDataSecret:
+</span></span><span class=line><span class=cl>            name: worker-user-data
+</span></span><span class=line><span class=cl>          workspace:
+</span></span><span class=line><span class=cl>            datacenter: TPECIS_Datacenter
+</span></span><span class=line><span class=cl>            datastore: v7000_CIS01
+</span></span><span class=line><span class=cl>            folder: /TPECIS_Datacenter/vm/ocp-7hb6g
+</span></span><span class=line><span class=cl>            resourcePool: /TPECIS_Datacenter/host//Resources
+</span></span><span class=line><span class=cl>            server: tpeinfovcsa7p.infotech.com.tw
+</span></span><span class=line><span class=cl>status:
+</span></span><span class=line><span class=cl>  observedGeneration: 1
+</span></span><span class=line><span class=cl>  replicas: 0
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>[devop@bastion ~]$ oc get cm cloud-provider-config  -n openshift-config -o yaml | grep folder
+</span></span><span class=line><span class=cl>    folder = &#34;/TPECIS_Datacenter/vm/ocp-7hb6g&#34;
+</span></span></code></pre></td></tr></table></div></div><p><img src=https://kenkenny.synology.me:5543/images/2023/09/image-20221214151017424.png loading=lazy alt=image-20221214151017424></p><p><img src=https://kenkenny.synology.me:5543/images/2023/09/image-20221214151029390.png loading=lazy alt=image-20221214151029390></p><p><img src=https://kenkenny.synology.me:5543/images/2023/09/image-20221214151038817.png loading=lazy alt=image-20221214151038817></p><p><img src=https://kenkenny.synology.me:5543/images/2023/09/image-20221214151215733.png loading=lazy alt=image-20221214151215733></p></section><footer class=article-footer><section class=article-tags><a href=/tags/openshift/>Openshift</a>
+<a href=/tags/redhat/>Redhat</a>
+<a href=/tags/kubernetes/>Kubernetes</a>
+<a href=/tags/vmware/>Vmware</a></section><section class=article-copyright><svg class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
+<span>Licensed under CC BY-NC-SA 4.0</span></section></footer></article><aside class=related-content--wrapper><h2 class=section-title>相關文章</h2><div class=related-content><div class="flex article-list--tile"><article><a href=/p/hello-world/><div class=article-details><h2 class=article-title>Hello World</h2></div></a></article><article><a href=/p/ocp-4.11.7_on_bare-metal/><div class=article-details><h2 class=article-title>OCP-4.11.7_on_Bare-metal</h2></div></a></article><article><a href=/p/ocp-4.16.3_on_nutanixipi/><div class=article-details><h2 class=article-title>OCP-4.16.3_on_Nutanix(IPI)</h2></div></a></article><article><a href=/p/nutanix_ndk-v1.0.0_on_ocp-4.13/><div class=article-details><h2 class=article-title>Nutanix_NDK-v1.0.0_On_OCP-4.13</h2></div></a></article><article><a href=/p/ocp-4.12.45_on_nutanixipi/><div class=article-details><h2 class=article-title>OCP-4.12.45_on_Nutanix(IPI)</h2></div></a></article></div></div></aside><div class=disqus-container><div id=disqus_thread></div><script>window.disqus_config=function(){},function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById("disqus_thread").innerHTML="Disqus comments not available by default when the website is previewed locally.";return}var t=document,e=t.createElement("script");e.async=!0,e.src="//wangken0129.disqus.com/embed.js",e.setAttribute("data-timestamp",+new Date),(t.head||t.body).appendChild(e)}()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></div><style>.disqus-container{background-color:var(--card-background);border-radius:var(--card-border-radius);box-shadow:var(--shadow-l1);padding:var(--card-padding)}</style><script>window.addEventListener("onColorSchemeChange",e=>{typeof DISQUS=="object"&&DISQUS.reset({reload:!0})})</script><footer class=site-footer><section class=copyright>&copy;
+2023 -
+2025 Ken's blog</section><section class=powerby>使用 <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> 建立<br>主題 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.30.0>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 設計</section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js defer></script><script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>

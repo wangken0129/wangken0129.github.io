@@ -1,0 +1,533 @@
+<!doctype html><html lang=en-us dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="OCP-4.12.45_on_Nutanix(IPI)"><title>OCP-4.12.45_on_Nutanix(IPI)</title>
+<link rel=canonical href=https://wangken0129.github.io/p/ocp-4.12.45_on_nutanixipi/><link rel=stylesheet href=/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css><meta property='og:title' content="OCP-4.12.45_on_Nutanix(IPI)"><meta property='og:description' content="OCP-4.12.45_on_Nutanix(IPI)"><meta property='og:url' content='https://wangken0129.github.io/p/ocp-4.12.45_on_nutanixipi/'><meta property='og:site_name' content="Ken's blog"><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='Kubernetes'><meta property='article:tag' content='Openshift'><meta property='article:tag' content='Nutanix'><meta property='article:published_time' content='2024-03-04T08:15:21+08:00'><meta property='article:modified_time' content='2024-03-04T08:15:21+08:00'><meta name=twitter:title content="OCP-4.12.45_on_Nutanix(IPI)"><meta name=twitter:description content="OCP-4.12.45_on_Nutanix(IPI)"><link rel="shortcut icon" href=/favicon.png></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切換選單>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar_hu_c68a00bbf16dac8.png width=300 height=300 class=site-logo loading=lazy alt=Avatar>
+</a><span class=emoji>🇹🇼</span></figure><div class=site-meta><h1 class=site-name><a href=/>Ken's blog</a></h1><h2 class=site-description>紀錄與分享，當個快樂的工程師</h2></div></header><ol class=menu-social><li><a href=https://github.com/wangken0129/wangken0129.github.io target=_blank title=GitHub rel=me><svg class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li><li><a href=https://www.linkedin.com/in/ken-wang-88924b181/ target=_blank title=LinkedIn rel=me><svg class="icon icon-tabler icon-tabler-brand-linkedin" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4m0 2a2 2 0 012-2h12a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2z"/><path d="M8 11v5"/><path d="M8 8v.01"/><path d="M12 16v-5"/><path d="M16 16v-3a2 2 0 00-4 0"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>Home</span></a></li><li><a href=/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>Archives</span></a></li><li><a href=/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>Search</span></a></li><li><a href=/links/><svg class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 14a3.5 3.5.0 005 0l4-4a3.5 3.5.0 00-5-5l-.5.5"/><path d="M14 10a3.5 3.5.0 00-5 0l-4 4a3.5 3.5.0 005 5l.5-.5"/></svg>
+<span>Links</span></a></li><li class=menu-bottom-section><ol class=menu><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>夜晚模式</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目錄</h2><div class=widget--toc><nav id=TableOfContents><ol><li><a href=#reference>Reference</a></li><li><a href=#cluster-information>Cluster Information</a></li><li><a href=#create-bastion-vm-rhel93>Create Bastion VM rhel9.3</a></li><li><a href=#prism-central-ca>Prism Central CA</a></li><li><a href=#install-ocp>Install OCP</a><ol><li><a href=#requirements>Requirements</a></li><li><a href=#create-install-configyaml>Create Install-config.yaml</a><ol><li><a href=#修改-install-configyaml>修改 install-config.yaml</a></li></ol></li><li><a href=#設定cco>設定CCO</a></li><li><a href=#create-cluster>Create Cluster</a><ol><li><a href=#create-manifests>Create Manifests</a></li><li><a href=#create-cluster-1>Create Cluster</a></li></ol></li></ol></li><li><a href=#nutanix-csi>Nutanix CSI</a></li><li><a href=#autoscaler>Autoscaler</a><ol><li><a href=#config>Config</a></li><li><a href=#test>Test</a></li></ol></li></ol></nav></div></section></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><header class=article-category><a href=/categories/lab-category/ style=background-color:#2a9d8f;color:#fff>Lab Category</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/p/ocp-4.12.45_on_nutanixipi/>OCP-4.12.45_on_Nutanix(IPI)</a></h2><h3 class=article-subtitle>OCP-4.12.45_on_Nutanix(IPI)</h3></div><footer class=article-time><div><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published>Mar 04, 2024</time></div><div><svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>閱讀時間: 6 分鐘</time></div></footer></div></header><section class=article-content><h1 id=ocp41245-on-nutanix---ipi>OCP4.12.45 on Nutanix - IPI</h1><p>Using IPI method install ocp 4.12.45 ( Stable )</p><p>大致步驟</p><ol><li>建立Bastion</li><li>建立Nutanix Prism Central CA</li><li>建立Install-config.yaml</li><li>建立OCP Cluster</li><li>Nutanix CSI Operator</li><li>Worker node autoscale</li></ol><h2 id=reference>Reference</h2><p>Disk Resize:</p><p><a class=link href=https://www.geekersdigest.com/how-to-extend-grow-linux-file-systems-without-downtime/#using-disk-partitions-vm target=_blank rel=noopener>https://www.geekersdigest.com/how-to-extend-grow-linux-file-systems-without-downtime/#using-disk-partitions-vm</a></p><p>CA:</p><p><a class=link href=https://www.nutanix.dev/2023/09/26/generating-a-self-signed-san-certificate-to-use-red-hat-openshift-in-nutanix-marketplace/ target=_blank rel=noopener>https://www.nutanix.dev/2023/09/26/generating-a-self-signed-san-certificate-to-use-red-hat-openshift-in-nutanix-marketplace/</a></p><p>Installation:</p><p><a class=link href="https://www.youtube.com/watch?v=G8fFB6EUiOA" target=_blank rel=noopener>https://www.youtube.com/watch?v=G8fFB6EUiOA</a></p><p><a class=link href=https://docs.openshift.com/container-platform/4.12/installing/installing_nutanix/installing-restricted-networks-nutanix-installer-provisioned.html target=_blank rel=noopener>https://docs.openshift.com/container-platform/4.12/installing/installing_nutanix/installing-restricted-networks-nutanix-installer-provisioned.html</a></p><p><a class=link href=https://www.nutanix.dev/2022/08/16/red-hat-openshift-ipi-on-nutanix-cloud-platform/ target=_blank rel=noopener>https://www.nutanix.dev/2022/08/16/red-hat-openshift-ipi-on-nutanix-cloud-platform/</a></p><p><a class=link href=https://docs.openshift.com/container-platform/4.12/installing/disconnected_install/installing-mirroring-disconnected.html target=_blank rel=noopener>https://docs.openshift.com/container-platform/4.12/installing/disconnected_install/installing-mirroring-disconnected.html</a></p><p><a class=link href=https://blog.csdn.net/weixin_43902588/article/details/107727804 target=_blank rel=noopener>https://blog.csdn.net/weixin_43902588/article/details/107727804</a></p><p><a class=link href=https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.12.45/ target=_blank rel=noopener>https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.12.45/</a></p><p><img src=https://kenkenny.synology.me:5543/images/2023/12/image-20231214105046158.png loading=lazy alt=image-20231214105046158></p><h2 id=cluster-information>Cluster Information</h2><p>Prism Central: IP + DNS FQDN</p><p>Prism Element: IP + DNS FQDN</p><p>iSCSI Data Service: IP</p><p>DNS Server: IP</p><p>NTP: IP</p><p>Network Subnet: Name
+VM Network IPAM: IP Range</p><hr><p>bastion: IP</p><p>OCP Cluster Name: poc</p><p>OCP Cluster Base Domain: Domain Name</p><p>OCP API VIP: IP + DNS FQDN</p><p>OCP Ingress VIP: IP + DNS FQDN</p><h2 id=create-bastion-vm-rhel93>Create Bastion VM rhel9.3</h2><ol><li><p>從Prism建立rhel 9.3 VM，配置vCPU, Memory, Disk, Network，掛rhel 9.3 的 iso檔案並開機</p><p><img src=https://kenkenny.synology.me:5543/images/2023/12/image-20231228092100302.png loading=lazy alt=image-20231228092100302></p><p><img src=https://kenkenny.synology.me:5543/images/2023/12/image-20231228092139601.png loading=lazy alt=image-20231228092139601></p></li><li><p>開機後點選Console, 設定基本的帳號密碼、網路、硬碟等</p><p><img src=https://kenkenny.synology.me:5543/images/2023/12/image-20231214143007168.png loading=lazy alt=image-20231214143007168></p></li><li><p>安裝完成ssh 進入bastion</p></li><li><p>下載ccoctl、openshift-install、oc client</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>$ wget https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.12.45/ccoctl-linux-4.12.45.tar.gz
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>$ wget https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.12.45/openshift-client-linux-4.12.45.tar.gz
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>$ wget https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.12.45/openshift-install-linux-4.12.45.tar.gz
+</span></span></code></pre></td></tr></table></div></div><p><img src=https://kenkenny.synology.me:5543/images/2023/12/image-20231221102507731.png loading=lazy alt=image-20231221102507731></p></li><li><p>解壓縮下載的bin檔，並放到/usr/local/bin、建立ocp-install資料夾</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>$ tar xvf ccoctl-linux-4.12.45.tar.gz 
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>$ tar xvf openshift-client-linux-4.12.45.tar.gz 
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>$ tar xvf openshift-install-linux-4.12.45.tar.gz 
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>$ chmod 775 ccoctl
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>$ sudo cp ccoctl oc kubectl openshift-install /usr/local/bin
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>$ mkdir ocp-install
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>$ cp openshift-install ocp-install/
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>$ oc version
+</span></span><span class=line><span class=cl>Client Version: 4.12.45
+</span></span><span class=line><span class=cl>Kustomize Version: v4.5.7
+</span></span></code></pre></td></tr></table></div></div><p><img src=https://kenkenny.synology.me:5543/images/2023/12/image-20231221102521345.png loading=lazy alt=image-20231221102521345></p><p><img src=https://kenkenny.synology.me:5543/images/2023/12/image-20231221102532790.png loading=lazy alt=image-20231221102532790></p></li><li><p>下載pull-secret from registry.redhat.io</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>{&#34;auths&#34;:{&#34;cloud.openshift.com&#34;:{&#34;auth&#34;:.....}}}
+</span></span></code></pre></td></tr></table></div></div></li><li><p>Create SSH Key</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>ssh-keygen
+</span></span></code></pre></td></tr></table></div></div><p><img src=https://kenkenny.synology.me:5543/images/2023/12/image-20231221102325288.png loading=lazy alt=image-20231221102325288></p></li></ol><h2 id=prism-central-ca>Prism Central CA</h2><ol><li>產生CA</li></ol><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-gdscript3 data-lang=gdscript3><span class=line><span class=cl><span class=o>$</span> <span class=k>export</span> <span class=n>PC_IP</span><span class=o>=</span> <span class=n>PC_IP</span>
+</span></span><span class=line><span class=cl><span class=o>$</span> <span class=k>export</span> <span class=n>PC_FQDN</span><span class=o>=</span> <span class=n>PC_FQDN</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=o>$</span> <span class=n>openssl</span> <span class=n>req</span> <span class=o>-</span><span class=n>x509</span> <span class=o>-</span><span class=n>nodes</span> <span class=o>-</span><span class=n>days</span> <span class=mi>3650</span> \
+</span></span><span class=line><span class=cl><span class=o>-</span><span class=n>newkey</span> <span class=n>rsa</span><span class=p>:</span><span class=mi>2048</span> <span class=o>-</span><span class=n>keyout</span> <span class=o>$</span><span class=p>{</span><span class=n>PC_IP</span><span class=p>}</span><span class=o>.</span><span class=n>key</span> <span class=o>-</span><span class=n>out</span> <span class=o>$</span><span class=p>{</span><span class=n>PC_IP</span><span class=p>}</span><span class=o>.</span><span class=n>crt</span> \
+</span></span><span class=line><span class=cl><span class=o>-</span><span class=n>subj</span> <span class=s2>&#34;/C=US/ST=CA/L=San Jose/O=Nutanix Inc./OU=Manageability/CN=*.nutanix.local&#34;</span> \
+</span></span><span class=line><span class=cl><span class=o>-</span><span class=n>addext</span> <span class=s2>&#34;subjectAltName=IP:${PC_IP},DNS:${PC_FQDN}&#34;</span>
+</span></span></code></pre></td></tr></table></div></div><p><img src=https://kenkenny.synology.me:5543/images/2024/03/image-20231221102352813.png loading=lazy alt=image-20231221102352813></p><ol start=2><li><p>置換Prism Central CA</p><p><img src=https://kenkenny.synology.me:5543/images/2024/03/image-20231221102428912.png loading=lazy alt=image-20231221102428912></p><p><img src=https://kenkenny.synology.me:5543/images/2024/03/image-20231221102436959.png loading=lazy alt=image-20231221102436959></p><p><img src=https://kenkenny.synology.me:5543/images/2024/03/image-20231221102446241_.png loading=lazy alt=image-20231221102446241></p><p><img src=https://kenkenny.synology.me:5543/images/2024/03/image-20231221102454156.png loading=lazy alt=image-20231221102454156></p></li><li><p>加入CA至Bastion</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>$ sudo cp xxx.crt /etc/pki/ca-trust/source/anchors
+</span></span><span class=line><span class=cl>$ sudo cp xxx.key /etc/pki/ca-trust/source/anchors
+</span></span><span class=line><span class=cl>$ sudo update-ca-trust extract
+</span></span></code></pre></td></tr></table></div></div></li></ol><h2 id=install-ocp>Install OCP</h2><h3 id=requirements>Requirements</h3><ol><li><p>Storage Space: 800GB</p></li><li><p>1 Cluster VIP for load balancer on control plane</p></li><li><p>1 Ingress VIP for load balancer on worker node</p></li><li><p>DNS record :
+vip.(cluster name).(base domain)
+*.apps.(cluster name).(base domain)</p></li><li><p>IPAM with 7 ip addresses.</p></li><li><p>Virtual machines:</p></li></ol><ul><li>1 temporary bootstrap node</li><li>3 control plane nodes</li><li>3 compute machines</li><li>1 installation bastion machines</li></ul><ol start=7><li>SSH Key</li><li>download oc , ccoctl, openshift-install,</li><li>CoreOS image on web server or Nutanix Object</li><li>Prism Central CA</li></ol><h3 id=create-install-configyaml>Create Install-config.yaml</h3><p>利用openshift-install建立install-config.yaml檔案，依序輸入ssh key、Nutanix資訊、OCP Cluster資訊</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>$ ./openshift-install create install-config --dir &lt;installation_directory&gt; 
+</span></span></code></pre></td></tr></table></div></div><p><img src=https://kenkenny.synology.me:5543/images/2024/03/image-20231221102751103.png loading=lazy alt=image-20231221102751103></p><h4 id=修改-install-configyaml>修改 install-config.yaml</h4><p>additionalTrustBundle: 加入 Prism Central 的 root CA</p><p>additionalTrustBundlePolicy: 改為 Always</p><p>machineNetwork: 改為與VM相同網段 xxx.xxx.xxx.xxx/24</p><p>platform 自定義cpu、memory、disk</p><p>完成後如下，建議備份此檔案以利部署到其他地方或是重新部署</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span><span class=lnt>68
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>apiVersion: v1
+</span></span><span class=line><span class=cl>baseDomain: XXX.XXX
+</span></span><span class=line><span class=cl>additionalTrustBundle: |
+</span></span><span class=line><span class=cl>    -----BEGIN CERTIFICATE-----
+</span></span><span class=line><span class=cl>    MIID8zCCAtugAwIBAgIUPE0LteDWc8JLjEm5LlqJF0s17n0wDQYJKoZIhvcNAQEL
+</span></span><span class=line><span class=cl>    XXX
+</span></span><span class=line><span class=cl>    -----END CERTIFICATE-----
+</span></span><span class=line><span class=cl>additionalTrustBundlePolicy: Always
+</span></span><span class=line><span class=cl>compute:
+</span></span><span class=line><span class=cl>- architecture: amd64
+</span></span><span class=line><span class=cl>  hyperthreading: Enabled
+</span></span><span class=line><span class=cl>  name: worker
+</span></span><span class=line><span class=cl>  platform:
+</span></span><span class=line><span class=cl>    nutanix:
+</span></span><span class=line><span class=cl>      cpus: 4
+</span></span><span class=line><span class=cl>      coresPerSocket: 2
+</span></span><span class=line><span class=cl>      memoryMiB: 16384
+</span></span><span class=line><span class=cl>      osDisk:
+</span></span><span class=line><span class=cl>        diskSizeGiB: 120
+</span></span><span class=line><span class=cl>  replicas: 3
+</span></span><span class=line><span class=cl>controlPlane:
+</span></span><span class=line><span class=cl>  architecture: amd64
+</span></span><span class=line><span class=cl>  hyperthreading: Enabled
+</span></span><span class=line><span class=cl>  name: master
+</span></span><span class=line><span class=cl>  platform: 
+</span></span><span class=line><span class=cl>    nutanix:
+</span></span><span class=line><span class=cl>      cpus: 4
+</span></span><span class=line><span class=cl>      coresPerSocket: 2
+</span></span><span class=line><span class=cl>      memoryMiB: 16384
+</span></span><span class=line><span class=cl>      osDisk:
+</span></span><span class=line><span class=cl>        diskSizeGiB: 120
+</span></span><span class=line><span class=cl>  replicas: 3
+</span></span><span class=line><span class=cl>credentialsMode: Manual
+</span></span><span class=line><span class=cl>metadata:
+</span></span><span class=line><span class=cl>  creationTimestamp: null
+</span></span><span class=line><span class=cl>  name: poc
+</span></span><span class=line><span class=cl>networking:
+</span></span><span class=line><span class=cl>  clusterNetwork:
+</span></span><span class=line><span class=cl>  - cidr: 10.128.0.0/14
+</span></span><span class=line><span class=cl>    hostPrefix: 23
+</span></span><span class=line><span class=cl>  machineNetwork:
+</span></span><span class=line><span class=cl>  - cidr: xxx.xxx.xxx.xxx/24
+</span></span><span class=line><span class=cl>  networkType: OVNKubernetes
+</span></span><span class=line><span class=cl>  serviceNetwork:
+</span></span><span class=line><span class=cl>  - 172.30.0.0/16
+</span></span><span class=line><span class=cl>platform:
+</span></span><span class=line><span class=cl>  nutanix:
+</span></span><span class=line><span class=cl>    apiVIPs:
+</span></span><span class=line><span class=cl>    - xxx.xxx.xxx.xxx
+</span></span><span class=line><span class=cl>    ingressVIPs:
+</span></span><span class=line><span class=cl>    - xxx.xxx.xxx.xxx
+</span></span><span class=line><span class=cl>    prismCentral:
+</span></span><span class=line><span class=cl>      endpoint:
+</span></span><span class=line><span class=cl>        address: xxx.xxx.xxx.xxx
+</span></span><span class=line><span class=cl>        port: 9440
+</span></span><span class=line><span class=cl>      password: password
+</span></span><span class=line><span class=cl>      username: admin
+</span></span><span class=line><span class=cl>    prismElements:
+</span></span><span class=line><span class=cl>    - endpoint:
+</span></span><span class=line><span class=cl>        address: xxx.xxx.xxx.xxx
+</span></span><span class=line><span class=cl>        port: 9440
+</span></span><span class=line><span class=cl>      uuid: xxxxxxx-cd36-0cc8-0f4a-xxxxxxxxxx
+</span></span><span class=line><span class=cl>    subnetUUIDs:
+</span></span><span class=line><span class=cl>    - xxxxxxxx-27ab-46ab-a0b1-xxxxxxxxxx3
+</span></span><span class=line><span class=cl>publish: External
+</span></span><span class=line><span class=cl>pullSecret: &#39;{&#34;auths&#34;:.....}}}&#39;
+</span></span><span class=line><span class=cl>sshKey: |
+</span></span><span class=line><span class=cl>  ssh-rsa AAAAxxxxxxxxxxxxxxxxxxxxxxx nutanix@ocp-bastion
+</span></span></code></pre></td></tr></table></div></div><h3 id=設定cco>設定CCO</h3><p>安裝Cluster需要Cloud Credential Operator (CCO)，讓OCP能與Prism溝通</p><p>大致作法為</p><ol><li><p>建立帳號密碼檔案</p></li><li><p>建立要求帳密的目錄及檔案</p></li><li><p>利用上述檔案建立OCP Shared Secret</p></li><li><p>在 ocp-install 資料夾內建立 credentials.yaml</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>$ vim credentials.yaml
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>credentials:
+</span></span><span class=line><span class=cl>- type: basic_auth
+</span></span><span class=line><span class=cl>  data:
+</span></span><span class=line><span class=cl>    prismCentral:
+</span></span><span class=line><span class=cl>      username: admin
+</span></span><span class=line><span class=cl>      password: P@ssw0rd123
+</span></span><span class=line><span class=cl>    prismElements:
+</span></span><span class=line><span class=cl>    - name: AHV-Cluster
+</span></span><span class=line><span class=cl>      username: admin
+</span></span><span class=line><span class=cl>      password: P@ssw0rd123
+</span></span></code></pre></td></tr></table></div></div></li><li><p>設定Image環境變數</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>$ RELEASE_IMAGE=$(./openshift-install version | awk &#39;/release image/ {print $3}&#39;)
+</span></span></code></pre></td></tr></table></div></div></li><li><p>建立credrequests資料夾</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>$ mkdir credrequests
+</span></span></code></pre></td></tr></table></div></div></li><li><p>建立0000_30_machine-api-operator_00_credentials-request.yaml</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>$ oc adm release extract --credentials-requests --cloud=nutanix --to=./credrequests  $RELEASE_IMAGE
+</span></span></code></pre></td></tr></table></div></div></li><li><p>建立 CCO Secret</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>$ ccoctl nutanix create-shared-secrets --credentials-requests-dir=/home/nutanix/ocp_install/credrequests --output-dir=/home/nutanix/ocp-install --credentials-source-filepath=/home/nutanix/ocp_install/credentials.yaml
+</span></span></code></pre></td></tr></table></div></div><p><img src=https://kenkenny.synology.me:5543/images/2024/03/image-20231221103631965.png loading=lazy alt=image-20231221103631965></p><p><img src=https://kenkenny.synology.me:5543/images/2023/12/image-20231221103640795.png loading=lazy alt=image-20231221103640795></p><p><img src=https://kenkenny.synology.me:5543/images/2023/12/image-20231221103812824.png loading=lazy alt=image-20231221103812824></p><p><img src=https://kenkenny.synology.me:5543/images/2023/12/image-20231221103830445.png loading=lazy alt=image-20231221103830445></p></li></ol><h3 id=create-cluster>Create Cluster</h3><h4 id=create-manifests>Create Manifests</h4><p>建立 manifests資料夾，確認openshift-machine-api-nutanix-credentials-credentials.yaml有在裡面</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>$ ./openshift-install create manifests --dir /home/nutanix/ocp-install/
+</span></span></code></pre></td></tr></table></div></div><p><img src=https://kenkenny.synology.me:5543/images/2023/12/image-20231221103956961.png loading=lazy alt=image-20231221103956961></p><h4 id=create-cluster-1>Create Cluster</h4><ol><li><p>ocp-install</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>$ ./openshift-install create cluster --dir /home/nutanix/ocp-install/ --log-level=debug
+</span></span></code></pre></td></tr></table></div></div><p><img src=https://kenkenny.synology.me:5543/images/2023/12/image-20231221104222075.png loading=lazy alt=image-20231221104222075></p></li><li><p>安裝過程，會先建立OS image</p><p><img src=https://kenkenny.synology.me:5543/images/2023/12/image-20231221104256996.png loading=lazy alt=image-20231221104256996></p><p><img src=https://kenkenny.synology.me:5543/images/2024/03/image-20231221104311871.png loading=lazy alt=image-20231221104311871></p></li><li><p>install completed</p><p><img src=https://kenkenny.synology.me:5543/images/2024/03/image-20231228101028495.png loading=lazy alt=image-20231228101028495></p></li><li><p>安裝完後在安裝目錄底下會有auth的資料夾，裡面含有kubeadmin的帳密、kubeconfig檔案</p><p>建議將kubeconfig檔案複製到~/.kube/config ，這樣就可以直接使用 oc 指令連線到該叢集</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>in /home/nutanix/ocp-install
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>$ mkdir ~/.kube
+</span></span><span class=line><span class=cl>$ cp auth/kubeconfig ~/.kube/config
+</span></span></code></pre></td></tr></table></div></div></li><li><p>oc get nodes</p><p><img src=https://kenkenny.synology.me:5543/images/2024/03/image-20231228101001702.png loading=lazy alt=image-20231228101001702></p></li><li><p>get console url</p><p><img src=https://kenkenny.synology.me:5543/images/2024/03/image-20231228101053013.png loading=lazy alt=image-20231228101053013></p></li><li><p>login page，密碼在/home/nutanix/ocp-install/auth/</p><p><img src=https://kenkenny.synology.me:5543/images/2024/03/image-20231228101115835.png loading=lazy alt=image-20231228101115835></p></li><li><p>login</p><p><img src=https://kenkenny.synology.me:5543/images/2024/03/image-20231228101128534.png loading=lazy alt=image-20231228101128534></p><p><img src=https://kenkenny.synology.me:5543/images/2024/03/image-20231228101140167.png loading=lazy alt=image-20231228101140167></p></li><li><p>安裝完有遇到預設ntp無法連通，需改為內部的ntp server
+修改MachineConfig方法為撰寫bu設定檔，再透過bu去轉成yaml檔案，最後部署上去OCP</p><p><img src=https://kenkenny.synology.me:5543/images/2024/03/image-20231229120824457.png loading=lazy alt=image-20231229120824457></p></li></ol><h2 id=nutanix-csi>Nutanix CSI</h2><ol><li><p>在OCP Console上點選OperatorHub，搜尋Nutanix</p><p><img src=https://kenkenny.synology.me:5543/images/2024/03/image-20231229112011014.png loading=lazy alt=image-20231229112011014></p></li><li><p>點進去點選Install，描述內容比較重要的像支援Nutanix Volumes (rwo)、Nutanix FIles (rwx)</p><p>以及下方有部署yaml範例，可以先複製下來</p><p><img src=https://kenkenny.synology.me:5543/images/2024/03/image-20231229112814864.png loading=lazy alt=image-20231229112814864></p></li><li><p>選安裝版本、Namespace、更新方式</p><p><img src=https://kenkenny.synology.me:5543/images/2024/03/image-20231229113026621.png loading=lazy alt=image-20231229113026621></p></li><li><p>安裝完成</p><p><img src=https://kenkenny.synology.me:5543/images/2024/03/image-20231229113056589.png loading=lazy alt=image-20231229113056589></p></li><li><p>點選Nutanix CSI Storage，點Create NutanixCsiStorage</p><p><img src=https://kenkenny.synology.me:5543/images/2024/03/image-20231229113122565.png loading=lazy alt=image-20231229113122565></p></li><li><p>建立NutanixCsiStorage，點選Create即可</p><p><img src=https://kenkenny.synology.me:5543/images/2024/03/image-20231229113155776.png loading=lazy alt=image-20231229113155776></p><p><img src=https://kenkenny.synology.me:5543/images/2024/03/image-20231229113229946.png loading=lazy alt=image-20231229113229946></p></li><li><p>建立一個 Secret 讓OCP可以透過該Secret與Prism做溝通</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>$ vi ntnx-secret
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>apiVersion: v1
+</span></span><span class=line><span class=cl>kind: Secret
+</span></span><span class=line><span class=cl>metadata:
+</span></span><span class=line><span class=cl>  name: ntnx-secret
+</span></span><span class=line><span class=cl>  namespace: openshift-cluster-csi-drivers
+</span></span><span class=line><span class=cl>stringData:
+</span></span><span class=line><span class=cl>  # prism-element-ip:prism-port:admin:password
+</span></span><span class=line><span class=cl>  key: PE-IP:9440:admin:P@ssw0rd123
+</span></span></code></pre></td></tr></table></div></div><p><img src=https://kenkenny.synology.me:5543/images/2024/03/image-20231229113317508.png loading=lazy alt=image-20231229113317508></p></li><li><p>建立Volume的Storage Class ，需修改dataServiceEndPoint、storageContainer</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>$ vi nutanix-volume.yaml
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>kind: StorageClass
+</span></span><span class=line><span class=cl>apiVersion: storage.k8s.io/v1
+</span></span><span class=line><span class=cl>metadata:
+</span></span><span class=line><span class=cl>  name: nutanix-volume
+</span></span><span class=line><span class=cl>provisioner: csi.nutanix.com
+</span></span><span class=line><span class=cl>parameters:
+</span></span><span class=line><span class=cl>  csi.storage.k8s.io/provisioner-secret-name: ntnx-secret
+</span></span><span class=line><span class=cl>  csi.storage.k8s.io/provisioner-secret-namespace: openshift-cluster-csi-drivers
+</span></span><span class=line><span class=cl>  csi.storage.k8s.io/node-publish-secret-name: ntnx-secret
+</span></span><span class=line><span class=cl>  csi.storage.k8s.io/node-publish-secret-namespace: openshift-cluster-csi-drivers
+</span></span><span class=line><span class=cl>  csi.storage.k8s.io/controller-expand-secret-name: ntnx-secret
+</span></span><span class=line><span class=cl>  csi.storage.k8s.io/controller-expand-secret-namespace: openshift-cluster-csi-drivers
+</span></span><span class=line><span class=cl>  csi.storage.k8s.io/fstype: ext4
+</span></span><span class=line><span class=cl>  dataServiceEndPoint: IP:3260 # Prism data service ip
+</span></span><span class=line><span class=cl>  storageContainer: default-container # Prism 上建立的Storage Container
+</span></span><span class=line><span class=cl>  storageType: NutanixVolumes
+</span></span><span class=line><span class=cl>  #whitelistIPMode: ENABLED
+</span></span><span class=line><span class=cl>  #chapAuth: ENABLED
+</span></span><span class=line><span class=cl>allowVolumeExpansion: true
+</span></span><span class=line><span class=cl>reclaimPolicy: Delete
+</span></span></code></pre></td></tr></table></div></div><p><img src=https://kenkenny.synology.me:5543/images/2024/03/image-20231229113507440.png loading=lazy alt=image-20231229113507440></p></li><li><p>建立Nutanix Files的Storage Class</p><p>有分為兩種：NFS Servers、Dynamic NFS Shares (Valid Design)</p><p>NFS Share Server：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>$ vi ntnx-files.yaml
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>kind: StorageClass
+</span></span><span class=line><span class=cl>apiVersion: storage.k8s.io/v1
+</span></span><span class=line><span class=cl>metadata:
+</span></span><span class=line><span class=cl>    name: nutanix-files
+</span></span><span class=line><span class=cl>    annotations:
+</span></span><span class=line><span class=cl>        storageclass.kubernetes.io/is-default-class: &#34;false&#34;
+</span></span><span class=line><span class=cl>provisioner: csi.nutanix.com
+</span></span><span class=line><span class=cl>parameters:
+</span></span><span class=line><span class=cl>    nfsServer: files.poc.xxx.xxx.xxx
+</span></span><span class=line><span class=cl>    nfsPath: /ocp
+</span></span><span class=line><span class=cl>    storageType: NutanixFiles
+</span></span><span class=line><span class=cl>    squashType: &#34;root-squash&#34; # 若沒有資安疑慮可以用none，比較簡單
+</span></span><span class=line><span class=cl>reclaimPolicy: Delete or Retain
+</span></span></code></pre></td></tr></table></div></div><p><img src=https://kenkenny.synology.me:5543/images/2024/03/image-20231229114237696.png loading=lazy alt=image-20231229114237696></p><p>Dynamic NFS Shares</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>$ vi ntnx-dynamic-files.yaml
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>kind: StorageClass
+</span></span><span class=line><span class=cl>apiVersion: storage.k8s.io/v1
+</span></span><span class=line><span class=cl>metadata:
+</span></span><span class=line><span class=cl>    name: nutanix-dynfiles
+</span></span><span class=line><span class=cl>provisioner: csi.nutanix.com
+</span></span><span class=line><span class=cl>parameters:
+</span></span><span class=line><span class=cl>    dynamicProv: ENABLED
+</span></span><span class=line><span class=cl>    csi.storage.k8s.io/provisioner-secret-name: ntnx-secret
+</span></span><span class=line><span class=cl>    csi.storage.k8s.io/provisioner-secret-namespace: openshift-cluster-csi-drivers
+</span></span><span class=line><span class=cl>    csi.storage.k8s.io/node-publish-secret-name: ntnx-secret
+</span></span><span class=line><span class=cl>    csi.storage.k8s.io/node-publish-secret-namespace: openshift-cluster-csi-drivers
+</span></span><span class=line><span class=cl>    csi.storage.k8s.io/controller-expand-secret-name: ntnx-secret
+</span></span><span class=line><span class=cl>    csi.storage.k8s.io/controller-expand-secret-namespace: openshift-cluster-csi-drivers
+</span></span><span class=line><span class=cl>    storageType: NutanixFiles
+</span></span><span class=line><span class=cl>    squashType: &#34;root-squash&#34; # 若沒有資安疑慮可以用none，比較簡單
+</span></span><span class=line><span class=cl>    nfsServerName: files # 對應Nutanix Files Server的名稱
+</span></span><span class=line><span class=cl>allowVolumeExpansion: true
+</span></span></code></pre></td></tr></table></div></div><p><img src=https://kenkenny.synology.me:5543/images/2024/03/image-20231229114932023.png loading=lazy alt=image-20231229114932023></p><p>兩者建PVC在Nutanix Files Console上的差異如下：</p><p>選擇第一種會建立在ocp這個share內，選擇第二種會建立各個PVC對應的share</p><p><img src=https://kenkenny.synology.me:5543/images/2024/03/image-20231229120003104.png loading=lazy alt=image-20231229120003104></p></li><li><p>建立PVC去確認Status為Bound即可，Volume測試</p><p><img src=https://kenkenny.synology.me:5543/images/2024/03/image-20231229120126695.png loading=lazy alt=image-20231229120126695></p><p>在Nutanix Prism上的Volume Group</p><p><img src=https://kenkenny.synology.me:5543/images/2024/03/image-20231229120205001.png loading=lazy alt=image-20231229120205001></p></li><li><p>擴充PVC</p><p><img src=https://kenkenny.synology.me:5543/images/2024/03/image-20231229120324056.png loading=lazy alt=image-20231229120324056></p><p><img src=https://kenkenny.synology.me:5543/images/2024/03/image-20231229120337732.png loading=lazy alt=image-20231229120337732></p><p><img src=https://kenkenny.synology.me:5543/images/2024/03/image-20231229120352157.png loading=lazy alt=image-20231229120352157></p><p><img src=https://kenkenny.synology.me:5543/images/2024/03/image-20231229120408383.png loading=lazy alt=image-20231229120408383></p></li><li><p>建立Files PVC測試</p><p><img src=https://kenkenny.synology.me:5543/images/2024/03/image-20231229120613807.png loading=lazy alt=image-20231229120613807></p><p><img src=https://kenkenny.synology.me:5543/images/2024/03/image-20231229120634249.png loading=lazy alt=image-20231229120634249></p></li><li><p>檢視PV確認都為Bound</p><p><img src=https://kenkenny.synology.me:5543/images/2024/03/image-20231229120448778.png loading=lazy alt=image-20231229120448778></p></li></ol><h2 id=autoscaler>Autoscaler</h2><p>Nutanix 結合Openshift的Autoscaler做到Worker Node的自動擴展</p><p>名詞解釋：</p><p>Machine：為透過Openshift部署的機器</p><p>Nodes：為部署完加入OCP Cluster內的節點</p><p>scale up：對於Openshift 來說是整體的Resource增加，以實際看到的意思就是worker node新增，因為master node不能被使用</p><p>scale down：相對scale up 就是整體的Resource減少，意思就是減少worker node的數量</p><p>Clusterautoscaler：針對整個Cluster做Resource管控的設定，例如整體CPU、Memory、整體最大節點等</p><p>Machinesets：machine的設定值，包含有多種不同的環境例如 AWS、GCP、Nutanix，就會有多個Machinesets</p><p>Machineautoscaler：針對Machinesets去做scale的設定，例如最大12個節點、最小2個節點等</p><h3 id=config>Config</h3><ol><li><p>確認現有的Machinesets、Machine數量</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>在Bastion上
+</span></span><span class=line><span class=cl>$ oc get machinesets -n openshift-machine-api
+</span></span><span class=line><span class=cl>$ oc get machine -n openshift-machine-api
+</span></span></code></pre></td></tr></table></div></div><p><img src=https://kenkenny.synology.me:5543/images/2023/12/image-20231229132903201.png loading=lazy alt=image-20231229132903201></p></li><li><p>新增ClusterAutoscaler設定檔，這邊還可自定義Cluster的Resource資源總共多少、Woker Node使用量到多少時需要擴展
+預設是單一Work Node 使用量達50%時會自動擴展，詳情見Redhat 官方連結
+<a class=link href=https://docs.openshift.com/container-platform/4.12/machine_management/applying-autoscaling.html target=_blank rel=noopener>https://docs.openshift.com/container-platform/4.12/machine_management/applying-autoscaling.html</a></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>$ vi clusterautoscaler.yaml
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>apiVersion: &#34;autoscaling.openshift.io/v1&#34;
+</span></span><span class=line><span class=cl>kind: &#34;ClusterAutoscaler&#34;
+</span></span><span class=line><span class=cl>metadata:
+</span></span><span class=line><span class=cl>  name: &#34;default&#34;
+</span></span><span class=line><span class=cl>spec:
+</span></span><span class=line><span class=cl>  resourceLimits:
+</span></span><span class=line><span class=cl>    maxNodesTotal: 10 # 最大的worker node數量
+</span></span><span class=line><span class=cl>  scaleDown: # scaleDown 參數
+</span></span><span class=line><span class=cl>    enabled: true
+</span></span><span class=line><span class=cl>    delayAfterAdd: 10s
+</span></span><span class=line><span class=cl>    delayAfterDelete: 10s
+</span></span><span class=line><span class=cl>    delayAfterFailure: 10s
+</span></span></code></pre></td></tr></table></div></div><p><img src=https://kenkenny.synology.me:5543/images/2024/03/image-20231229133058122.png loading=lazy alt=image-20231229133058122></p></li><li><p>新增MachineAutoscaler設定檔</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>$ vi machineautoscaler.yaml
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>apiVersion: &#34;autoscaling.openshift.io/v1beta1&#34;
+</span></span><span class=line><span class=cl>kind: &#34;MachineAutoscaler&#34;
+</span></span><span class=line><span class=cl>metadata:
+</span></span><span class=line><span class=cl>  name: &#34;poc-gqwvb-worker&#34; # 這裡請對應machineset的名稱
+</span></span><span class=line><span class=cl>  namespace: &#34;openshift-machine-api&#34;
+</span></span><span class=line><span class=cl>spec:
+</span></span><span class=line><span class=cl>  minReplicas: 1 
+</span></span><span class=line><span class=cl>  maxReplicas: 12 
+</span></span><span class=line><span class=cl>  scaleTargetRef: 
+</span></span><span class=line><span class=cl>    apiVersion: machine.openshift.io/v1beta1
+</span></span><span class=line><span class=cl>    kind: MachineSet 
+</span></span><span class=line><span class=cl>    name: poc-gqwvb-worker # 這裡請對應machineset的名稱
+</span></span></code></pre></td></tr></table></div></div><p><img src=https://kenkenny.synology.me:5543/images/2024/03/image-20231229133331596.png loading=lazy alt=image-20231229133331596></p></li><li><p>部署兩個設定檔案到ocp cluster內，即可看到MachineAutoscalers內有該設定檔</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>$ oc create -f clusterautoscaler.yaml 
+</span></span><span class=line><span class=cl>clusterautoscaler.autoscaling.openshift.io/default created
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>$ oc create -f machineautoscaler.yaml 
+</span></span><span class=line><span class=cl>machineautoscaler.autoscaling.openshift.io/ocp-demo-t82dn-worker created
+</span></span></code></pre></td></tr></table></div></div><p><img src=https://kenkenny.synology.me:5543/images/2024/03/image-20231229133835454.png loading=lazy alt=image-20231229133835454></p></li></ol><h3 id=test>Test</h3><p>現有Machine及Nodes</p><p>Machine</p><p><img src=https://kenkenny.synology.me:5543/images/2024/03/image-20231229134502956.png loading=lazy alt=image-20231229134502956></p><p>Nodes</p><p><img src=https://kenkenny.synology.me:5543/images/2024/03/image-20231229134439968.png loading=lazy alt=image-20231229134439968></p><ol><li><p>建立測試用的Project (namespace)</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>$ oc adm new-project autoscale-example &amp;&amp; oc project autoscale-example
+</span></span></code></pre></td></tr></table></div></div></li><li><p>建立測試的Pod，50個pod、480秒後自動關閉</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>$ vi demo-job.yaml
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>apiVersion: batch/v1
+</span></span><span class=line><span class=cl>kind: Job
+</span></span><span class=line><span class=cl>metadata:
+</span></span><span class=line><span class=cl>  generateName: demo-job-
+</span></span><span class=line><span class=cl>spec:
+</span></span><span class=line><span class=cl>  template:
+</span></span><span class=line><span class=cl>    spec:
+</span></span><span class=line><span class=cl>      containers:
+</span></span><span class=line><span class=cl>      - name: work
+</span></span><span class=line><span class=cl>        image: busybox
+</span></span><span class=line><span class=cl>        command: [&#34;sleep&#34;,  &#34;480&#34;]
+</span></span><span class=line><span class=cl>        resources:
+</span></span><span class=line><span class=cl>          requests:
+</span></span><span class=line><span class=cl>            memory: 1000Mi
+</span></span><span class=line><span class=cl>            cpu: 1000m
+</span></span><span class=line><span class=cl>      restartPolicy: Never
+</span></span><span class=line><span class=cl>  backoffLimit: 4
+</span></span><span class=line><span class=cl>  completions: 50
+</span></span><span class=line><span class=cl>  parallelism: 50
+</span></span></code></pre></td></tr></table></div></div></li><li><p>部署到OCP Cluster內</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>$ oc apply -f demo-job.yaml
+</span></span></code></pre></td></tr></table></div></div><p><img src=https://kenkenny.synology.me:5543/images/2024/03/image-20231229134951317.png loading=lazy></p><p><img src=https://kenkenny.synology.me:5543/images/2024/03/image-20231229135114899.png loading=lazy alt=image-20231229135114899></p></li><li><p>當OCP的autoscaler偵測到時，即會自動開始新增worker node (scale up 約10分鐘)
+可在Machines的頁面查看</p><p><img src=https://kenkenny.synology.me:5543/images/2024/03/image-20231229135203313.png loading=lazy alt=image-20231229135203313></p></li><li><p>Prism Central上也可以看到VM在建立中</p><p><img src=https://kenkenny.synology.me:5543/images/2024/03/image-20231229135249675.png loading=lazy alt=image-20231229135249675></p></li><li><p>Machinesets 會看到應該有的machines要有4個現在只有3個</p><p><img src=https://kenkenny.synology.me:5543/images/2024/03/image-20231229135323816.png loading=lazy alt=image-20231229135323816></p></li><li><p>Machine Provision完成後，會自動加入OCP Cluster，自動安裝叢集所需的Pod、CSI Driver等</p><p><img src=https://kenkenny.synology.me:5543/images/2024/03/image-20231229135432143.png loading=lazy alt=image-20231229135432143></p></li><li><p>Node加入完成</p><p><img src=https://kenkenny.synology.me:5543/images/2024/03/image-20231229135533396.png loading=lazy alt=image-20231229135533396></p><p><img src=https://kenkenny.synology.me:5543/images/2024/03/image-20231229135557129.png loading=lazy alt=image-20231229135557129></p><p><img src=https://kenkenny.synology.me:5543/images/2024/03/image-20231229135618865.png loading=lazy alt=image-20231229135618865></p><p><img src=https://kenkenny.synology.me:5543/images/2024/03/image-20231229135634076.png loading=lazy alt=image-20231229135634076></p></li><li><p>當Pod的時間到了自動關閉之後，即會開始做縮減的動作 (scale down 約3分鐘完成 )</p><p>OCP會自動選擇其中一個Worker Node做刪除，會排除該節點上有local PV、使用量低於50%的Worker Node</p><p><img src=https://kenkenny.synology.me:5543/images/2024/03/image-20231229140147396.png loading=lazy alt=image-20231229140147396></p><p><img src=https://kenkenny.synology.me:5543/images/2024/03/image-20231229135806745.png loading=lazy alt=image-20231229135806745></p></li><li><p>最後回歸為原本的狀態</p><p><img src=https://kenkenny.synology.me:5543/images/2024/03/image-20231229140933239.png loading=lazy alt=image-20231229140933239></p><p><img src=https://kenkenny.synology.me:5543/images/2024/03/image-20231229140947045.png loading=lazy alt=image-20231229140947045></p></li></ol><p>以上為使用Nutanix 透過 IPI Online的方式安裝Red Hat Openshift 叢集的測試過程。</p></section><footer class=article-footer><section class=article-tags><a href=/tags/kubernetes/>Kubernetes</a>
+<a href=/tags/openshift/>Openshift</a>
+<a href=/tags/nutanix/>Nutanix</a></section><section class=article-copyright><svg class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
+<span>Licensed under CC BY-NC-SA 4.0</span></section></footer></article><aside class=related-content--wrapper><h2 class=section-title>相關文章</h2><div class=related-content><div class="flex article-list--tile"><article><a href=/p/ocp-4.16.3_on_nutanixipi/><div class=article-details><h2 class=article-title>OCP-4.16.3_on_Nutanix(IPI)</h2></div></a></article><article><a href=/p/nutanix_ndk-v1.0.0_on_ocp-4.13/><div class=article-details><h2 class=article-title>Nutanix_NDK-v1.0.0_On_OCP-4.13</h2></div></a></article><article><a href=/p/hello-world/><div class=article-details><h2 class=article-title>Hello World</h2></div></a></article><article><a href=/p/nutanix_nkp-v2.13_ahv/><div class=article-details><h2 class=article-title>Nutanix_NKP-v2.13_AHV</h2></div></a></article><article><a href=/p/nutanix_nkp-v2.13_preprovisioned/><div class=article-details><h2 class=article-title>Nutanix_NKP-v2.13_Preprovisioned</h2></div></a></article></div></div></aside><div class=disqus-container><div id=disqus_thread></div><script>window.disqus_config=function(){},function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById("disqus_thread").innerHTML="Disqus comments not available by default when the website is previewed locally.";return}var t=document,e=t.createElement("script");e.async=!0,e.src="//wangken0129.disqus.com/embed.js",e.setAttribute("data-timestamp",+new Date),(t.head||t.body).appendChild(e)}()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></div><style>.disqus-container{background-color:var(--card-background);border-radius:var(--card-border-radius);box-shadow:var(--shadow-l1);padding:var(--card-padding)}</style><script>window.addEventListener("onColorSchemeChange",e=>{typeof DISQUS=="object"&&DISQUS.reset({reload:!0})})</script><footer class=site-footer><section class=copyright>&copy;
+2023 -
+2025 Ken's blog</section><section class=powerby>使用 <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> 建立<br>主題 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.30.0>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 設計</section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js defer></script><script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>
