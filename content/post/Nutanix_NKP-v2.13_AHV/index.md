@@ -2,7 +2,7 @@
 title: Nutanix_NKP-v2.13_AHV
 description: Nutanix_NKP-v2.13_AHV
 slug: Nutanix_NKP-v2.13_AHV
-date: 2025-03-07T05:53:22+08:00
+date: 2025-03-10T09:25:28+08:00
 categories:
     - Lab Category
 tags:
@@ -1169,5 +1169,235 @@ Management 升級完成後之後再升級 workload cluster
 # nkp upgrade cluster nutanix \
 --cluster-name ${WORKLOAD_CLUSTER_NAME} \
 --vm-image ${VM_IMAGE_NAME} -n WORKLOAD_CLUSTER_NAME
+```
+
+
+
+
+
+## GitOps
+
+NKP Pro 授權沒有像 Ultimate 有 Project 整合 GitOps 的 UI 介面，但預設都是有安裝 FluxCD 在 kommander-flux 裡面
+
+所以還是可以透過 FluxCD 來部署應用程式，需要準備 git repository 跟 kustomization yaml
+
+
+
+GitRepository
+
+```
+[nkp@nkp-bastion ~]$ cat sockshop-repository.yaml 
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  labels:
+    kommander.d2iq.io/managed-by-kind: GitopsRepository
+    kustomize.toolkit.fluxcd.io/name: project
+    kustomize.toolkit.fluxcd.io/namespace: ken-demo
+  name: sockshop
+  namespace: ken-demo
+spec:
+  interval: 1m0s
+  url: https://github.com/wangken0129/nkp-demo-sockshop
+  ref:
+    branch: master
+```
+
+kustomization
+
+```
+[nkp@nkp-bastion ~]$ cat sockshop-kustomization.yaml 
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  annotations:
+    config.kubernetes.io/origin: |
+      path: cd/sockshop/flux-kustomization.yaml
+  finalizers:
+  - finalizers.fluxcd.io
+  generation: 1
+  labels:
+    kustomize.toolkit.fluxcd.io/namespace: ken-demo
+  name: sockshop
+  namespace: ken-demo
+spec:
+  force: false
+  interval: 6h0m0s
+  patches:
+  - patch: |
+      - op: add
+        path: /spec/serviceAccountName
+        value: ken-demo
+    target:
+      group: helm.toolkit.fluxcd.io
+      kind: HelmRelease
+  - patch: |
+      - op: add
+        path: /spec/serviceAccountName
+        value: ken-demo
+    target:
+      group: kustomize.toolkit.fluxcd.io
+      kind: Kustomization
+  path: ./
+  prune: true
+  retryInterval: 1m0s
+  sourceRef:
+    apiVersion: source.toolkit.fluxcd.io/v1
+    kind: GitRepository
+    name: sockshop
+    namespace: ken-demo
+  targetNamespace: ken-demo
+  timeout: 1m0s
+  wait: true    
+```
+
+Apply 後
+
+```
+[nkp@nkp-bastion ~]$ kubectl get all -n ken-demo
+NAME                                READY   STATUS    RESTARTS   AGE
+pod/carts-778f4b564f-ldvtx          1/1     Running   0          44m
+pod/carts-db-676c6b5865-lszhq       1/1     Running   0          44m
+pod/catalogue-db-c948fd796-qssjm    1/1     Running   0          44m
+pod/catalogue-f7687cb4-8wrt8        1/1     Running   0          44m
+pod/front-end-bd46b56d9-n57gl       1/1     Running   0          44m
+pod/orders-595bcdb56f-n2fqk         1/1     Running   0          44m
+pod/orders-db-658fc79675-x76n7      1/1     Running   0          44m
+pod/payment-84bbbfd97f-hh2zb        1/1     Running   0          44m
+pod/queue-master-76c64bb55f-75s6f   1/1     Running   0          44m
+pod/rabbitmq-556cb847-sc4ml         2/2     Running   0          44m
+pod/session-db-74fdf96645-gflf7     1/1     Running   0          44m
+pod/shipping-69d4b778b9-zn5lm       1/1     Running   0          44m
+pod/user-574f64957c-nnj4z           1/1     Running   0          44m
+pod/user-db-7f98f68489-wsd2g        1/1     Running   0          44m
+
+NAME                   TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)             AGE
+service/carts          ClusterIP      10.111.54.244    <none>        80/TCP              44m
+service/carts-db       ClusterIP      10.96.228.244    <none>        27017/TCP           44m
+service/catalogue      ClusterIP      10.110.20.214    <none>        80/TCP              44m
+service/catalogue-db   ClusterIP      10.100.173.213   <none>        3306/TCP            44m
+service/front-end      LoadBalancer   10.111.200.177   10.38.14.54   80:31852/TCP        44m
+service/orders         ClusterIP      10.104.108.41    <none>        80/TCP              44m
+service/orders-db      ClusterIP      10.99.221.113    <none>        27017/TCP           44m
+service/payment        ClusterIP      10.99.233.67     <none>        80/TCP              44m
+service/queue-master   ClusterIP      10.97.85.225     <none>        80/TCP              44m
+service/rabbitmq       ClusterIP      10.106.63.86     <none>        5672/TCP,9090/TCP   44m
+service/session-db     ClusterIP      10.99.41.179     <none>        6379/TCP            44m
+service/shipping       ClusterIP      10.109.164.97    <none>        80/TCP              44m
+service/user           ClusterIP      10.105.183.69    <none>        80/TCP              44m
+service/user-db        ClusterIP      10.111.51.158    <none>        27017/TCP           44m
+
+NAME                           READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/carts          1/1     1            1           44m
+deployment.apps/carts-db       1/1     1            1           44m
+deployment.apps/catalogue      1/1     1            1           44m
+deployment.apps/catalogue-db   1/1     1            1           44m
+deployment.apps/front-end      1/1     1            1           44m
+deployment.apps/orders         1/1     1            1           44m
+deployment.apps/orders-db      1/1     1            1           44m
+deployment.apps/payment        1/1     1            1           44m
+deployment.apps/queue-master   1/1     1            1           44m
+deployment.apps/rabbitmq       1/1     1            1           44m
+deployment.apps/session-db     1/1     1            1           44m
+deployment.apps/shipping       1/1     1            1           44m
+deployment.apps/user           1/1     1            1           44m
+deployment.apps/user-db        1/1     1            1           44m
+
+NAME                                      DESIRED   CURRENT   READY   AGE
+replicaset.apps/carts-778f4b564f          1         1         1       44m
+replicaset.apps/carts-db-676c6b5865       1         1         1       44m
+replicaset.apps/catalogue-db-c948fd796    1         1         1       44m
+replicaset.apps/catalogue-f7687cb4        1         1         1       44m
+replicaset.apps/front-end-bd46b56d9       1         1         1       44m
+replicaset.apps/orders-595bcdb56f         1         1         1       44m
+replicaset.apps/orders-db-658fc79675      1         1         1       44m
+replicaset.apps/payment-84bbbfd97f        1         1         1       44m
+replicaset.apps/queue-master-76c64bb55f   1         1         1       44m
+replicaset.apps/rabbitmq-556cb847         1         1         1       44m
+replicaset.apps/session-db-74fdf96645     1         1         1       44m
+replicaset.apps/shipping-69d4b778b9       1         1         1       44m
+replicaset.apps/user-574f64957c           1         1         1       44m
+replicaset.apps/user-db-7f98f68489        1         1         1       44m
+
+```
+
+![image-20250310171941048](https://kenkenny.synology.me:5543/images/2025/03/image-20250310171941048.png)
+
+如果是用 Ultimate 授權，就可以很簡單的透過 UI 針對 Project 來設定 git source 
+
+後續 NKP 會自動幫忙部署，而且可以去做權限劃分及跨叢集的部署
+
+![image-20250310172049527](https://kenkenny.synology.me:5543/images/2025/03/image-20250310172049527.png)
+
+![image-20250310172105327](https://kenkenny.synology.me:5543/images/2025/03/image-20250310172105327.png)
+
+![image-20250310172137981](https://kenkenny.synology.me:5543/images/2025/03/image-20250310172137981.png)
+
+```
+[nkp@ken-rhel9 ~]$ kubectl get all -n ken-ns
+NAME                               READY   STATUS    RESTARTS   AGE
+pod/carts-666b98fdc4-ht4wz         1/1     Running   0          5d2h
+pod/carts-db-644ff6b576-522q2      1/1     Running   0          19d
+pod/catalogue-d45f998bf-gsb5p      1/1     Running   0          6h31m
+pod/catalogue-db-d764d45d6-v7872   1/1     Running   0          19d
+pod/front-end-89db7fb46-pctvh      1/1     Running   0          146m
+pod/orders-779f959dc4-z2fqg        1/1     Running   0          100m
+pod/orders-db-5bddcf9bdb-wjr9x     1/1     Running   0          19d
+pod/payment-67f94cc7b8-bdqj4       1/1     Running   0          178m
+pod/queue-master-cc96b5649-9txx6   1/1     Running   0          65s
+pod/rabbitmq-5c6f77d9dd-nvpwk      2/2     Running   0          19d
+pod/session-db-76d658cbf8-ld2t6    1/1     Running   0          19d
+pod/shipping-7b856bf556-bjx7j      1/1     Running   0          12d
+pod/user-745766f4f8-x8wtj          1/1     Running   0          139m
+pod/user-db-5bfb568f5b-2zplv       1/1     Running   0          19d
+
+NAME                   TYPE           CLUSTER-IP       EXTERNAL-IP     PORT(S)             AGE
+service/carts          ClusterIP      10.99.139.74     <none>          80/TCP              19d
+service/carts-db       ClusterIP      10.99.20.222     <none>          27017/TCP           19d
+service/catalogue      ClusterIP      10.106.141.207   <none>          80/TCP              19d
+service/catalogue-db   ClusterIP      10.102.80.220    <none>          3306/TCP            19d
+service/front-end      LoadBalancer   10.103.0.112     172.16.90.211   80:30239/TCP        19d
+service/orders         ClusterIP      10.106.57.160    <none>          80/TCP              19d
+service/orders-db      ClusterIP      10.110.189.178   <none>          27017/TCP           19d
+service/payment        ClusterIP      10.102.165.251   <none>          80/TCP              19d
+service/queue-master   ClusterIP      10.96.248.113    <none>          80/TCP              19d
+service/rabbitmq       ClusterIP      10.109.56.231    <none>          5672/TCP,9090/TCP   19d
+service/session-db     ClusterIP      10.98.29.122     <none>          6379/TCP            19d
+service/shipping       ClusterIP      10.97.155.46     <none>          80/TCP              19d
+service/user           ClusterIP      10.99.13.238     <none>          80/TCP              19d
+service/user-db        ClusterIP      10.105.150.252   <none>          27017/TCP           19d
+
+NAME                           READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/carts          1/1     1            1           19d
+deployment.apps/carts-db       1/1     1            1           19d
+deployment.apps/catalogue      1/1     1            1           19d
+deployment.apps/catalogue-db   1/1     1            1           19d
+deployment.apps/front-end      1/1     1            1           19d
+deployment.apps/orders         1/1     1            1           19d
+deployment.apps/orders-db      1/1     1            1           19d
+deployment.apps/payment        1/1     1            1           19d
+deployment.apps/queue-master   1/1     1            1           19d
+deployment.apps/rabbitmq       1/1     1            1           19d
+deployment.apps/session-db     1/1     1            1           19d
+deployment.apps/shipping       1/1     1            1           19d
+deployment.apps/user           1/1     1            1           19d
+deployment.apps/user-db        1/1     1            1           19d
+
+NAME                                     DESIRED   CURRENT   READY   AGE
+replicaset.apps/carts-666b98fdc4         1         1         1       19d
+replicaset.apps/carts-db-644ff6b576      1         1         1       19d
+replicaset.apps/catalogue-d45f998bf      1         1         1       19d
+replicaset.apps/catalogue-db-d764d45d6   1         1         1       19d
+replicaset.apps/front-end-89db7fb46      1         1         1       19d
+replicaset.apps/orders-779f959dc4        1         1         1       19d
+replicaset.apps/orders-db-5bddcf9bdb     1         1         1       19d
+replicaset.apps/payment-67f94cc7b8       1         1         1       19d
+replicaset.apps/queue-master-cc96b5649   1         1         1       19d
+replicaset.apps/rabbitmq-5c6f77d9dd      1         1         1       19d
+replicaset.apps/session-db-76d658cbf8    1         1         1       19d
+replicaset.apps/shipping-7b856bf556      1         1         1       19d
+replicaset.apps/user-745766f4f8          1         1         1       19d
+replicaset.apps/user-db-5bfb568f5b       1         1         1       19d
+
 ```
 
