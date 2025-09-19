@@ -2,7 +2,7 @@
 title: Nutanix_NKP-2.14_AHV_Object
 description: Nutanix_NKP-2.14_AHV_Object
 slug: Nutanix_NKP-2.14_AHV_Object
-date: 2025-05-02T09:44:33+08:00
+date: 2025-09-19T06:03:43+08:00
 categories:
     - Lab Category
 tags:
@@ -418,6 +418,7 @@ nkp push bundle --bundle /home/nkp/nkptools/nkp-airgap/nkp-v2.14.0/container-ima
 # Catalog-application
 nkp push bundle --bundle /home/nkp/nkptools/nkp-airgap/nkp-v2.14.0/container-images/nkp-catalog-applications-image-bundle-v2.14.0.tar --to-registry=http://172.16.90.206/nkp-2.14 --to-registry-insecure-skip-tls-verify
 
+
 ```
 
 ![image-20250409115229036](https://kenkenny.synology.me:5543/images/2025/04/image-20250409115229036.png)
@@ -572,7 +573,7 @@ nkp get dashboard
 
 #### License 匯入
 
-
+AEAAG-AAAL2-FR764-DAG83-3UJJD-9N7LK-QEBWQ
 
 #### Velero、Grafana Loki
 
@@ -635,6 +636,15 @@ data:
   AWS_SECRET_ACCESS_KEY: NWo4eEdDSzE2LTFfM0hIcmJtbVhWcDM5ZTFDaTk2YjU=
   cloud: W2RlZmF1bHRdCmF3c19hY2Nlc3Nfa2V5X2lkPV95MWdkd2F4MUV3b3BRWFFvMUVYTTFlZ29CWWlqZ0YwCmF3c19zZWNyZXRfYWNjZXNzX2tleT01ajh4R0NLMTYtMV8zSEhyYm1tWFZwMzllMUNpOTZiNQ==
 ---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: velero
+  namespace: kommander
+type: Opaque
+data:
+  cloud: W2RlZmF1bHRdCmF3c19hY2Nlc3Nfa2V5X2lkPV95MWdkd2F4MUV3b3BRWFFvMUVYTTFlZ29CWWlqZ0YwCmF3c19zZWNyZXRfYWNjZXNzX2tleT01ajh4R0NLMTYtMV8zSEhyYm1tWFZwMzllMUNpOTZiNQ==
+---
              
 # 部署 secret 
 kubectl apply -f dkp-loki-secret.yaml 
@@ -645,14 +655,13 @@ export AWS_ACCESS_KEY_ID=`kubectl get secret -n kommander dkp-velero -o 'jsonpat
 
 export AWS_SECRET_ACCESS_KEY=`kubectl get secret -n kommander dkp-velero -o 'jsonpath={.data.AWS_SECRET_ACCESS_KEY}' | base64 --decode;echo`
 
+kubectl get secret velero -n kommander -o jsonpath="{.data}"
+
 
 # 手動新增secret的方法
 kubectl -n kommander create secret generic dkp-velero \
                       --from-literal=AWS_ACCESS_KEY_ID=GRW2SVIH6ZxSMOkjSI8pQBmtzqhjZ9fY\
                       --from-literal=AWS_SECRET_ACCESS_KEY=FSAWoandsVhTcGMvvHSK_Wd-Ntwy2ZP0
-        
-
-
 ```
 
 ##### Install kommander
@@ -759,6 +768,56 @@ airgapped:
 ---
 
 nkp install kommander --installer-config=kommander-install.yaml
+```
+
+20250709 修改 velero main job 吃不到 secret 的問題，解法是 maintain job 會使用 velero 這個 secret 
+
+所以 velero secret 要加上去cloud 的值，下面的 kommander 不用修改
+
+![image-20250709100335102](https://kenkenny.synology.me:5543/images/2025/07/image-20250709100335102.png)
+
+![image-20250709111159802](https://kenkenny.synology.me:5543/images/2025/07/image-20250709111159802.png)
+
+pod log  顯示完成
+
+![image-20250709111220884](https://kenkenny.synology.me:5543/images/2025/07/image-20250709111220884.png)
+
+```
+  velero:
+    enabled: true
+    values: |
+      configuration:
+        backupStorageLocation:
+        - name: "nkp-velero"
+          bucket: "nkp-velero"
+          provider: "aws"
+          default: true
+          config:
+            s3Url: "http://ntnxobject.nutanixlab.local"
+            insecureSkipTLSVerify: "true"
+            s3ForcePathStyle: "true"
+            region: "us-east-1"
+      deployNodeAgent: true # 為了要透過 kopia 來備份 pv的Daemonset
+      nodeAgent:
+        uploaderType: kopia
+        extraEnv:
+          - name: AWS_ACCESS_KEY_ID
+            valueFrom:
+              secretKeyRef:
+                name: dkp-velero
+                key: AWS_ACCESS_KEY_ID
+          - name: AWS_SECRET_ACCESS_KEY
+            valueFrom:
+              secretKeyRef:
+                name: dkp-velero
+                key: AWS_SECRET_ACCESS_KEY   
+          - name: AWS_SDK_LOAD_CONFIG
+            value: "true"
+      defaultVolumesToFsBackup: true  # 是讓 Velero 預設對所有沒有快照的 PVC 使用 Kopia 備份
+      extraEnvFrom:
+        - secretRef:
+            name: dkp-velero
+    
 ```
 
 ![image-20250419135103514](https://kenkenny.synology.me:5543/images/2025/04/image-20250419135103514.png)
@@ -1104,6 +1163,9 @@ kubectl create secret generic harbor-registry-credentials \
  --from-literal username=nkpuser \
  --from-literal password=Nutanix/4u \
  --from-file=ca.crt=<(kubectl -n kommander get kommandercluster host-cluster -o jsonpath='{.status.ingress.caBundle}' | base64 -d)
+ 
+ 
+kubectl -n kommander get kommandercluster host-cluster -o jsonpath='{.status.ingress.caBundle}' | base64 -d
 ```
 
 確認 Harbor URL
@@ -1306,8 +1368,6 @@ nkp install kommander \
 
 
 
-
-
 Volume Snpashot
 
 ```
@@ -1391,7 +1451,110 @@ spec:
 
 ![image-20250418100408948](https://kenkenny.synology.me:5543/images/2025/04/image-20250418100408948.png)
 
+### Local User
 
+
+
+configmaps
+
+密碼
+
+```
+htpasswd -bnBC 10 "" password | tr -d ':\n' && echo
+
+htpasswd -bnBC 10 "nkpadmin" 'Nutanix/4u' | tr -d ':\n' && echo
+
+htpasswd -bnBC 10 "nkpdev01" 'Nutanix/4u' | tr -d ':\n' && echo
+
+htpasswd -bnBC 10 "nkpuser" '!QAZ2wsx123' | tr -d ':\n' && echo
+
+[root@ken-rhel9 kommander-config]# htpasswd -bnBC 10 "nkpadmin" 'Nutanix/4u' | tr -d ':\n' && echo
+nkpadmin$2y$10$nYTbqF3UUP8arnDtfEpVP.UEL77EbkKRKn7EuFTo8LP13WXA0cr8W
+
+htpasswd -bnBC 10 "nkpuser" '!QAZ2wsx123' | tr -d ':\n' && echo
+nkpuser$2y$10$oj1HtA0HApAJYMMBbSKZhuq4IIXbLlz7H1di5bxFp51RyhuH5fxKO
+
+nkpuser$2y$10$l4meoorkvoBc/CpTGEtx5eVMAtWNtFKk7wjdtRgtsJbqO/pld2WQO
+```
+
+dex-localusers-configmap.yaml
+
+```
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dex-localusers
+  namespace: kommander
+data:
+  values.yaml: |
+    config:
+      staticPasswords:
+      - email: nkpadmin
+        hash: $2y$10$nYTbqF3UUP8arnDtfEpVP.UEL77EbkKRKn7EuFTo8LP13WXA0cr8W
+```
+
+kubectl edit -n kommander appdeployment dex (修改 spec 的地方)
+
+```
+apiVersion: apps.kommander.d2iq.io/v1alpha3
+kind: AppDeployment
+metadata:
+...
+spec:
+  appRef:
+    kind: ClusterApp
+    name: dex-2.11.1
+  clusterConfigOverrides:
+  - clusterSelector:
+      matchExpressions:
+      - key: kommander.d2iq.io/cluster-name
+        operator: In
+        values:
+        - host-cluster
+    configMapName: dex-kommander-overrides
+  configOverrides: # Copy and paste this section.
+    name: dex-localusers
+status:
+```
+
+新增權限
+
+dex-rbac.yaml
+
+```
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: cluster-admin
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: User
+  name: nkpadmin
+
+```
+
+dex-rbac-nkpuser.yaml 
+
+```
+kind: ClusterRoleBinding
+metadata:
+  name: developer-dashboard-access
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: dkp-kubernetes-dashboard-admin
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: User
+  name: nkpuser
+```
+
+![image-20250709113522183](https://kenkenny.synology.me:5543/images/2025/07/image-20250709113522183.png)
 
 ## DR Cluster
 
