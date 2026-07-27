@@ -1,7 +1,7 @@
 ---
-title: Arcfra-Nodes
-description: Arcfra-Nodes
-slug: Arcfra-Nodes
+title: Arcfra-Notes
+description: Arcfra-Notes
+slug: Arcfra-Notes
 date: 2026-07-24T03:49:12+08:00
 categories:
     - Knowledge Base Category
