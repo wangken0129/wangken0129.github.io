@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>VSphere on Ken's blog</title><link>https://wangken0129.github.io/tags/vsphere/</link><description>Recent content in VSphere on Ken's blog</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Mon, 03 Mar 2025 07:39:16 +0800</lastBuildDate><atom:link href="https://wangken0129.github.io/tags/vsphere/index.xml" rel="self" type="application/rss+xml"/><item><title>vSphere_on_Nutanix</title><link>https://wangken0129.github.io/p/vsphere_on_nutanix/</link><pubDate>Mon, 03 Mar 2025 07:39:16 +0800</pubDate><guid>https://wangken0129.github.io/p/vsphere_on_nutanix/</guid><description>&lt;h1 id="vsphere-on-nutanix"&gt;vSphere on Nutanix
+&lt;/h1&gt;&lt;p&gt;透過Nutanix Foundation安裝vSphere ESXi，並執行後續的設定，&lt;/p&gt;
+&lt;p&gt;Foundation步驟因為很簡單此處就不多加贅述，&lt;/p&gt;
+&lt;p&gt;原則上會建議先把Nutanix Node加入vCenter，再將Nutanix Cluster建立好，&lt;/p&gt;
+&lt;p&gt;因為加入vCenter時Node會需要進入維護模式，如有Nutanix Cluster運作時，&lt;/p&gt;
+&lt;p&gt;變成要一台一台加入vCenter，執行速度上會比較慢。&lt;/p&gt;
+&lt;h2 id="參考文件"&gt;參考文件
+&lt;/h2&gt;&lt;p&gt;&lt;a class="link" href="https://portal.nutanix.com/page/documents/details?targetId=vSphere-Admin6-AOS-v6_5:vsp-cluster-introduction-vsphere-c.html" target="_blank" rel="noopener"
+&gt;https://portal.nutanix.com/page/documents/details?targetId=vSphere-Admin6-AOS-v6_5:vsp-cluster-introduction-vsphere-c.html&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id="foundation"&gt;Foundation
+&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;準備vSphere ESXi、vCenter的iso檔&lt;/li&gt;
+&lt;li&gt;利用mac的foundation安裝nutanix&lt;/li&gt;
+&lt;li&gt;安裝時改用vSphere的iso檔&lt;/li&gt;
+&lt;li&gt;如不是使用官方Support的版本,要提供md5 check sum&lt;/li&gt;
+&lt;li&gt;目前支援到vSphere ESXi 7.0u3c , 實測7.0u3g也可以安裝&lt;/li&gt;
+&lt;li&gt;安裝時間約50~60min&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id="安裝後的設定"&gt;安裝後的設定
+&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;設定DNS Server&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;設定NTP Server&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;刪除Default Container,再新增一個 (因名稱太長)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;設定Virtual IP、Data Service IP&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Deploy vCenter or Registry to vCenter
+&lt;img src="https://kenkenny.synology.me:5543/images/2025/03/image-20230117115309394.png"
+loading="lazy"
+alt="image-20230117115309394"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2025/03/image-20230117115414091.png"
+loading="lazy"
+alt="image-20230117115414091"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2025/03/image-20230117115559389.png"
+loading="lazy"
+alt="image-20230117115559389"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2025/03/image-20230117120202663.png"
+loading="lazy"
+alt="image-20230117120202663"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2025/03/image-20230117120702169.png"
+loading="lazy"
+alt="image-20230117120702169"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2025/03/image-20230117121452623.png"
+loading="lazy"
+alt="image-20230117121452623"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2025/03/image-20230117121557920.png"
+loading="lazy"
+alt="image-20230117121557920"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;vCenter Setting&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;先在vCenter Create Datacenter並新增Nutanix Cluster
+Cluster &lt;strong&gt;開啟DRS、HA&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2025/03/image-20230117122218272.png"
+loading="lazy"
+alt="image-20230117122218272"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2025/03/image-20230117131129201.png"
+loading="lazy"
+alt="image-20230117131129201"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;確認Checklist都有設定完畢才能加入Nutanix Node&lt;/strong&gt;
+HA&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Enable Host Monitoring&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Set the Host Isolation Response of the cluster to &lt;strong&gt;Power Off &amp;amp; Restart VMs&lt;/strong&gt;.
+&lt;img src="https://kenkenny.synology.me:5543/images/2025/03/image-20230117143553864.png"
+loading="lazy"
+alt="image-20230117143553864"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Enable admission control (%)&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2025/03/image-20230117142443552.png"
+loading="lazy"
+alt="image-20230117142443552"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Set the VM Restart Priority of all CVMs to &lt;strong&gt;Disabled&lt;/strong&gt;. &amp;ndash; After register
+&lt;img src="https://kenkenny.synology.me:5543/images/2025/03/image-20230117142551006.png"
+loading="lazy"
+alt="image-20230117142551006"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2025/03/image-20230117142719050.png"
+loading="lazy"
+alt="image-20230117142719050"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Set the VM Monitoring for all CVMs to &lt;strong&gt;Disabled&lt;/strong&gt;. &amp;ndash; After register&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2025/03/image-20230117142810049.png"
+loading="lazy"
+alt="image-20230117142810049"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Datastore heartbeats &amp;ndash; After register&lt;/p&gt;
+&lt;p&gt;(只有一個Datastore時,增加此設定)
+&lt;img src="https://kenkenny.synology.me:5543/images/2025/03/image-20230117134844420.png"
+loading="lazy"
+alt="image-20230117134844420"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2025/03/image-20230117142910096.png"
+loading="lazy"
+alt="image-20230117142910096"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;DRS&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Set the Automation Level on all CVMs to &lt;strong&gt;Disabled&lt;/strong&gt;. &amp;ndash;After register
+&lt;img src="https://kenkenny.synology.me:5543/images/2025/03/image-20230117142728280.png"
+loading="lazy"
+alt="image-20230117142728280"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Select Automation Level to accept level 3 recommendations.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2025/03/image-20230117135654108.png"
+loading="lazy"
+alt="image-20230117135654108"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Leave power management &lt;strong&gt;disabled&lt;/strong&gt;.
+&lt;img src="https://kenkenny.synology.me:5543/images/2025/03/image-20230117135332448.png"
+loading="lazy"
+alt="image-20230117135332448"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Others&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Configure advertised capacity for the Nutanix storage container (RF2)
+&lt;img src="https://kenkenny.synology.me:5543/images/2025/03/image-20230117140918527.png"
+loading="lazy"
+alt="image-20230117140918527"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Store VM swapfiles in the same directory as the VM.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2025/03/image-20230117143410180.png"
+loading="lazy"
+alt="image-20230117143410180"
+&gt;
+&lt;a class="link" href="https://docs.vmware.com/en/VMware-vSphere/7.0/com.vmware.vsphere.resmgmt.doc/GUID-12B8E0FB-CD43-4972-AC2C-4B4E2955A5DA.html" target="_blank" rel="noopener"
+&gt;https://docs.vmware.com/en/VMware-vSphere/7.0/com.vmware.vsphere.resmgmt.doc/GUID-12B8E0FB-CD43-4972-AC2C-4B4E2955A5DA.html&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Enable&lt;/strong&gt; enhanced vMotion compatibility (EVC) in the cluster.
+&lt;img src="https://kenkenny.synology.me:5543/images/2025/03/image-20230117140459645.png"
+loading="lazy"
+alt="image-20230117140459645"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Configure Nutanix CVMs with the appropriate VM overrides. &amp;ndash;After register
+(HA、DRS、Monitoring &lt;strong&gt;Disabled&lt;/strong&gt;)&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;vCenter Adding Nutanix nodes&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2025/03/image-20230117141404460.png"
+loading="lazy"
+alt="image-20230117141404460"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2025/03/image-20230117141430544.png"
+loading="lazy"
+alt="image-20230117141430544"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2025/03/image-20230117141503268.png"
+loading="lazy"
+alt="image-20230117141503268"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2025/03/image-20230117141525157.png"
+loading="lazy"
+alt="image-20230117141525157"
+&gt;&lt;/p&gt;
+&lt;p&gt;實測第一台Node會被順利加到Cluster內,其他兩台需手動移入
+&lt;img src="https://kenkenny.synology.me:5543/images/2025/03/image-20230117142411214.png"
+loading="lazy"
+alt="image-20230117142411214"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;補齊Checklist的設定&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Register Nutanix Cluster to vCenter
+&lt;img src="https://kenkenny.synology.me:5543/images/2025/03/image-20230117143835885.png"
+loading="lazy"
+alt="image-20230117143835885"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2025/03/image-20230117143908067.png"
+loading="lazy"
+alt="image-20230117143908067"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2025/03/image-20230117144024141.png"
+loading="lazy"
+alt="image-20230117144024141"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id="安裝後的設定-pc"&gt;安裝後的設定-PC
+&lt;/h2&gt;&lt;p&gt;&lt;a class="link" href="https://portal.nutanix.com/page/documents/details?targetId=Acropolis-Upgrade-Guide:upg-vm-install-wc-r.html" target="_blank" rel="noopener"
+&gt;https://portal.nutanix.com/page/documents/details?targetId=Acropolis-Upgrade-Guide:upg-vm-install-wc-r.html&lt;/a&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;create PC (可用Online下載或是部署時上傳PC的檔案)
+&lt;img src="https://kenkenny.synology.me:5543/images/2025/03/image-20230117144856189.png" alt="image-20230117144856189" style="zoom:50%;" /&gt;&lt;/p&gt;
+&lt;img src="https://kenkenny.synology.me:5543/images/2025/03/image-20230117144919733.png" alt="image-20230117144919733" style="zoom:50%;" /&gt;
+&lt;img src="https://kenkenny.synology.me:5543/images/2025/03/image-20230117145119576.png" alt="image-20230117145119576" style="zoom:50%;" /&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2025/03/image-20230117160527103.png"
+loading="lazy"
+alt="image-20230117160527103"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;PC建立好後即可用web連線
+預設帳密 admin , Nutanix/4u
+若無法登入web,可以在PE開PCVM的console,用nutanix / nutanix/4u的帳密登入
+登入後切換身份為root 執行以下指令來重設admin密碼&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;ncli user reset-password user-name=admin password=password
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2025/03/image-20230117162037651.png"
+loading="lazy"
+alt="image-20230117162037651"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;註冊Nutanix Cluster至Prism Central (PC)
+&lt;img src="https://kenkenny.synology.me:5543/images/2025/03/image-20230117162121479.png"
+loading="lazy"
+alt="image-20230117162121479"
+&gt;
+&lt;img src="https://kenkenny.synology.me:5543/images/2025/03/image-20230117162141769.png"
+loading="lazy"
+alt="image-20230117162141769"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2025/03/image-20230117162216948.png"
+loading="lazy"
+alt="image-20230117162216948"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;註冊完成即可在PC上看到Nutanix Cluster
+&lt;img src="https://kenkenny.synology.me:5543/images/2025/03/image-20230117162314773.png"
+loading="lazy"
+alt="image-20230117162314773"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Prism Central 設定NTP、DNS Server&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Enable Microserivces Infrastructure (可使用更多功能)
+&lt;a class="link" href="https://portal.nutanix.com/page/documents/details?targetId=Prism-Central-Guide-vpc_2022_6:mul-cmsp-overview-pc-c.html" target="_blank" rel="noopener"
+&gt;https://portal.nutanix.com/page/documents/details?targetId=Prism-Central-Guide-vpc_2022_6:mul-cmsp-overview-pc-c.html&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2025/03/image-20230117162822002.png"
+loading="lazy"
+alt="image-20230117162822002"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h1 id="vsphere-settings-checklist"&gt;vSphere Settings Checklist
+&lt;/h1&gt;&lt;p&gt;&lt;a class="link" href="https://portal.nutanix.com/page/documents/details?targetId=vSphere-Admin6-AOS-v6_5:vsp-vcenter-settings-r.html" target="_blank" rel="noopener"
+&gt;https://portal.nutanix.com/page/documents/details?targetId=vSphere-Admin6-AOS-v6_5:vsp-vcenter-settings-r.html&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Review the following checklist of the settings that you have to configure to successfully deploy vSphere virtual environment running Nutanix Enterprise cloud.&lt;/p&gt;
+&lt;h2 id="vsphere-availability-settings"&gt;vSphere Availability Settings
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Enable&lt;/strong&gt; host monitoring.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Enable&lt;/strong&gt; admission control and use the percentage-based policy with a value based on the number of nodes in the cluster.&lt;/p&gt;
+&lt;p&gt;For more information about settings of percentage of cluster resources reserved as failover spare capacity, &lt;a class="link" href="https://portal.nutanix.com/page/documents/details?targetId=vSphere-Admin6-AOS-v6_5:vsp-cluster-settings-admissioncontrol-vcenter-vsphere-r.html" target="_blank" rel="noopener"
+&gt;vSphere HA Admission Control Settings for Nutanix Environment&lt;/a&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Set the VM Restart Priority of all CVMs to &lt;strong&gt;Disabled&lt;/strong&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Set the Host Isolation Response of the cluster to &lt;strong&gt;Power Off &amp;amp; Restart VMs&lt;/strong&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Set the VM Monitoring for all CVMs to &lt;strong&gt;Disabled&lt;/strong&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Enable datastore heartbeats by clicking &lt;strong&gt;Use datastores only from the specified list&lt;/strong&gt; and choosing the Nutanix NFS datastore.&lt;/p&gt;
+&lt;p&gt;If the cluster has only one datastore, click &lt;strong&gt;Advanced Options&lt;/strong&gt; tab and add das.ignoreInsufficientHbDatastore with &lt;strong&gt;Value&lt;/strong&gt; of true.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="vsphere-drs-settings"&gt;vSphere DRS Settings
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Set the Automation Level on all CVMs to &lt;strong&gt;Disabled&lt;/strong&gt;.&lt;/li&gt;
+&lt;li&gt;Select Automation Level to accept level 3 recommendations.&lt;/li&gt;
+&lt;li&gt;Leave power management &lt;strong&gt;disabled&lt;/strong&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="other-cluster-settings"&gt;Other Cluster Settings
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Configure advertised capacity for the Nutanix storage container
+(total usable capacity minus the capacity of one node for replication factor 2 or two nodes for replication factor 3).&lt;/li&gt;
+&lt;li&gt;Store VM swapfiles in the same directory as the VM.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Enable&lt;/strong&gt; enhanced vMotion compatibility (EVC) in the cluster. For more information, see &lt;a class="link" href="https://portal.nutanix.com/page/documents/details?targetId=vSphere-Admin6-AOS-v6_5:vsp-cluster-settings-evc-vcenter-vsphere-t.html" target="_blank" rel="noopener"
+&gt;vSphere EVC Settings&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;Configure Nutanix CVMs with the appropriate VM overrides. For more information, see &lt;a class="link" href="https://portal.nutanix.com/page/documents/details?targetId=vSphere-Admin6-AOS-v6_5:vsp-cluster-settings-override-vcenter-vsphere-t.html" target="_blank" rel="noopener"
+&gt;VM Override Settings&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;Check &lt;a class="link" href="https://portal.nutanix.com/page/documents/details?targetId=vSphere-Admin6-AOS-v6_5:vsp-node-components-unconfigurable-vsphere-r.html" target="_blank" rel="noopener"
+&gt;Nonconfigurable ESXi Components&lt;/a&gt;. Modifying the nonconfigurable components may inadvertently constrain performance of your Nutanix cluster or render the Nutanix cluster inoperable.&lt;/li&gt;
+&lt;/ul&gt;</description></item></channel></rss>

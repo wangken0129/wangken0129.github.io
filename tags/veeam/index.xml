@@ -1,0 +1,1344 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Veeam on Ken's blog</title><link>https://wangken0129.github.io/tags/veeam/</link><description>Recent content in Veeam on Ken's blog</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Sat, 23 Sep 2023 03:11:15 +0800</lastBuildDate><atom:link href="https://wangken0129.github.io/tags/veeam/index.xml" rel="self" type="application/rss+xml"/><item><title>Nutanix_Mine</title><link>https://wangken0129.github.io/p/nutanix_mine/</link><pubDate>Sat, 23 Sep 2023 03:11:15 +0800</pubDate><guid>https://wangken0129.github.io/p/nutanix_mine/</guid><description>&lt;h1 id="mine-with-veeam-guide-30"&gt;Mine™ with Veeam Guide 3.0
+&lt;/h1&gt;&lt;p&gt;Nutanix Mine 是Nutanix整合備份軟體讓Nutanix Cluster成為備份專用的Cluster，&lt;/p&gt;
+&lt;p&gt;以下會測試安裝Nutanix Mine with Veeam，測試備份、還原、升級等。&lt;/p&gt;
+&lt;h2 id="refrence"&gt;Refrence
+&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;Document
+&lt;a class="link" href="https://portal.nutanix.com/page/documents/details?targetId=Mine_veeam:Mine_veeam" target="_blank" rel="noopener"
+&gt;https://portal.nutanix.com/page/documents/details?targetId=Mine_veeam:Mine_veeam&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Video (Mine 2.0)
+&lt;a class="link" href="https://www.youtube.com/watch?v=e13I-VXVaoo" target="_blank" rel="noopener"
+&gt;https://www.youtube.com/watch?v=e13I-VXVaoo&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Download
+&lt;a class="link" href="https://portal.nutanix.com/page/downloads?product=mine" target="_blank" rel="noopener"
+&gt;https://portal.nutanix.com/page/downloads?product=mine&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Veeam
+&lt;a class="link" href="https://helpcenter.veeam.com/docs/backup/mine/architecture_overview.html?ver=120" target="_blank" rel="noopener"
+&gt;https://helpcenter.veeam.com/docs/backup/mine/architecture_overview.html?ver=120&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id="notice"&gt;Notice
+&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;安裝Mine Foundation VM時,時區要先調成UTC,安裝完後再調回需要的時區。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Mine Foundation需要一直保持開機狀態,才可以與AHV Cluster溝通。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Mine Cluster只支援AOS LTS版本,STS不支援。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;請勿修改或刪除部署後的以下6個VM以及Foundation For Mine。
+Veeam-Win-Node1,Veeam-Win-Node2, Veeam-Win-Node3,Veeam-Lin-Node1, Veeam-Lin-Node2,Veeam-Lin-Node3&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;AHV Cluster建議使用另一個Cluster Admin帳戶,用預設的admin可能會有warning。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;部署Mine Cluster目前只支援Windows 2019 Std.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;確認DNS設定。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;請勿刪除default Storage Container,Mine Cluster會使用到。&lt;/p&gt;
+&lt;p&gt;如刪除會出現以下錯誤
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230214164432111.png"
+loading="lazy"
+alt="image-20230214164432111"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;部署Mine Cluster至少要四個Node。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id="架構"&gt;架構
+&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;Backup Flow&lt;/li&gt;
+&lt;/ol&gt;
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/workflow.png" alt="img" style="zoom:48%;" /&gt;
+&lt;ol start="2"&gt;
+&lt;li&gt;
+&lt;p&gt;VM數量:&lt;/p&gt;
+&lt;p&gt;Foundation For Mine *&lt;strong&gt;1&lt;/strong&gt; (Linux) ,4 vCPUs and 4 GB memory
+Backup Server *&lt;strong&gt;1&lt;/strong&gt; (Windows) , 8 vCPU,16GB memory
+Backup Proxy *&lt;strong&gt;2&lt;/strong&gt; or &lt;em&gt;5 (Node&amp;gt;8) , 8 vCPU,16GB memory
+Backup Ropositories (Linux)&lt;/em&gt; &lt;strong&gt;3&lt;/strong&gt; or *6 (Node &amp;gt;8) , 8 vCPU,128GB memory&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;網路
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230214160103221.png" alt="image-20230214160103221" style="zoom:50%;" /&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Requirement
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230214165959249.png" alt="image-20230214165959249" style="zoom:50%;" /&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id="installation"&gt;Installation
+&lt;/h2&gt;&lt;h3 id="安裝步驟"&gt;安裝步驟
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;上架並連上網路。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;利用Foundation建立AHV Cluster (CVM建議32GB RAM)。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;建立Veeam的Cluster admin account。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;下載 NutanixFoundationForMineWithVeeam-v3.0.vmdk。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;上傳 NutanixFoundationForMineWithVeeam-v3.0.vmdk 至AHV Cluster。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;利用上傳的vmdk建立Mine Foundation VM並開機 (4 vCPU, 4GB RAM)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;如有DHCP 直接連線Web https://ip:8743
+如沒有DHCP則開啟VM Console並調整IP ( account/password: veeam/veeam )&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;span class="lnt"&gt;14
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;$sudo nano /etc/network/interfaces
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;-----------
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;auto eth0
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;iface eth0 inet dhcp
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;-----------
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;----------&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;-----------
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;auto eth0
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;iface eth0 inet static
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;address yourIpAddress
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;netmask yourSubnetMask
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;gateway yourAddressAddress
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;-----------
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo service networking restart
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;登入web後點選setup
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/main-menu-setup.png"
+loading="lazy"
+alt="img"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Accept EULA
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/cluster-setup-1.png"
+loading="lazy"
+alt="end user license agreement page"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Configure a virtual network for guest VM interfaces.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;輸入Prism Element Cluster的資訊&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;上傳Windows 2019 Std的iso&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;上傳Veeam的License&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;輸入Veeam Server的資訊(用現存的或是部署新的,
+Windows: 8 vCPUs and 16 GB memory,
+Linux: 8 vCPUs and 128 GB memory)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;開始部署(1~2Hrs)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;輸入Windows License Key&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;部署完成。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id="安裝後的步驟"&gt;安裝後的步驟
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;新增Volume Group,attach到backup server,並將VG,bakcup server加到protection domain&lt;/li&gt;
+&lt;li&gt;設定備份VM等Job&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h1 id="mine-安裝實作"&gt;Mine 安裝實作
+&lt;/h1&gt;&lt;h2 id="lab架構"&gt;Lab架構
+&lt;/h2&gt;&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine.png"
+loading="lazy"
+alt="image-20230221112445015"
+&gt;&lt;/p&gt;
+&lt;h3 id="資訊欄"&gt;資訊欄
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;AHV Cluster , Block SN: 13SM35330024&lt;/li&gt;
+&lt;/ol&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;項目&lt;/th&gt;
+&lt;th&gt;SN&lt;/th&gt;
+&lt;th&gt;IPMI MAC&lt;/th&gt;
+&lt;th&gt;IPMI IP&lt;/th&gt;
+&lt;th&gt;CVM IP&lt;/th&gt;
+&lt;th&gt;AHV IP&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;NodeA-AHV1&lt;/td&gt;
+&lt;td&gt;ZM137S025587&lt;/td&gt;
+&lt;td&gt;00:25:90:d3:c8:23&lt;/td&gt;
+&lt;td&gt;10.0.90.2&lt;/td&gt;
+&lt;td&gt;172.16.90.61&lt;/td&gt;
+&lt;td&gt;172.16.90.51&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;NodeB-AHV2&lt;/td&gt;
+&lt;td&gt;ZM139S125484&lt;/td&gt;
+&lt;td&gt;00:25:90:d8:74:17&lt;/td&gt;
+&lt;td&gt;10.0.90.3&lt;/td&gt;
+&lt;td&gt;172.16.90.62&lt;/td&gt;
+&lt;td&gt;172.16.90.52&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;NodeC-AHV3&lt;/td&gt;
+&lt;td&gt;ZM137S025585&lt;/td&gt;
+&lt;td&gt;00:25:90:d3:c8:20&lt;/td&gt;
+&lt;td&gt;10.0.90.4&lt;/td&gt;
+&lt;td&gt;172.16.90.63&lt;/td&gt;
+&lt;td&gt;172.16.90.53&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;NodeD-AHV4&lt;/td&gt;
+&lt;td&gt;ZM137S025604&lt;/td&gt;
+&lt;td&gt;00:25:90:d3:c7:f4&lt;/td&gt;
+&lt;td&gt;10.0.90.5&lt;/td&gt;
+&lt;td&gt;172.16.90.64&lt;/td&gt;
+&lt;td&gt;172.16.90.54&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;SSD、HDD per node&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;Memory per node&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;IPMI Account&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;IPMI Passwd&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;Account&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;CVM,AHV Passwd&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;400GB SSD *2 &lt;br /&gt;1TB HDD *4&lt;/td&gt;
+&lt;td&gt;128GB(16GB *8)&lt;/td&gt;
+&lt;td&gt;ADMIN&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;nutanix&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;ol start="2"&gt;
+&lt;li&gt;
+&lt;p&gt;Veeam Cluster&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;項目&lt;/th&gt;
+&lt;th&gt;IP&lt;/th&gt;
+&lt;th&gt;Account&lt;/th&gt;
+&lt;th&gt;vCPU&lt;/th&gt;
+&lt;th&gt;Memory&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Foundation-Mine&lt;/td&gt;
+&lt;td&gt;172.16.90.206:8743&lt;/td&gt;
+&lt;td&gt;veeam&lt;/td&gt;
+&lt;td&gt;4&lt;/td&gt;
+&lt;td&gt;4&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Veeam-Win-Node1&lt;/td&gt;
+&lt;td&gt;172.16.90.207&lt;/td&gt;
+&lt;td&gt;administrator&lt;/td&gt;
+&lt;td&gt;8&lt;/td&gt;
+&lt;td&gt;16&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Veeam-Win-Node2&lt;/td&gt;
+&lt;td&gt;172.16.90.208&lt;/td&gt;
+&lt;td&gt;administrator&lt;/td&gt;
+&lt;td&gt;8&lt;/td&gt;
+&lt;td&gt;16&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Veeam-Win-Node3&lt;/td&gt;
+&lt;td&gt;172.16.90.209&lt;/td&gt;
+&lt;td&gt;administrator&lt;/td&gt;
+&lt;td&gt;8&lt;/td&gt;
+&lt;td&gt;16&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Veeam-Lin-Node1&lt;/td&gt;
+&lt;td&gt;172.16.90.210&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;8&lt;/td&gt;
+&lt;td&gt;128&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Veeam-Lin-Node2&lt;/td&gt;
+&lt;td&gt;172.16.90.211&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;8&lt;/td&gt;
+&lt;td&gt;128&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Veeam-Lin-Node3&lt;/td&gt;
+&lt;td&gt;172.16.90.212&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;8&lt;/td&gt;
+&lt;td&gt;128&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Helper Appliance&lt;/td&gt;
+&lt;td&gt;172.16.90.215&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Backup Proxy&lt;/td&gt;
+&lt;td&gt;172.16.90.216&lt;/td&gt;
+&lt;td&gt;veeam&lt;/td&gt;
+&lt;td&gt;4&lt;/td&gt;
+&lt;td&gt;4&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230214181548005.png"
+loading="lazy"
+alt="image-20230214181548005"
+&gt;&lt;/p&gt;
+&lt;p&gt;資源不足無法安裝&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230214182149519.png"
+loading="lazy"
+alt="image-20230214182149519"
+&gt;&lt;/p&gt;
+&lt;p&gt;加裝記憶體到196GB Per Node&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id="installation-1"&gt;Installation
+&lt;/h3&gt;&lt;h4 id="ahv-cluster"&gt;AHV Cluster
+&lt;/h4&gt;&lt;ol&gt;
+&lt;li&gt;Foundation四個Node,安裝成一個AHV Cluster,AOS版本建議是LTS的版本。&lt;/li&gt;
+&lt;li&gt;設定DNS、NTP等基本設定,以下不贅述。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4 id="mine-foundation-install"&gt;Mine Foundation Install
+&lt;/h4&gt;&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;下載Mine Foundation VM的vmdk (NutanixFoundationForMineWithVeeam-v3.0.vmdk)
+&lt;a class="link" href="https://portal.nutanix.com/page/downloads?product=mine" target="_blank" rel="noopener"
+&gt;https://portal.nutanix.com/page/downloads?product=mine&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;將下載後的vmdk上傳到Image Service
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Image-service01.png"
+loading="lazy"
+alt="Image-service01"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-service02.png"
+loading="lazy"
+alt="image-20230218150259550"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;建立For Veeam使用的Cluster Admin
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Create_Account01.png"
+loading="lazy"
+alt="image-20230218150843210"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Create_Account02.png"
+loading="lazy"
+alt="image-20230218151100056"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;利用上傳的vmdk建立Mine Foundation VM並開機 (4 vCPU, 4GB RAM)
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Create_VM01.png"
+loading="lazy"
+alt="image-20230218151259652"
+&gt;&lt;/p&gt;
+&lt;p&gt;新增上傳好的硬碟&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Create_VM02.png"
+loading="lazy"
+alt="image-20230218151418225"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Create_VM03.png"
+loading="lazy"
+alt="image-20230218151510134"
+&gt;&lt;/p&gt;
+&lt;p&gt;新增網卡並save
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Create_VM04.png"
+loading="lazy"
+alt="image-20230218151614915"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;設定Mine Foundation IP (預設是DHCP)
+VM開機後進入Console介面,登入帳密 veeam/veeam
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Change_IP01.png"
+loading="lazy"
+alt="image-20230218151959600"
+&gt;&lt;/p&gt;
+&lt;p&gt;執行以下指令修改ip&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;$sudo vim /etc/network/interfaces
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;------原始-----
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;auto eth0
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;iface eth0 inet dhcp
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;------更改後-----
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;auto eth0
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;iface eth0 inet static
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;address yourIpAddress
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;netmask yourSubnetMask
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;gateway yourAddressAddress
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;-----------
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;$sudo service networking restart
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230218152415873.png"
+loading="lazy"
+alt="image-20230218152415873"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;瀏覽器連線至 Foundation_Mine的8743 port
+https://172.16.90.206:8743
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Browser8743.png"
+loading="lazy"
+alt="image-20230218152630482"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;預設帳密veeam / veeam ,登入後進行修改
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Change_Password.png"
+loading="lazy"
+alt="image-20230218152751705"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;登入測試
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Browser_Login.png"
+loading="lazy"
+alt="image-20230218152835564"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4 id="mine-cluster-install"&gt;Mine Cluster Install
+&lt;/h4&gt;&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;全新部署請選擇 Setup
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Browser_MainPage.png"
+loading="lazy"
+alt="image-20230218152932005"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;點選接受EULA後下一步
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Browser_EULA.png"
+loading="lazy"
+alt="image-20230218153016441"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;輸入Prism Element的IP、帳密(前步驟建立的Veeam Account),點選下一步
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Browser_PE.png"
+loading="lazy"
+alt="image-20230218153136261"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;登入後會進行檢查確認硬體是否合適&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Check_HW.png"
+loading="lazy"
+alt="image-20230218181053737"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;上傳windows 2019的iso檔,可先上傳至PE
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Upload_Win2019.png"
+loading="lazy"
+alt="image-20230218181155441"
+&gt;
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230220104444863.png"
+loading="lazy"
+alt="image-20230220104444863"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;選擇新增DEPLOY NEW BACKUP&amp;amp;REPLICATION SERVER
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230220104517202.png"
+loading="lazy"
+alt="image-20230220104517202"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;上傳Veeam License File (可先申請試用版授權來使用)
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230220104629567.png"
+loading="lazy"
+alt="image-20230220104629567"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;網路設定,共會新增3台windows 、3台Linux VM
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Deploy_NW.png"
+loading="lazy"
+alt="image-20230220104835929"
+&gt;
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230220104918728.png"
+loading="lazy"
+alt="image-20230220104918728"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;設定windows 認證,官方文件不建議使用windows AD驗證
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Windows_Cred.png"
+loading="lazy"
+alt="image-20230220105137321"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;review設定
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Review.png"
+loading="lazy"
+alt="image-20230220105219300"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;開始進行安裝 (順序：搜集資訊&amp;gt;部署Linux&amp;gt;部署Windows&amp;gt;設定Scale Out Backup Repository)
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230220105309758.png"
+loading="lazy"
+alt="image-20230220105309758"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230220105609659.png"
+loading="lazy"
+alt="image-20230220105609659"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230220105914370.png"
+loading="lazy"
+alt="image-20230220105914370"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;登入PE可看到VM正在部署
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_VM.png"
+loading="lazy"
+alt="image-20230220110200502"
+&gt;
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Windows.png"
+loading="lazy"
+alt="image-20230220110749749"
+&gt;&lt;/p&gt;
+&lt;p&gt;透由PowerShell自動部署
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Powershell.png"
+loading="lazy"
+alt="image-20230220112550775"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;自動建立Storage Container
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Container.png"
+loading="lazy"
+alt="image-20230220110529475"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;自動建立Volume Group
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_VG01.png"
+loading="lazy"
+alt="image-20230220110632074"
+&gt;
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_VG02.png"
+loading="lazy"
+alt="image-20230220110652147"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;部署完成,輸入windows授權啟用,可先略過
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230220115041552.png"
+loading="lazy"
+alt="image-20230220115041552"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;完成
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230220115115335.png"
+loading="lazy"
+alt="image-20230220115115335"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;點close後設定時區&amp;gt;settings
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_TimeZone.png"
+loading="lazy"
+alt="image-20230220161551198"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;設定時區、NTP
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_timezone02.png"
+loading="lazy"
+alt="image-20230220161838334"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;重新登入PE
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_AfterInstall01.png"
+loading="lazy"
+alt="image-20230220162124407"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Dashboard沒出現,可參考以下說明
+&lt;a class="link" href="https://www.veeam.com/kb4265" target="_blank" rel="noopener"
+&gt;https://www.veeam.com/kb4265&lt;/a&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;1. 開啟Foundation_Mine的VM Console,並開啟ssh service
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;2. ssh 登入Foundation_mine VM
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;3. copy 指令並修改PE的IP、帳號密碼
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;4. 執行完成後重新登入PE會看到下方圖一
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;5. 關閉Foundation_mine VM的ssh service
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;6. ssh登入其中一台CVM並執行指令 allssh sudo cp -rp /home/nutanix/prism/webapps/console/nirvana/ /home/apache/www/console/nirvana/
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;7.即可看到圖二的Dashboard
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;圖一&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Dashboard01.png"
+loading="lazy"
+alt="image-20230220163841278"
+&gt;&lt;/p&gt;
+&lt;p&gt;圖二
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Dashboard02.png"
+loading="lazy"
+alt="image-20230220164338921"
+&gt;&lt;/p&gt;
+&lt;p&gt;更新完後LCM的選項會消失,但還是可以在Setting &amp;gt; Upgrade Software上點選出來
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_LCM.png"
+loading="lazy"
+alt="image-20230221135620882"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_LCM02.png"
+loading="lazy"
+alt="image-20230221135654995"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;點選Launch Console會連線到Bakcup Server的VM (帳號密碼為Foundation Mine時所建立的)
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Launch_Console.png"
+loading="lazy"
+alt="image-20230220164527387"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;新增需備份的Hypervisor平台
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_AddServer.png"
+loading="lazy"
+alt="image-20230220164806207"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;使用此方式建立的Mine Cluster會新增Nutanix AHV的Plug-in
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_AddServer02.png"
+loading="lazy"
+alt="image-20230220164939182"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;新增Nutanix AHV Cluster (輸入PE的VIP)&lt;/p&gt;
+&lt;p&gt;詳細設定可參考 &lt;a class="link" href="https://helpcenter.veeam.com/archive/van/21/userguide/overview.html" target="_blank" rel="noopener"
+&gt;https://helpcenter.veeam.com/archive/van/21/userguide/overview.html&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_AddServer03.png"
+loading="lazy"
+alt="image-20230220165208683"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;新增連線帳號密碼
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_AddServer04.png"
+loading="lazy"
+alt="image-20230220165407259"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;此處會建立一個Helper Appliance VM在目的地的AHV Cluster,需要與Backup Server同網段
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_AddServer05.png"
+loading="lazy"
+alt="image-20230220165823258"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Helper Appliance建立完成
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_AddServer06.png"
+loading="lazy"
+alt="image-20230220170044692"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;新增完成
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_AddServer07.png"
+loading="lazy"
+alt="image-20230220170415237"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;建立Proxy 在備份目標上 , 備份會透過此Proxy來連線AHV Cluster
+(&lt;a class="link" href="https://helpcenter.veeam.com/archive/van/21/userguide/add_ahv_proxy.html" target="_blank" rel="noopener"
+&gt;https://helpcenter.veeam.com/archive/van/21/userguide/add_ahv_proxy.html&lt;/a&gt;)
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_AddProxy01.png"
+loading="lazy"
+alt="image-20230220170511581"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;建立新的Backup Proxy Linux VM
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_AddProxy02.png"
+loading="lazy"
+alt="image-20230220170802112"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;設定Backup Proxy名稱、vCPU、Memory,點選Advance進行設定
+依照同時進行任務的數量來決定資源, EX: 同時進行4個任務就需要4個vCPU Core、4GB Memory
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_AddProxy03.png"
+loading="lazy"
+alt="image-20230220171350815"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;設定Backup Proxy的網路 (預設使用DHCP)
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_AddProxy04.png"
+loading="lazy"
+alt="image-20230220171553883"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;設定帳號權限
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_AddProxy05.png"
+loading="lazy"
+alt="image-20230220173342620"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;設定Backup Repository的權限
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_AddProxy06.png"
+loading="lazy"
+alt="image-20230220171705433"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;建立完成,跳出DNS Warning,需要在DNS Server上新增兩筆紀錄,veeam-win-node1、NX1365-VeeamProxy的紀錄
+並重新apply backup proxy的設定才會重新連線&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_AddProxy_Warning.png"
+loading="lazy"
+alt="image-20230220175809202"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_AddProxy_DNS.png"
+loading="lazy"
+alt="image-20230220175728486"
+&gt;&lt;/p&gt;
+&lt;p&gt;Backup Server 也需設定DNS尾碼,或是加一筆記錄至hosts內
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_AddProxy_DNS02.png"
+loading="lazy"
+alt="image-20230220190134179"
+&gt;&lt;/p&gt;
+&lt;p&gt;同理在Linux Proxy Server也需設定 (/etc/hosts)
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_AddProxy_DNS03.png"
+loading="lazy"
+alt="image-20230220190559732"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/image-20230220191156878.png"
+loading="lazy"
+alt="image-20230220191156878"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Finish
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_AddProxy_Finish.png"
+loading="lazy"
+alt="image-20230220175918366"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4 id="add-backup-job"&gt;ADD Backup Job
+&lt;/h4&gt;&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;新增一個Backup Job測試,用ken-jump VM來測試
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Add_Job01.png"
+loading="lazy"
+alt="image-20230220180217763"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;會連線到 https://172.16.90.216:8100 (Backup Proxy的IP)
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Add_Job02.png"
+loading="lazy"
+alt="image-20230220180451484"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Dashboard畫面,NTP跟時區需要手動再去設定,點右上方齒輪可進行設定
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Proxy_Dashboard01.png"
+loading="lazy"
+alt="image-20230220191245336"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Proxy_Dashboard02.png"
+loading="lazy"
+alt="image-20230220191339305"
+&gt;
+Backup Server&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_ManageBKServer.png"
+loading="lazy"
+alt="image-20230221094142493"
+&gt;
+可備份的Cluster&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_ManageAHV.png"
+loading="lazy"
+alt="image-20230221094207472"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;新增一個backup job
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_New_Bakcupjob01.png"
+loading="lazy"
+alt="image-20230220191416200"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_New_backupjob02.png"
+loading="lazy"
+alt="image-20230220191457379"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;選擇備份的VM
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_NEW_backupjob03.png"
+loading="lazy"
+alt="image-20230220191612250"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;設定備份目的地,及還原點數量&amp;hellip;
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/MIne_NEW_backupjob04.png"
+loading="lazy"
+alt="image-20230220191719197"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;設定排程
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_NEW_backupjob05.png"
+loading="lazy"
+alt="image-20230220191816190"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;完成設定
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_NEW_backupjob06.png"
+loading="lazy"
+alt="image-20230220191847506"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;查看備份進度
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_NEW_backupjob07.png"
+loading="lazy"
+alt="image-20230220192103389"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;備份完成
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Add_Backupjob.png"
+loading="lazy"
+alt="image-20230221093619689"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Protech VMs可以看到從Veeam執行備份的VM以及NX1365 Cluster上原有的Snapshot
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_ProtechedVMs.png"
+loading="lazy"
+alt="image-20230221093836882"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Events查看執行紀錄
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Events.png"
+loading="lazy"
+alt="image-20230221093946234"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Proxy Server Dashboard畫面
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Dashboard03.png"
+loading="lazy"
+alt="image-20230221092833155"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;PE上的Mine&amp;amp;Veeam Dashboard
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Dashboard04.png"
+loading="lazy"
+alt="image-20230221093447492"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4 id="restore-backup-vm"&gt;Restore Backup VM
+&lt;/h4&gt;&lt;p&gt;目標：將備份的VM還原至AHV Cluster&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;在Backup Proxy上的Protected VMs點選Restore
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Restore01.png"
+loading="lazy"
+alt="image-20230221094652971"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;選擇需要的VM及還原點
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Restore02.png"
+loading="lazy"
+alt="image-20230221094813735"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;還原模式選擇： 還原至原來的位置(原機還原) or 還原至新的位置(客製化設定)
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Restore03.png"
+loading="lazy"
+alt="image-20230221095049681"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Restore04.png"
+loading="lazy"
+alt="image-20230221095116899"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;因為是測試還原故選擇Restore to a new location,設定VM Name
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Restore05.png"
+loading="lazy"
+alt="image-20230221095225911"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Restore06.png"
+loading="lazy"
+alt="image-20230221095252250"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;選擇還原至哪個Storage Container
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Restore07.png"
+loading="lazy"
+alt="image-20230221095636955"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;選擇網路,測試還原故將網路先斷線
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Restore08.png"
+loading="lazy"
+alt="image-20230221095756632"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;還原的原因,可略過
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Restore09.png"
+loading="lazy"
+alt="image-20230221095856886"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;還原Job總覽
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/MIne_Restore10.png"
+loading="lazy"
+alt="image-20230221095935837"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;點選Finish即會開始還原
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Restore11.png"
+loading="lazy"
+alt="image-20230221100100496"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;目的地的AHV Cluster上會先建立Volume Group,還原完後自動刪除
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Restore12.png"
+loading="lazy"
+alt="image-20230221100433777"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;備份完成
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Restore13.png"
+loading="lazy"
+alt="image-20230221101215579"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;NX1365 AHV Cluster即可看到該VM,登入確認OK
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Restore14.png"
+loading="lazy"
+alt="image-20230221101150100"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;在Backup Proxy上的還原只針對整台VM或是Disk的還原
+如要針對檔案或是Application (AD,Exchange,SQL等),則要回到Backup Server上進行還原
+實測Disk or Snapshots皆可進行檔案、Application還原,但Snapshots還原會在PE上建立VM及Volume Group故時間上會較慢
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Restore15.png"
+loading="lazy"
+alt="image-20230221101455390"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;如下圖為針對檔案的還原
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Restore16.png"
+loading="lazy"
+alt="image-20230221101637052"
+&gt;&lt;/p&gt;
+&lt;p&gt;可選擇還原至原來位置or複製一份到別地方
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Restore17.png"
+loading="lazy"
+alt="image-20230221101747022"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;以上為Nutanix Mine with Veeam的安裝及備份還原實作測試。&lt;/p&gt;
+&lt;h3 id="upgrading"&gt;Upgrading
+&lt;/h3&gt;&lt;h4 id="mine"&gt;Mine
+&lt;/h4&gt;&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;開啟Mine Foundation的UI介面 &amp;gt; Mine Platform
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Upgrade_Mine01.png"
+loading="lazy"
+alt="image-20230221135803336"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;點選Settings&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Upgrade_Mine02.png"
+loading="lazy"
+alt="image-20230221135946161"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;點選check updates 來更新,目前為最新版本故無需更新
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Upgrade_Mine03.png"
+loading="lazy"
+alt="image-20230221140032583"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4 id="backup-proxy"&gt;Backup Proxy
+&lt;/h4&gt;&lt;p&gt;Version: 2.1.396&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;連線至Backup Proxy UI https://172.16.90.216:8100
+點選右上角齒輪 &amp;gt; Appliance Settings &amp;gt; Updates &amp;gt; Check and view updates&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Upgrade_Proxy01.png"
+loading="lazy"
+alt="image-20230221130725879"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;會出現可更新的項目 Security updates、DoNetCore updates
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Upgrade_proxy02.png"
+loading="lazy"
+alt="image-20230221130956650"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Upgrade_Proxy03.png"
+loading="lazy"
+alt="image-20230221131514935"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;勾選全部並執行更新,勾選自動重新啟動
+需先確認沒有backup jobs or restore jobs正在執行
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Upgrade_Proxy04.png"
+loading="lazy"
+alt="image-20230221131647251"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Upgrade_Proxy05.png"
+loading="lazy"
+alt="image-20230221131904623"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;更新完成後可查看更新紀錄
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Upgrade_Proxy06.png"
+loading="lazy"
+alt="image-20230221131954375"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;再次執行備份確認沒問題
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Upgrade_Proxy07.png"
+loading="lazy"
+alt="image-20230221132606909"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4 id="aos"&gt;AOS
+&lt;/h4&gt;&lt;p&gt;AOS如有更新則需要在Mine Foundation的UI介面點選Maintenance &amp;gt; Redeploy Mine Dashboard
+來重新更新UI介面&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_AOS.png"
+loading="lazy"
+alt="image-20230221143205971"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_AOS2.png"
+loading="lazy"
+alt="image-20230221143308653"
+&gt;&lt;/p&gt;
+&lt;h4 id="veeam-server"&gt;Veeam Server
+&lt;/h4&gt;&lt;p&gt;目前版本: 11.0.0.837
+更新版本: 12.0.0.1420
+Repository版本: 11.0.0.839&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Veeam01.png"
+loading="lazy"
+alt="image-20230221145122428"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Veeam02.png"
+loading="lazy"
+alt="image-20230221145705817"
+&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;下載最新的Veeam Backup&amp;amp;Replication iso檔
+&lt;a class="link" href="https://www.veeam.com/backup-replication-download.html?ad=downloads" target="_blank" rel="noopener"
+&gt;https://www.veeam.com/backup-replication-download.html?ad=downloads&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;開啟iso檔,用系統管理員身份執行Setup.exe
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Veeam03.png"
+loading="lazy"
+alt="image-20230221154214097"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;執行Upgrade (需先關閉Veeam的視窗)
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Veeam04.png"
+loading="lazy"
+alt="image-20230221154303858"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Veeam05.png"
+loading="lazy"
+alt="image-20230221154327332"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Accept License
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Veeam06.png"
+loading="lazy"
+alt="image-20230221154854447"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;確認更新版本,及自動更新遠端的元件
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Veeam07.png"
+loading="lazy"
+alt="image-20230221154941326"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;更新License (11 to 12)
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Veeam08.png"
+loading="lazy"
+alt="image-20230221155035130"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;選擇帳號
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Veeam09.png"
+loading="lazy"
+alt="image-20230221155146228"
+&gt;&lt;/p&gt;
+&lt;p&gt;SQL
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Veeam10.png"
+loading="lazy"
+alt="image-20230221155209177"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;提示升級可能也會更新Datebase
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Veeam11.png"
+loading="lazy"
+alt="image-20230221155446853"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;升級前的check,Next
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Veeam12.png"
+loading="lazy"
+alt="image-20230221155539238"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;開始升級
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Veeam13.png"
+loading="lazy"
+alt="image-20230221155645278"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Veeam14.png"
+loading="lazy"
+alt="image-20230221155710579"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;安裝完畢,需重新啟動
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Veeam15.png"
+loading="lazy"
+alt="image-20230221163718541"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;重新登入Veeam Console後會出現可更新的遠端元件
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Veeam16.png"
+loading="lazy"
+alt="image-20230221164224318"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Veeam17.png"
+loading="lazy"
+alt="image-20230221164251762"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;更新遠端的元件,Linux Node Failed: Permission denied&lt;/p&gt;
+&lt;p&gt;NX1365-VeeamProxy 更新中
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Veeam18.png"
+loading="lazy"
+alt="image-20230221164340902"
+&gt;&lt;/p&gt;
+&lt;p&gt;Backup Server會直接呼叫Proxy Server的AHV Cluster進行快照、更新&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Veeam22.png"
+loading="lazy"
+alt="image-20230221165329079"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;連線到Foundation Mine來進行更新,點選Update
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Veeam19.png"
+loading="lazy"
+alt="image-20230221164456511"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Veeam20.png"
+loading="lazy"
+alt="image-20230221164557209"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Linux Repository更新完畢
+版本11.0.0.839 &amp;gt; 12.0.0.1420&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Veeam21.png"
+loading="lazy"
+alt="image-20230221165120054"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Proxy Server 更新完成
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Veeam23.png"
+loading="lazy"
+alt="image-20230221165437075"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;登入Proxy Server https://172.16.90.216&lt;/p&gt;
+&lt;p&gt;介面已更新
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Veeam24.png"
+loading="lazy"
+alt="image-20230221165557868"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Veeam25.png"
+loading="lazy"
+alt="image-20230221165650105"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;版本 v2.1.396 &amp;gt; v4.0.0.1899
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Veeam26.png"
+loading="lazy"
+alt="image-20230221165938130"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;回到PE上的Mine with Veeam Dashboard確認狀態&lt;/p&gt;
+&lt;p&gt;Protected Instances 顯示N/A&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Veeam28.png"
+loading="lazy"
+alt="image-20230221171846726"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;回到Foundation Mine上面下載Support Bundle&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Veeam29.png"
+loading="lazy"
+alt="image-20230221172004727"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;下載後會是一個zip檔,解壓縮看到以下目錄&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Veeam30.png"
+loading="lazy"
+alt="image-20230221172059331"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;點開NutanixMineDashboard&lt;/p&gt;
+&lt;p&gt;Error &amp;ldquo;Cannot get restore points from backup ken-jump, because it is encrypted or create by an enterprise plug-in&amp;rdquo;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Veeam31.png"
+loading="lazy"
+alt="image-20230221172215714"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;有可能是因為目前12版本太新,有相容性問題
+&lt;img src="https://kenkenny.synology.me:5543/images/2023/09/Mine_Veeam32.png"
+loading="lazy"
+alt="image-20230221180824415"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;除了Dashboard之外,其他功能顯示皆正常,也可正常備份還原。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;</description></item></channel></rss>
